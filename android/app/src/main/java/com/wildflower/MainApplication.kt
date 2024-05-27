@@ -1,4 +1,4 @@
-package com.rnstart
+package com.wildflower
 
 import android.app.Application
 import com.facebook.react.PackageList
