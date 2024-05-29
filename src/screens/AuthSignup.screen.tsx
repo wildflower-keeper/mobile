@@ -3,9 +3,9 @@ import {SafeAreaView, StyleSheet, View} from 'react-native';
 
 import {colors} from '@/constants';
 import CustomText from '@/components/base/CustomText';
-import InputField from '@/components/base/InputField';
+import InputField from '@/components/InputField';
 import CustomButton from '@/components/base/CustomButton';
-import SelectField from '@/components/base/SelectField';
+import SelectField from '@/components/SelectField';
 
 interface AuthSignupProps {}
 

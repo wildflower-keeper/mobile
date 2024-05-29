@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, TextInput, View, TextInputProps, Text} from 'react-native';
 import {colors} from '@/constants';
-import CustomText from './CustomText';
+import CustomText from './base/CustomText';
 
 type InputFieldProps = {
   labelName: string;

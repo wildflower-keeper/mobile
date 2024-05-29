@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
-import CustomText from './CustomText';
+import CustomText from './base/CustomText';
 import {colors} from '@/constants';
 
 type SelectFieldProps = {
