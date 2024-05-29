@@ -5,17 +5,24 @@ import {StyleSheet, Text, TextProps} from 'react-native';
 type CustomTextProps = {
   textColor?: 'default' | 'weak';
   size?: 'large' | 'default' | 'small';
+  isBadge?: boolean;
 } & TextProps;
 
 const CustomText = ({
   textColor = 'default',
   size = 'default',
+  isBadge = false,
   children,
   ...props
 }: CustomTextProps) => {
   return (
     <Text
-      style={[styles.text, styles[`${textColor}Text`], styles[`${size}Size`]]}
+      style={[
+        styles.text,
+        styles[`${textColor}Text`],
+        styles[`${size}Size`],
+        isBadge && styles.badge,
+      ]}
       {...props}>
       {children}
     </Text>
@@ -41,6 +48,9 @@ const styles = StyleSheet.create({
   },
   smallSize: {
     fontSize: 16,
+  },
+  badge: {
+    color: colors.PRIMARY,
   },
 });
 
