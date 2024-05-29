@@ -1,6 +1,6 @@
 import React from 'react';
-import AuthSignup from './src/screens/AuthSignup';
-import Home from './src/screens/Home';
+import Home from './src/screens/Home.screen';
+import AuthSignup from './src/screens/AuthSignup.screen';
 
 const isLogin = false;
 function App(): React.JSX.Element {

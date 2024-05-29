@@ -1,5 +1,6 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
+import CustomText from '../components/base/CustomText';
 
 interface HomeProps {}
 
@@ -7,7 +8,7 @@ const Home = ({}: HomeProps) => {
   return (
     <SafeAreaView>
       <View>
-        <Text>홈 화면</Text>
+        <CustomText>메인 페이지</CustomText>
       </View>
     </SafeAreaView>
   );

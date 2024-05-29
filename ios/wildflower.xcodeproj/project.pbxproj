@@ -8,13 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* wildflowerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* wildflowerTests.m */; };
+		061A67182AAE42E6920F4301 /* Pretendard-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = B91DB3F26DCF4E0991C5B2A6 /* Pretendard-Light.otf */; };
 		0C80B921A6F3F58F76C31292 /* libPods-wildflower.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-wildflower.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		22F70BF18FF64DA8A440F594 /* Pretendard-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = EC2410D080F6419584A01F6F /* Pretendard-ExtraBold.otf */; };
+		23C7EAB5444A4E408D16B51A /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = E5AC296FCD644678987A80D9 /* Pretendard-Medium.otf */; };
+		336D9168E1C64F02B0CC93E3 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6132325A5EE9408490BCC032 /* Pretendard-SemiBold.otf */; };
+		5937FBF4F46749D79F873BF8 /* Pretendard-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4F83769587FA4C9695FD9C8D /* Pretendard-Black.otf */; };
+		6ED6517D76E1486C810D2F39 /* Pretendard-ExtraLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = C23F771E3E164ADDAB9546EE /* Pretendard-ExtraLight.otf */; };
 		7699B88040F8A987B510C191 /* libPods-wildflower-wildflowerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-wildflower-wildflowerTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		A3EB05F8431C43FA9F43242D /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4F8F447F9635429A8653057D /* Pretendard-Regular.otf */; };
+		BDA0640EDB154A55852A4D49 /* Pretendard-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 12969E4E803C4A6096164F76 /* Pretendard-Thin.otf */; };
 		D94345567570A46FE0FC694C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 0F85BDD64130B0504407DD34 /* PrivacyInfo.xcprivacy */; };
+		E47169BAA27849EAB964C5A7 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = CCE81AC87CF84EB9B1B7DBB4 /* Pretendard-Bold.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +41,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* wildflowerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = wildflowerTests.m; sourceTree = "<group>"; };
 		0F85BDD64130B0504407DD34 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = wildflower/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		12969E4E803C4A6096164F76 /* Pretendard-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Thin.otf"; path = "../src/assets/fonts/Pretendard-Thin.otf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* wildflower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = wildflower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = wildflower/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = wildflower/AppDelegate.mm; sourceTree = "<group>"; };
@@ -41,11 +51,19 @@
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = wildflower/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-wildflower-wildflowerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-wildflower-wildflowerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4392A12AC88292D35C810B /* Pods-wildflower.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-wildflower.debug.xcconfig"; path = "Target Support Files/Pods-wildflower/Pods-wildflower.debug.xcconfig"; sourceTree = "<group>"; };
+		4F83769587FA4C9695FD9C8D /* Pretendard-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Black.otf"; path = "../src/assets/fonts/Pretendard-Black.otf"; sourceTree = "<group>"; };
+		4F8F447F9635429A8653057D /* Pretendard-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Regular.otf"; path = "../src/assets/fonts/Pretendard-Regular.otf"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-wildflower.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-wildflower.release.xcconfig"; path = "Target Support Files/Pods-wildflower/Pods-wildflower.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-wildflower-wildflowerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-wildflower-wildflowerTests.debug.xcconfig"; path = "Target Support Files/Pods-wildflower-wildflowerTests/Pods-wildflower-wildflowerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-wildflower.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-wildflower.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6132325A5EE9408490BCC032 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-SemiBold.otf"; path = "../src/assets/fonts/Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = wildflower/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-wildflower-wildflowerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-wildflower-wildflowerTests.release.xcconfig"; path = "Target Support Files/Pods-wildflower-wildflowerTests/Pods-wildflower-wildflowerTests.release.xcconfig"; sourceTree = "<group>"; };
+		B91DB3F26DCF4E0991C5B2A6 /* Pretendard-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Light.otf"; path = "../src/assets/fonts/Pretendard-Light.otf"; sourceTree = "<group>"; };
+		C23F771E3E164ADDAB9546EE /* Pretendard-ExtraLight.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-ExtraLight.otf"; path = "../src/assets/fonts/Pretendard-ExtraLight.otf"; sourceTree = "<group>"; };
+		CCE81AC87CF84EB9B1B7DBB4 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Bold.otf"; path = "../src/assets/fonts/Pretendard-Bold.otf"; sourceTree = "<group>"; };
+		E5AC296FCD644678987A80D9 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-Medium.otf"; path = "../src/assets/fonts/Pretendard-Medium.otf"; sourceTree = "<group>"; };
+		EC2410D080F6419584A01F6F /* Pretendard-ExtraBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Pretendard-ExtraBold.otf"; path = "../src/assets/fonts/Pretendard-ExtraBold.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -101,6 +119,23 @@
 			name = wildflower;
 			sourceTree = "<group>";
 		};
+		1B31DA3E0D2542CC9F64C811 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				4F83769587FA4C9695FD9C8D /* Pretendard-Black.otf */,
+				CCE81AC87CF84EB9B1B7DBB4 /* Pretendard-Bold.otf */,
+				EC2410D080F6419584A01F6F /* Pretendard-ExtraBold.otf */,
+				C23F771E3E164ADDAB9546EE /* Pretendard-ExtraLight.otf */,
+				B91DB3F26DCF4E0991C5B2A6 /* Pretendard-Light.otf */,
+				E5AC296FCD644678987A80D9 /* Pretendard-Medium.otf */,
+				4F8F447F9635429A8653057D /* Pretendard-Regular.otf */,
+				6132325A5EE9408490BCC032 /* Pretendard-SemiBold.otf */,
+				12969E4E803C4A6096164F76 /* Pretendard-Thin.otf */,
+			);
+			name = Resources;
+			path = "";
+			sourceTree = "<group>";
+		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -127,6 +162,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				1B31DA3E0D2542CC9F64C811 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -249,6 +285,15 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				D94345567570A46FE0FC694C /* PrivacyInfo.xcprivacy in Resources */,
+				5937FBF4F46749D79F873BF8 /* Pretendard-Black.otf in Resources */,
+				E47169BAA27849EAB964C5A7 /* Pretendard-Bold.otf in Resources */,
+				22F70BF18FF64DA8A440F594 /* Pretendard-ExtraBold.otf in Resources */,
+				6ED6517D76E1486C810D2F39 /* Pretendard-ExtraLight.otf in Resources */,
+				061A67182AAE42E6920F4301 /* Pretendard-Light.otf in Resources */,
+				23C7EAB5444A4E408D16B51A /* Pretendard-Medium.otf in Resources */,
+				A3EB05F8431C43FA9F43242D /* Pretendard-Regular.otf in Resources */,
+				336D9168E1C64F02B0CC93E3 /* Pretendard-SemiBold.otf in Resources */,
+				BDA0640EDB154A55852A4D49 /* Pretendard-Thin.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
