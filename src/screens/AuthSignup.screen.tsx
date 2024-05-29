@@ -6,6 +6,7 @@ import CustomText from '@/components/base/CustomText';
 import InputField from '@/components/InputField';
 import CustomButton from '@/components/base/CustomButton';
 import SelectField from '@/components/SelectField';
+import ConsentField from '@/components/ConsentField';
 
 interface AuthSignupProps {}
 
@@ -18,19 +19,21 @@ const AuthSignup = ({}: AuthSignupProps) => {
       <View style={styles.inputWrapper}>
         <InputField
           labelName="성함"
-          defaultValue="성함을 입력해주세요"
+          placeholder="성함을 입력해주세요"
           isRequired
         />
         <SelectField isRequired labelName="센터명" />
         <InputField
           labelName="비밀번호"
-          defaultValue="비밀번호를 입력해주세요"
+          placeholder="비밀번호를 입력해주세요"
           isRequired
         />
         <InputField
           labelName="호실"
-          defaultValue="이용하시는 호실을 입력해주세요"
+          placeholder="이용하시는 호실을 입력해주세요"
         />
+        <ConsentField label="이용약관 동의" />
+        <ConsentField label="개인정보 수집 및 이용동의" />
       </View>
 
       <CustomButton label="완료" variant="filled" />
