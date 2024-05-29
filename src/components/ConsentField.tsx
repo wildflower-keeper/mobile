@@ -30,7 +30,7 @@ const ConsentField = ({label}: ConsentFieldProps) => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingVertical: 16,
+    paddingVertical: 12,
     paddingHorizontal: 30,
     flex: 0,
     flexDirection: 'row',
