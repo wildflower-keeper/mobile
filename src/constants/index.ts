@@ -1,3 +1,3 @@
 import {colors} from './colors';
-
-export {colors};
+import {days} from './days';
+export {colors, days};
