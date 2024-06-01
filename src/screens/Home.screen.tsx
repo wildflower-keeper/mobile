@@ -65,7 +65,7 @@ const Home = ({}: HomeProps) => {
         <CustomText>위치</CustomText>
         <View style={{flex: 0, flexDirection: 'row', gap: 10}}>
           <CustomText>{currentWeather.weather}</CustomText>
-          <CustomText>{currentWeather.temp}&#176;</CustomText>
+          <CustomText size="temp">{currentWeather.temp}&#176;</CustomText>
         </View>
       </View>
       <View style={styles.medicationContainer}>
