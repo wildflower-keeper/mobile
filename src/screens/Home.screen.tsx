@@ -36,7 +36,6 @@ const Home = ({}: HomeProps) => {
   }, []);
   useEffect(() => {
     const getWeather = async () => {
-      console.log(userLocation);
       try {
         const {latitude, longitude} = userLocation;
         const res = await weatherAxiosInstance({
@@ -61,7 +60,7 @@ const Home = ({}: HomeProps) => {
       </View>
       <View style={styles.weatherContainer}>
         <CustomText>{`${today.getMonth() + 1}월 ${today.getDate()}일 ${
-          days[`${today.getDay()}`]
+          days.WEEK[today.getDay()]
         }요일`}</CustomText>
         <CustomText>위치</CustomText>
         <View style={{flex: 0, flexDirection: 'row', gap: 10}}>
