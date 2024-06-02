@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {StyleSheet, TextInput, View, TextInputProps, Text} from 'react-native';
 import {colors} from '@/constants';
 import CustomText from './base/CustomText';
@@ -13,13 +13,22 @@ const InputField = ({
   isRequired = false,
   ...props
 }: InputFieldProps) => {
+  const inputRef = useRef<TextInput | null>(null);
+
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      onTouchEnd={() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      }}>
       <View style={styles.labelWrapper}>
         {isRequired && <Text style={styles.requiredDot}>•</Text>}
         <CustomText>{labelName}</CustomText>
       </View>
       <TextInput
+        ref={inputRef}
         placeholderTextColor={colors.FONT_WEAK}
         style={styles.input}
         {...props}
