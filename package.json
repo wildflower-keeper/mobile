@@ -3,11 +3,12 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "android": "MY_ENV=staging react-native run-android",
+    "ios": "MY_ENV=staging react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "start:clean": "npx react-native start --reset-cache"
   },
   "dependencies": {
     "@react-native-community/checkbox": "^0.5.17",
@@ -36,6 +37,7 @@
     "@react-native/metro-config": "0.74.83",
     "@react-native/typescript-config": "0.74.83",
     "@types/react": "^18.2.6",
+    "@types/react-native-dotenv": "^0.2.2",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.6.3",
     "babel-plugin-module-resolver": "^5.0.2",
