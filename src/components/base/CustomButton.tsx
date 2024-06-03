@@ -44,6 +44,7 @@ const styles = StyleSheet.create({
   outlined: {
     borderColor: colors.PRIMARY,
     backgroundColor: colors.WHITE,
+    borderWidth: 1,
   },
   text: {
     fontSize: 18,
