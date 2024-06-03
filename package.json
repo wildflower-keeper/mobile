@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "start:clean": "npx react-native start --reset-cache"
+    "start:clean": "MY_ENV=staging npx react-native start --reset-cache"
   },
   "dependencies": {
     "@react-native-community/checkbox": "^0.5.17",
@@ -16,9 +16,12 @@
     "@react-native-masked-view/masked-view": "^0.3.1",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
+    "@tanstack/react-query": "^5.40.0",
     "axios": "^1.7.2",
     "react": "18.2.0",
     "react-native": "0.74.1",
+    "react-native-background-geolocation": "^4.16.2",
+    "react-native-calendars": "^1.1305.0",
     "react-native-device-info": "^11.1.0",
     "react-native-dotenv": "^3.4.11",
     "react-native-dropdown-picker": "^5.4.6",
@@ -26,7 +29,8 @@
     "react-native-permissions": "^4.1.5",
     "react-native-reanimated": "^3.11.0",
     "react-native-safe-area-context": "^4.10.1",
-    "react-native-screens": "^3.31.1"
+    "react-native-screens": "^3.31.1",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
