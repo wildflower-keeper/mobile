@@ -1,12 +1,9 @@
 buildscript {
     ext {
         buildToolsVersion = "34.0.0"
-        minSdkVersion = 23
-        compileSdkVersion = 34
-        targetSdkVersion = 34
         ndkVersion = "26.1.10909125"
         kotlinVersion = "1.9.22"
-        minSdkVersion 		= 19	      // Required minimum
+        minSdkVersion 		= 23	      // Required minimum
         targetSdkVersion 	= 33          // Or higher.
         compileSdkVersion 	= 33          // Or higher.
         appCompatVersion 	= "1.4.2"      // Or higher.  Required for new AndroidX compatibility.
