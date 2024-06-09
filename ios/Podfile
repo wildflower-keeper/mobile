@@ -22,13 +22,13 @@ setup_permissions([
   # 'Camera',
   # 'Contacts',
   # 'FaceID',
-  # 'LocationAccuracy',
+  'LocationAccuracy',
   'LocationAlways',
-  # 'LocationWhenInUse',
+  'LocationWhenInUse',
   # 'MediaLibrary',
   # 'Microphone',
   # 'Motion',
-  # 'Notifications',
+  'Notifications',
   # 'PhotoLibrary',
   # 'PhotoLibraryAddOnly',
   # 'Reminders',
@@ -36,7 +36,7 @@ setup_permissions([
   # 'SpeechRecognition',
   # 'StoreKit',
 ])
-
+pod 'RNKeychain', :path => '../node_modules/react-native-keychain'
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
