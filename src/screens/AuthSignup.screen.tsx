@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, StyleSheet, View} from 'react-native';
-
 import {colors} from '@/constants';
 import CustomText from '@/components/base/CustomText';
 import InputField from '@/components/InputField';
 import CustomButton from '@/components/base/CustomButton';
 import SelectField from '@/components/SelectField';
 import ConsentField from '@/components/ConsentField';
-import DeviceInfo from 'react-native-device-info';
 import {backendAxiosInstance} from '@/utils/api/api';
+import {setToken} from '@/utils/tokenStorage/tokenStorage';
+import getDeviceID from '@/utils/getDeviceID/getDeviceID';
 
 interface AuthSignupProps {}
 
@@ -17,10 +17,11 @@ type signupValueType = {
   shelterId: number;
   shelterPw: string;
   deviceId: string;
-  room: string;
-  birthDate: string;
-  phoneNumber: string;
-  admissionDate: string;
+  room?: string;
+  termsIdsToAgree?: number[];
+  birthDate?: string;
+  phoneNumber?: string;
+  admissionDate?: string;
 };
 
 const AuthSignup = ({}: AuthSignupProps) => {
@@ -30,16 +31,15 @@ const AuthSignup = ({}: AuthSignupProps) => {
     shelterPw: 'password_example',
     deviceId: '',
     room: '',
+    termsIdsToAgree: [1],
     birthDate: '1970-05-15',
     phoneNumber: '010-0000-0000',
     admissionDate: '2024-08-01',
   });
   useEffect(() => {
-    const getDeviceID = async () => {
-      const deviceID = await DeviceInfo.getUniqueId();
-      setSignupValues({...signupValues, deviceId: deviceID});
-    };
-    getDeviceID();
+    getDeviceID().then((result: string) => {
+      setSignupValues({...signupValues, deviceId: result});
+    });
   }, []);
   const handleChangeText = (name: string, text: string) => {
     setSignupValues({...signupValues, [name]: text});
@@ -56,7 +56,8 @@ const AuthSignup = ({}: AuthSignupProps) => {
         url: '/api/v1/homeless-app/homeless',
         data: JSON.stringify(signupValues),
       });
-      console.log(res);
+      const result = await res.data;
+      setToken(signupValues.deviceId, result.accessToken);
     } catch (error) {
       throw error;
     }
