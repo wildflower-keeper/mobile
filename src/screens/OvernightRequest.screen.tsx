@@ -8,15 +8,16 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 import calendarLocationConfig from '@/config/calendarConfig';
 
-interface GoOutRequestProps {}
+interface OvernightRequestProps {}
 
 const buttonTextList = ['가족', '모임', '일', '운동', '기타'];
 
 LocaleConfig.locales.kr = calendarLocationConfig;
 LocaleConfig.defaultLocale = 'kr';
 
-const GoOutRequest = ({navigation}: GoOutRequestProps) => {
+const OvernightRequest = ({navigation}: OvernightRequestProps) => {
   const [isNext, setIsNext] = useState<boolean>(false);
+  const [overnightValues, setOvernightValues] = useState({});
 
   const handlePrev = () => {
     if (isNext) {
@@ -105,4 +106,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GoOutRequest;
+export default OvernightRequest;
