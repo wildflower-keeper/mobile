@@ -5,14 +5,12 @@ import Geolocation from '@react-native-community/geolocation';
 import CustomButton from '@/components/base/CustomButton';
 import {weatherAxiosInstance} from '@/utils/api/api';
 import {colors, days} from '@/constants';
-
+import {WEATHER_API_KEY} from '@env';
 interface HomeProps {}
-
-const weatherAPI = '1790fc8e3fc7d0cd81f8ebc9146ea49a';
 
 const today = new Date();
 
-const Home = ({}: HomeProps) => {
+const Home = ({navigation}: HomeProps) => {
   const [userLocation, setUserLocation] = useState({
     latitude: 37,
     longitude: 124,
@@ -40,7 +38,7 @@ const Home = ({}: HomeProps) => {
         const {latitude, longitude} = userLocation;
         const res = await weatherAxiosInstance({
           method: 'GET',
-          url: `/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${weatherAPI}`,
+          url: `/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${WEATHER_API_KEY}`,
         });
         setCurrentWeather({
           weather: res.data.weather[0].description,
@@ -52,6 +50,7 @@ const Home = ({}: HomeProps) => {
     };
     getWeather();
   }, [userLocation]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headContainer}>
@@ -74,7 +73,11 @@ const Home = ({}: HomeProps) => {
         </CustomText>
         <CustomText textColor="weak">복약정보, 1회필요량, 복약률 </CustomText>
       </View>
-      <CustomButton size="xl" label="외박 신청하기" />
+      <CustomButton
+        size="xl"
+        label="외박 신청하기"
+        onPress={() => navigation.navigate('GoOutRequest')}
+      />
     </SafeAreaView>
   );
 };

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import CustomText from './base/CustomText';
@@ -7,9 +7,14 @@ import {colors} from '@/constants';
 type SelectFieldProps = {
   isRequired?: boolean;
   labelName: string;
+  handleChange: (value: number) => void;
 };
 
-const SelectField = ({isRequired = false, labelName}: SelectFieldProps) => {
+const SelectField = ({
+  isRequired = false,
+  labelName,
+  handleChange,
+}: SelectFieldProps) => {
   const [open, setOpen] = useState<boolean>(false);
   const [value, setValue] = useState<string | null>(null);
   const [items, setItems] = useState([
@@ -17,6 +22,13 @@ const SelectField = ({isRequired = false, labelName}: SelectFieldProps) => {
     {label: '다시서기종합지원센터', value: '2'},
     {label: '24시간게스트하우스', value: '3'},
   ]);
+
+  useEffect(() => {
+    if (value) {
+      handleChange(parseInt(value, 10));
+    }
+  }, [value]);
+
   return (
     <View style={styles.container}>
       <View style={styles.labelWrapper}>
