@@ -5,19 +5,84 @@ import {colors} from '@/constants';
 import React, {useState} from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Calendar, LocaleConfig} from 'react-native-calendars';
+import {Calendar, DateData, LocaleConfig} from 'react-native-calendars';
 import calendarLocationConfig from '@/config/calendarConfig';
+import {backendAxiosInstance} from '@/utils/api/api';
+import getDeviceID from '@/utils/getDeviceID/getDeviceID';
+import {getToken} from '@/utils/tokenStorage/tokenStorage';
 
 interface OvernightRequestProps {}
 
 const buttonTextList = ['가족', '모임', '일', '운동', '기타'];
+
+type selectOvernightType = {
+  [day: string]: calenderOptionType;
+};
+
+type calenderOptionType = {
+  startingDay?: boolean;
+  endingDay?: boolean;
+  color: string;
+  textColor: string;
+};
 
 LocaleConfig.locales.kr = calendarLocationConfig;
 LocaleConfig.defaultLocale = 'kr';
 
 const OvernightRequest = ({navigation}: OvernightRequestProps) => {
   const [isNext, setIsNext] = useState<boolean>(false);
-  const [overnightValues, setOvernightValues] = useState({});
+  const [overnightValues, setOvernightValues] = useState({
+    startDate: '',
+    endDate: '',
+    reason: '',
+    emergencyContact: '',
+  });
+  console.log(overnightValues);
+  const [selectDate, setSelectDate] = useState<selectOvernightType>({});
+  const selectOvernight = (day: DateData) => {
+    if (!Object.keys(selectDate).length) {
+      setSelectDate({
+        ...selectDate,
+        [day.dateString]: {
+          startingDay: true,
+          endingDay: true,
+          color: colors.PRIMARY,
+          textColor: colors.WHITE,
+        },
+      });
+      setOvernightValues({
+        ...overnightValues,
+        startDate: day.dateString,
+        endDate: day.dateString,
+      });
+    }
+    if (Object.keys(selectDate).length === 1) {
+      const firstDayKey = Object.keys(selectDate)[0];
+      const firstDay = selectDate[firstDayKey];
+      firstDay.endingDay = false;
+      setSelectDate({
+        [firstDayKey]: firstDay,
+        [day.dateString]: {
+          startingDay: false,
+          endingDay: true,
+          color: colors.PRIMARY,
+          textColor: colors.WHITE,
+        },
+      });
+      setOvernightValues({
+        ...overnightValues,
+        endDate: day.dateString,
+      });
+    }
+    // {
+    //   ...selectDate,
+    //   [day.dateString]: {
+    //     endingDay: true,
+    //     color: colors.PRIMARY,
+    //     textColor: colors.WHITE
+    //   },
+    // }
+  };
 
   const handlePrev = () => {
     if (isNext) {
@@ -25,6 +90,37 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
       return;
     }
     navigation.navigate('Home');
+  };
+  const handleNext = () => {
+    if (isNext) {
+      getDeviceID().then(async result => {
+        try {
+          const token = await getToken(result);
+          console.log('t', token);
+          const res = await backendAxiosInstance({
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json',
+              accept: '*/*',
+              'auth-token': token,
+            },
+            url: '/api/v1/homeless-app/sleepover',
+            data: JSON.stringify(overnightValues),
+          });
+          console.log(res);
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    }
+    setIsNext(true);
+  };
+
+  const selectReasonHandler = (value: string) => {
+    setOvernightValues({
+      ...overnightValues,
+      reason: value,
+    });
   };
 
   return (
@@ -45,7 +141,15 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
           <View style={styles.optionContainer}>
             {buttonTextList.map(text => {
               return (
-                <Pressable key={text} style={styles.optionItem}>
+                <Pressable
+                  key={text}
+                  style={[
+                    styles.optionItem,
+                    text === overnightValues.reason
+                      ? styles.selectPress
+                      : styles.defaultPress,
+                  ]}
+                  onPress={() => selectReasonHandler(text)}>
                   <CustomText>{text}</CustomText>
                 </Pressable>
               );
@@ -59,7 +163,12 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
         </>
       ) : (
         <View style={{width: '90%'}}>
-          <Calendar markingType={'period'} />
+          <Calendar
+            markingType={'period'}
+            monthFormat={'yyyy년 M월'}
+            onDayPress={day => selectOvernight(day)}
+            markedDates={selectDate}
+          />
         </View>
       )}
       <View style={styles.buttonContainer}>
@@ -69,7 +178,7 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
           size="sm"
           onPress={handlePrev}
         />
-        <CustomButton label="계속" size="sm" onPress={() => setIsNext(true)} />
+        <CustomButton label="계속" size="sm" onPress={handleNext} />
       </View>
     </SafeAreaView>
   );
@@ -92,11 +201,17 @@ const styles = StyleSheet.create({
   },
   optionItem: {
     width: '30%',
-    borderColor: colors.BORDER_COLOR,
-    borderWidth: 4,
     borderRadius: 24,
+    borderWidth: 2,
     alignItems: 'center',
     paddingVertical: 8,
+  },
+  defaultPress: {
+    borderColor: colors.BORDER_COLOR,
+  },
+  selectPress: {
+    backgroundColor: colors.PRIMARY,
+    borderColor: colors.WHITE,
   },
   buttonContainer: {
     flex: 0,
