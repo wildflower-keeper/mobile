@@ -1,7 +1,7 @@
-import GoOutRequest from '@/screens/GoOutRequest.screen';
 import Home from '@/screens/Home.screen';
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
+import OvernightRequest from '@/screens/OvernightRequest.screen';
 
 interface HomeStackNavigatorProps {}
 
@@ -10,7 +10,7 @@ const HomeStackNavigator = ({}: HomeStackNavigatorProps) => {
   return (
     <Stack.Navigator screenOptions={{headerShown: false}}>
       <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="GoOutRequest" component={GoOutRequest} />
+      <Stack.Screen name="OvernightRequest" component={OvernightRequest} />
     </Stack.Navigator>
   );
 };

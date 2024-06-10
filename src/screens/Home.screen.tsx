@@ -3,12 +3,27 @@ import {SafeAreaView, StyleSheet, View} from 'react-native';
 import CustomText from '../components/base/CustomText';
 import Geolocation from '@react-native-community/geolocation';
 import CustomButton from '@/components/base/CustomButton';
-import {weatherAxiosInstance} from '@/utils/api/api';
+import {backendAxiosInstance, weatherAxiosInstance} from '@/utils/api/api';
 import {colors, days} from '@/constants';
 import {WEATHER_API_KEY} from '@env';
+import {getToken} from '@/utils/tokenStorage/tokenStorage';
+import getDeviceID from '@/utils/getDeviceID/getDeviceID';
 interface HomeProps {}
 
 const today = new Date();
+
+type planedSleepoverType = {
+  sleepoverId: number;
+  startDate: string;
+  endDate: string;
+};
+
+type userInfoType = {
+  id: number;
+  name: string;
+  shelterName: string;
+  planedSleepover: planedSleepoverType;
+};
 
 const Home = ({navigation}: HomeProps) => {
   const [userLocation, setUserLocation] = useState({
@@ -21,6 +36,37 @@ const Home = ({navigation}: HomeProps) => {
   });
   const [isUserLocationError, setIsUserLocationError] =
     useState<boolean>(false);
+
+  const [userInfo, setUserInfo] = useState<userInfoType>({
+    id: 0,
+    name: '',
+    shelterName: '',
+    planedSleepover: {
+      sleepoverId: 0,
+      startDate: '',
+      endDate: '',
+    },
+  });
+  console.log(userInfo);
+  useEffect(() => {
+    const getUserInfo = async () => {
+      try {
+        getDeviceID().then(async (result: string) => {
+          console.log(result);
+          const token = await getToken(result);
+          const res = await backendAxiosInstance({
+            headers: {'auth-token': token, accept: '*/*'},
+            method: 'GET',
+            url: '/api/v1/homeless-app/homeless',
+          });
+          setUserInfo(res.data);
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUserInfo();
+  }, []);
   useEffect(() => {
     Geolocation.getCurrentPosition(
       info => {
@@ -54,8 +100,8 @@ const Home = ({navigation}: HomeProps) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headContainer}>
-        <CustomText textColor="weak">센터명 - 호실</CustomText>
-        <CustomText size="xLarge">{'<성함>님, 반갑습니다.'}</CustomText>
+        <CustomText textColor="weak">{`${userInfo.shelterName} -`}</CustomText>
+        <CustomText size="xLarge">{`${userInfo.name}님, 반갑습니다.`}</CustomText>
       </View>
       <View style={styles.weatherContainer}>
         <CustomText>{`${today.getMonth() + 1}월 ${today.getDate()}일 ${
@@ -76,7 +122,7 @@ const Home = ({navigation}: HomeProps) => {
       <CustomButton
         size="xl"
         label="외박 신청하기"
-        onPress={() => navigation.navigate('GoOutRequest')}
+        onPress={() => navigation.navigate('OvernightRequest')}
       />
     </SafeAreaView>
   );

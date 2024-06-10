@@ -3,6 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import CustomText from './base/CustomText';
 import {colors} from '@/constants';
+import {backendAxiosInstance} from '@/utils/api/api';
 
 type SelectFieldProps = {
   isRequired?: boolean;
@@ -23,6 +24,25 @@ const SelectField = ({
     {label: '24시간게스트하우스', value: '3'},
   ]);
 
+  useEffect(() => {
+    const getShelters = async () => {
+      try {
+        const res = await backendAxiosInstance({
+          method: 'GET',
+          url: '/api/v1/shared/shelters',
+        });
+        const result = await res.data;
+        setItems(
+          result.map(shelter => {
+            return {label: shelter.shelterName, value: shelter.shelterId};
+          }),
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getShelters();
+  }, []);
   useEffect(() => {
     if (value) {
       handleChange(parseInt(value, 10));
