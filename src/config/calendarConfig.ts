@@ -1,3 +1,5 @@
+import {colors} from '@/constants';
+
 const calendarLocationConfig = {
   monthNames: [
     '1월',
@@ -40,4 +42,21 @@ const calendarLocationConfig = {
   today: '오늘',
 };
 
-export default calendarLocationConfig;
+const calenderThemeConfig = {
+  arrowColor: colors.PRIMARY,
+  arrowHeight: 24,
+  arrowWidth: 24,
+  todayTextColor: colors.PRIMARY,
+  textSectionTitleColor: colors.FONT_DEFAULT,
+  textDisabledColor: colors.FONT_WEAK,
+  'stylesheet.calendar.header': {
+    dayTextAtIndex0: {
+      color: 'red',
+    },
+    dayTextAtIndex6: {
+      color: 'blue',
+    },
+  },
+};
+
+export {calendarLocationConfig, calenderThemeConfig};
