@@ -8,14 +8,16 @@ import SelectField from '@/components/SelectField';
 import ConsentField from '@/components/ConsentField';
 import {backendAxiosInstance} from '@/utils/api/api';
 import {setToken} from '@/utils/tokenStorage/tokenStorage';
-import getDeviceID from '@/utils/getDeviceID/getDeviceID';
+import Toast from 'react-native-toast-message';
+import {getDeviceUniqueId} from '@/utils/api/auth';
+import useLoggedInStore from '@/stores/useLoggedIn';
 
 interface AuthSignupProps {}
 
 type signupValueType = {
   name: string;
   shelterId: number;
-  shelterPw: string;
+  shelterPin: string;
   deviceId: string;
   room?: string;
   termsIdsToAgree?: number[];
@@ -28,7 +30,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
   const [signupValues, setSignupValues] = useState<signupValueType>({
     name: '',
     shelterId: 0,
-    shelterPw: 'password_example',
+    shelterPin: '1945',
     deviceId: '',
     room: '',
     termsIdsToAgree: [1],
@@ -36,8 +38,9 @@ const AuthSignup = ({}: AuthSignupProps) => {
     phoneNumber: '010-0000-0000',
     admissionDate: '2024-08-01',
   });
+  const {setIsLoggedIn} = useLoggedInStore();
   useEffect(() => {
-    getDeviceID().then((result: string) => {
+    getDeviceUniqueId().then((result: string) => {
       setSignupValues({...signupValues, deviceId: result});
     });
   }, []);
@@ -56,8 +59,17 @@ const AuthSignup = ({}: AuthSignupProps) => {
         url: '/api/v1/homeless-app/homeless',
         data: JSON.stringify(signupValues),
       });
+      console.log(res);
       const result = await res.data;
-      setToken(signupValues.deviceId, result.accessToken);
+      if (result) {
+        setToken(signupValues.deviceId, result.accessToken);
+        setIsLoggedIn(true);
+        Toast.show({
+          type: 'success',
+          text1: '회원가입이 정상적으로 완료되었습니다.',
+          position: 'bottom',
+        });
+      }
     } catch (error) {
       throw error;
     }
@@ -86,8 +98,8 @@ const AuthSignup = ({}: AuthSignupProps) => {
           placeholder="비밀번호를 입력해주세요"
           isRequired
           secureTextEntry
-          value={signupValues.shelterPw}
-          onChangeText={text => handleChangeText('shelterPw', text)}
+          value={signupValues.shelterPin}
+          onChangeText={text => handleChangeText('shelterPin', text)}
         />
         <InputField
           labelName="호실"
