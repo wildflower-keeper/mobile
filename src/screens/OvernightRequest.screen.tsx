@@ -42,7 +42,7 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
     emergencyContact: '',
   });
   const [selectDate, setSelectDate] = useState<selectOvernightType>({});
-  const [ableDate] = useGetOvernightAbleSchedule();
+  const [ableDate, isSuccess] = useGetOvernightAbleSchedule();
 
   // 외박 신청 된 날짜를 체크하여 적용할 state
   const [markedDate, setMarkedDate] = useState<selectOvernightType>({});
@@ -154,14 +154,16 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
               onDayPress={day => selectOvernight(day)}
               markedDates={selectDate}
               theme={calenderThemeConfig}
-              minDate={ableDate?.[0]}
-              maxDate={ableDate[ableDate?.length - 1]}
+              minDate={isSuccess ? ableDate[0] : ''}
+              maxDate={isSuccess ? ableDate[ableDate?.length - 1] : ''}
             />
           </View>
           {overnightValues.startDate && (
-            <View style={{marginBottom: 16}}>
+            <View>
               <View>
-                <CustomText size="xLarge">어쩌구</CustomText>
+                <CustomText size="xLarge">
+                  {overnightValues.startDate}일 부터
+                </CustomText>
               </View>
               <View style={{flex: 0, flexDirection: 'row'}}>
                 <CustomText size="xLarge">몇일</CustomText>
@@ -219,9 +221,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    gap: 48,
-    marginTop: 72,
-    marginBottom: 80,
+    justifyContent: 'space-between',
+    marginTop: 60,
+    marginBottom: 60,
   },
   optionContainer: {
     flex: 0,
@@ -248,7 +250,6 @@ const styles = StyleSheet.create({
     flex: 0,
     flexDirection: 'row',
     gap: 20,
-    marginTop: 'auto',
   },
 });
 
