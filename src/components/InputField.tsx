@@ -1,5 +1,12 @@
 import React, {useRef} from 'react';
-import {StyleSheet, TextInput, View, TextInputProps, Text} from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  TextInputProps,
+  Text,
+  Pressable,
+} from 'react-native';
 import {colors} from '@/constants';
 import CustomText from './base/CustomText';
 
@@ -18,24 +25,25 @@ const InputField = ({
   const inputRef = useRef<TextInput | null>(null);
 
   return (
-    <View
-      style={[styles.container, border && styles.containerBorder]}
-      onTouchEnd={() => {
+    <Pressable
+      onPress={() => {
         if (inputRef.current) {
           inputRef.current.focus();
         }
       }}>
-      <View style={styles.labelWrapper}>
-        {isRequired && <Text style={styles.requiredDot}>•</Text>}
-        <CustomText>{labelName}</CustomText>
+      <View style={[styles.container, border && styles.containerBorder]}>
+        <View style={styles.labelWrapper}>
+          {isRequired && <Text style={styles.requiredDot}>•</Text>}
+          <CustomText>{labelName}</CustomText>
+        </View>
+        <TextInput
+          ref={inputRef}
+          placeholderTextColor={colors.FONT_WEAK}
+          style={styles.input}
+          {...props}
+        />
       </View>
-      <TextInput
-        ref={inputRef}
-        placeholderTextColor={colors.FONT_WEAK}
-        style={styles.input}
-        {...props}
-      />
-    </View>
+    </Pressable>
   );
 };
 
