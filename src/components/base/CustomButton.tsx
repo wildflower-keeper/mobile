@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
   xl: {
     width: '100%',
-    paddingVertical: 50,
+    paddingVertical: 12,
   },
   lg: {
     width: '70%',

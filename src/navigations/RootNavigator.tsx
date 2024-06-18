@@ -1,9 +1,9 @@
 import {NavigationContainer} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import HomeStackNavigator from './HomeStackNavigator';
-import AuthSignup from '@/screens/AuthSignup.screen';
 import {getUserInfo} from '@/utils/api/auth';
 import useLoggedInStore from '@/stores/useLoggedIn';
+import AuthStackNavigator from './AuthStackNavigator';
 
 const RootNavigator = ({}) => {
   const {isLoggedIn, setIsLoggedIn} = useLoggedInStore();
@@ -18,7 +18,7 @@ const RootNavigator = ({}) => {
 
   return (
     <NavigationContainer>
-      {isLoggedIn ? <HomeStackNavigator /> : <AuthSignup />}
+      {isLoggedIn ? <HomeStackNavigator /> : <AuthStackNavigator />}
     </NavigationContainer>
   );
 };
