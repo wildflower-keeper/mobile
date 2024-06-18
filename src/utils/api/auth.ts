@@ -22,20 +22,16 @@ const createUser = async ({body}) => {
 };
 
 const getUserInfo = async () => {
-  try {
-    const {data} = await backendAxiosInstance({
-      method: 'GET',
-      headers: {
-        'content-type': 'application/json',
-        accept: '*/*',
-        'auth-token': await getAccessToken(),
-      },
-      url: '/api/v1/homeless-app/homeless',
-    });
-    return data;
-  } catch (error) {
-    throw error;
-  }
+  const {data} = await backendAxiosInstance({
+    method: 'GET',
+    headers: {
+      'content-type': 'application/json',
+      accept: '*/*',
+      'auth-token': await getAccessToken(),
+    },
+    url: '/api/v1/homeless-app/homeless',
+  });
+  return data;
 };
 
 export {getDeviceUniqueId, createUser, getUserInfo, getAccessToken};

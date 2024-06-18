@@ -30,7 +30,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
   const [signupValues, setSignupValues] = useState<signupValueType>({
     name: '',
     shelterId: 0,
-    shelterPin: '1945',
+    shelterPin: '8643',
     deviceId: '',
     room: '',
     termsIdsToAgree: [1],
@@ -61,7 +61,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
       });
       console.log(res);
       const result = await res.data;
-      if (result) {
+      if (res.status === 201) {
         setToken(signupValues.deviceId, result.accessToken);
         setIsLoggedIn(true);
         Toast.show({

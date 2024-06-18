@@ -3,7 +3,7 @@ import React from 'react';
 import {StyleSheet, Text, TextProps} from 'react-native';
 
 type CustomTextProps = {
-  textColor?: 'default' | 'weak';
+  textColor?: 'default' | 'weak' | 'white';
   size?: 'temp' | 'xLarge' | 'large' | 'default' | 'small';
   isBadge?: boolean;
 } & TextProps;
@@ -40,6 +40,10 @@ const styles = StyleSheet.create({
   weakText: {
     color: colors.FONT_WEAK,
   },
+  whiteText: {
+    color: colors.WHITE,
+  },
+
   tempSize: {
     fontSize: 64,
   },

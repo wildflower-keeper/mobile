@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   md: {
-    width: '50%',
+    flex: 1,
     paddingVertical: 12,
   },
   sm: {
