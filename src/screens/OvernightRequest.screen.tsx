@@ -6,10 +6,14 @@ import React, {useState} from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Calendar, DateData, LocaleConfig} from 'react-native-calendars';
-import calendarLocationConfig from '@/config/calendarConfig';
-import {backendAxiosInstance} from '@/utils/api/api';
-import getDeviceID from '@/utils/getDeviceID/getDeviceID';
-import {getToken} from '@/utils/tokenStorage/tokenStorage';
+import {
+  calendarLocationConfig,
+  calenderThemeConfig,
+} from '@/config/calendarConfig';
+import Toast from 'react-native-toast-message';
+import {getNextDay} from '@/utils/date/date';
+import {useMutateCreateOvernight} from '@/hooks/queries/useMutateCreateOvernight';
+import useGetOvernightAbleSchedule from '@/hooks/queries/useGetOvernightAbleSchedule';
 
 interface OvernightRequestProps {}
 
@@ -37,12 +41,35 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
     reason: '',
     emergencyContact: '',
   });
-  console.log(overnightValues);
   const [selectDate, setSelectDate] = useState<selectOvernightType>({});
+  const [ableDate, isSuccess] = useGetOvernightAbleSchedule();
+
+  // 외박 신청 된 날짜를 체크하여 적용할 state
+  const [markedDate, setMarkedDate] = useState<selectOvernightType>({});
+  const overnightPost = useMutateCreateOvernight();
   const selectOvernight = (day: DateData) => {
-    if (!Object.keys(selectDate).length) {
+    if (Object.keys(selectDate).length === 1) {
+      const firstDayKey = Object.keys(selectDate)[0];
+      const firstDay: calenderOptionType = {
+        startingDay: true,
+        color: colors.PRIMARY,
+        textColor: colors.WHITE,
+      };
+
       setSelectDate({
-        ...selectDate,
+        [firstDayKey]: firstDay,
+        [day.dateString]: {
+          endingDay: true,
+          color: colors.PRIMARY,
+          textColor: colors.WHITE,
+        },
+      });
+      setOvernightValues({
+        ...overnightValues,
+        endDate: getNextDay(day.dateString),
+      });
+    } else {
+      setSelectDate({
         [day.dateString]: {
           startingDay: true,
           endingDay: true,
@@ -53,35 +80,9 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
       setOvernightValues({
         ...overnightValues,
         startDate: day.dateString,
-        endDate: day.dateString,
+        endDate: getNextDay(day.dateString).toString(),
       });
     }
-    if (Object.keys(selectDate).length === 1) {
-      const firstDayKey = Object.keys(selectDate)[0];
-      const firstDay = selectDate[firstDayKey];
-      firstDay.endingDay = false;
-      setSelectDate({
-        [firstDayKey]: firstDay,
-        [day.dateString]: {
-          startingDay: false,
-          endingDay: true,
-          color: colors.PRIMARY,
-          textColor: colors.WHITE,
-        },
-      });
-      setOvernightValues({
-        ...overnightValues,
-        endDate: day.dateString,
-      });
-    }
-    // {
-    //   ...selectDate,
-    //   [day.dateString]: {
-    //     endingDay: true,
-    //     color: colors.PRIMARY,
-    //     textColor: colors.WHITE
-    //   },
-    // }
   };
 
   const handlePrev = () => {
@@ -93,27 +94,37 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
   };
   const handleNext = () => {
     if (isNext) {
-      getDeviceID().then(async result => {
-        try {
-          const token = await getToken(result);
-          console.log('t', token);
-          const res = await backendAxiosInstance({
-            method: 'POST',
-            headers: {
-              'content-type': 'application/json',
-              accept: '*/*',
-              'auth-token': token,
-            },
-            url: '/api/v1/homeless-app/sleepover',
-            data: JSON.stringify(overnightValues),
-          });
-          console.log(res);
-        } catch (error) {
-          console.log(error);
-        }
+      overnightPost.mutate(
+        {body: overnightValues},
+        {
+          onSuccess: () => {
+            Toast.show({
+              type: 'success',
+              text1: '외박 신청이 완료되었습니다.',
+              position: 'bottom',
+            });
+            navigation.navigate('Home');
+          },
+          onError: error => {
+            Toast.show({
+              type: 'error',
+              text1: error.message,
+              position: 'bottom',
+            });
+          },
+        },
+      );
+    }
+
+    if (overnightValues.endDate) {
+      setIsNext(true);
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: '외출 날짜를 선택해주세요',
+        position: 'bottom',
       });
     }
-    setIsNext(true);
   };
 
   const selectReasonHandler = (value: string) => {
@@ -128,10 +139,40 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
       <View style={{flex: 0, alignItems: 'center'}}>
         <CustomText size="xLarge">외박을 신청하는</CustomText>
         <CustomText size="xLarge">{`${
-          !isNext ? '이유를' : '기간을'
+          !isNext ? '기간을' : '이유를'
         } 선택해주세요.`}</CustomText>
       </View>
       {!isNext ? (
+        <>
+          <View
+            style={{
+              width: '90%',
+            }}>
+            <Calendar
+              markingType={'period'}
+              monthFormat={'yyyy년 M월'}
+              onDayPress={day => selectOvernight(day)}
+              markedDates={selectDate}
+              theme={calenderThemeConfig}
+              minDate={isSuccess ? ableDate[0] : ''}
+              maxDate={isSuccess ? ableDate[ableDate?.length - 1] : ''}
+            />
+          </View>
+          {overnightValues.startDate && (
+            <View>
+              <View>
+                <CustomText size="xLarge">
+                  {overnightValues.startDate}일 부터
+                </CustomText>
+              </View>
+              <View style={{flex: 0, flexDirection: 'row'}}>
+                <CustomText size="xLarge">몇일</CustomText>
+                <CustomText size="xLarge">외박</CustomText>
+              </View>
+            </View>
+          )}
+        </>
+      ) : (
         <>
           <View>
             <CustomText size="small" textColor="weak">
@@ -161,16 +202,8 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
             border={false}
           />
         </>
-      ) : (
-        <View style={{width: '90%'}}>
-          <Calendar
-            markingType={'period'}
-            monthFormat={'yyyy년 M월'}
-            onDayPress={day => selectOvernight(day)}
-            markedDates={selectDate}
-          />
-        </View>
       )}
+
       <View style={styles.buttonContainer}>
         <CustomButton
           label="이전"
@@ -188,9 +221,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    gap: 60,
-    marginTop: 72,
-    marginBottom: 80,
+    justifyContent: 'space-between',
+    marginTop: 60,
+    marginBottom: 60,
   },
   optionContainer: {
     flex: 0,
@@ -217,7 +250,6 @@ const styles = StyleSheet.create({
     flex: 0,
     flexDirection: 'row',
     gap: 20,
-    marginTop: 'auto',
   },
 });
 
