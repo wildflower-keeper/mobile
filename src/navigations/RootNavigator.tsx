@@ -1,20 +1,24 @@
 import {NavigationContainer} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import HomeStackNavigator from './HomeStackNavigator';
-import {getUserInfo} from '@/utils/api/auth';
 import useLoggedInStore from '@/stores/useLoggedIn';
 import AuthStackNavigator from './AuthStackNavigator';
+import {useGetUserInfo} from '@/hooks/queries/useAuth';
 
 const RootNavigator = ({}) => {
   const {isLoggedIn, setIsLoggedIn} = useLoggedInStore();
-
+  const [_, isSuccess, isError] = useGetUserInfo();
   useEffect(() => {
     const loginCheck = async () => {
-      const data = await getUserInfo();
-      data ? setIsLoggedIn(true) : setIsLoggedIn(false);
+      if (isSuccess) {
+        setIsLoggedIn(true);
+      }
+      if (isError) {
+        setIsLoggedIn(false);
+      }
     };
     loginCheck();
-  }, []);
+  }, [isError, isSuccess]);
 
   return (
     <NavigationContainer>
