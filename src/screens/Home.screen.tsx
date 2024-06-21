@@ -1,11 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {
+  Platform,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import CustomText from '../components/base/CustomText';
 import Geolocation from '@react-native-community/geolocation';
 import CustomButton from '@/components/base/CustomButton';
 import {colors, days} from '@/constants';
 import {useGetUserInfo} from '@/hooks/queries/useAuth';
 import {getWeather} from '@/utils/api/weather';
+import LinearGradient from 'react-native-linear-gradient';
+
 interface HomeProps {}
 
 const today = new Date();
@@ -39,6 +47,7 @@ const Home = ({navigation}: HomeProps) => {
       {enableHighAccuracy: true},
     );
   }, []);
+
   useEffect(() => {
     const weatherItem = getWeather(userLocation);
     weatherItem.then(({weather, temp}) => {
@@ -51,20 +60,24 @@ const Home = ({navigation}: HomeProps) => {
       <View style={styles.outContainer}>
         <View style={styles.headerContainer}>
           <View style={styles.headContainer}>
-            <CustomText textColor="weak">
+            <CustomText textColor="white" size="xSmall" weight="thin">
               {isSuccess && `${userInfo.shelterName}`}
             </CustomText>
-            <CustomText>{`${today.getMonth() + 1}월 ${today.getDate()}일 ${
+            <CustomText textColor="white" size="small">{`${
+              today.getMonth() + 1
+            }월 ${today.getDate()}일 ${
               days.WEEK[today.getDay()]
             }요일`}</CustomText>
-            <CustomText>
+            <CustomText textColor="white" weight="heavy">
               {isSuccess && `${userInfo.homelessName}님, 반갑습니다.`}
             </CustomText>
           </View>
           <View style={styles.weatherContainer}>
-            <View style={{flex: 0, flexDirection: 'row', gap: 10}}>
+            <View style={{flex: 0, flexDirection: 'row', gap: 12}}>
               <CustomText>{currentWeather.weather}</CustomText>
-              <CustomText size="xLarge">{currentWeather.temp}&#176;</CustomText>
+              <CustomText size="xLarge" textColor="white" weight="heavy">
+                {currentWeather.temp}&#176;
+              </CustomText>
             </View>
           </View>
         </View>
@@ -75,27 +88,54 @@ const Home = ({navigation}: HomeProps) => {
         </View>
       </View>
       <View style={styles.bodyContainer}>
-        <View style={styles.medicationContainer}>
-          <CustomText size="large">긴급 도움 요청 버튼 자리</CustomText>
+        <View style={{flex: 0, gap: 12}}>
+          <CustomText>긴급도움 요청</CustomText>
+          <Pressable>
+            <LinearGradient
+              colors={['#FF8981', '#FF384D']}
+              style={styles.linearGradient}>
+              <CustomText textColor="white">긴급도움 요청하기</CustomText>
+            </LinearGradient>
+          </Pressable>
         </View>
-        <View style={styles.medicationContainer}>
-          <CustomText textColor="white" size="large">
-            복약권유
-          </CustomText>
-          <CustomText textColor="white">복약정보, 1회필요량, 복약률</CustomText>
+
+        <View style={{flex: 1, gap: 12}}>
+          <CustomText>가까운 외박일정</CustomText>
+          <View style={styles.nearOvernightContainer}>
+            <View style={{flex: 0, alignItems: 'center', gap: 10}}>
+              <View>
+                <CustomText size="large" weight="heavy">
+                  6월 25일 X요일 부터
+                </CustomText>
+                <CustomText size="large" weight="heavy">
+                  6월 30일 X요일 까지
+                </CustomText>
+              </View>
+
+              <CustomText textColor="weak" size="small">
+                n박 일정
+              </CustomText>
+            </View>
+
+            <CustomButton label="현재 진행중" variant="outlined" size="md" />
+          </View>
         </View>
-        <View style={styles.buttonContainer}>
-          <CustomButton
-            size="md"
-            label="외박 신청하기"
-            onPress={() => navigation.navigate('OvernightRequest')}
-          />
-          <CustomButton
-            size="md"
-            label="외박 신청내역"
-            variant="outlined"
-            onPress={() => navigation.navigate('OvernightRequest')}
-          />
+
+        <View style={{flex: 0, gap: 10}}>
+          <CustomText>외박신청</CustomText>
+          <View style={styles.buttonContainer}>
+            <CustomButton
+              size="md"
+              label="신청내역"
+              variant="outlined"
+              onPress={() => navigation.navigate('OvernightRequest')}
+            />
+            <CustomButton
+              size="md"
+              label="외박신청"
+              onPress={() => navigation.navigate('OvernightRequest')}
+            />
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -107,12 +147,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     gap: 16,
+    marginBottom: 36,
   },
   outContainer: {
     flex: 0,
     paddingVertical: 20,
     paddingHorizontal: 10,
-    backgroundColor: '#D9D9D9',
+    backgroundColor: colors.BRIGHT_PRIMARY,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     width: '100%',
@@ -134,9 +175,9 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     flex: 1,
-    width: '95%',
+    width: '90%',
     marginHorizontal: 10,
-    gap: 10,
+    gap: 20,
     marginVertical: 16,
   },
   headContainer: {
@@ -148,18 +189,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonContainer: {
-    flex: 1,
+    flex: 0,
     flexDirection: 'row',
-    gap: 10,
+    justifyContent: 'space-between',
+    height: 70,
     width: '100%',
   },
-  medicationContainer: {
+  nearOvernightContainer: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#D9D9D9',
+    justifyContent: 'center',
+    backgroundColor: colors.WHITE,
     borderRadius: 20,
     padding: 16,
     width: '100%',
+    gap: 20,
+    borderColor: colors.BORDER_COLOR,
+    borderWidth: 2,
+    ...Platform.select({
+      android: {
+        elevation: 2,
+      },
+    }),
+  },
+  linearGradient: {
+    flex: 0,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 24,
   },
 });
 
