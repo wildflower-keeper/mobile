@@ -5,6 +5,7 @@ const colors = {
   FONT_WEAK: '#999999',
   FONT_DEFAULT: '#353535',
   WHITE: 'white',
+  BRIGHT_PRIMARY: 'rgba(0, 178, 38, 0.8)',
 } as const;
 
 export {colors};
