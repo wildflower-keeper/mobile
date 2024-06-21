@@ -4,14 +4,16 @@ import {StyleSheet, Text, TextProps} from 'react-native';
 
 type CustomTextProps = {
   textColor?: 'default' | 'weak' | 'white';
-  size?: 'temp' | 'xLarge' | 'large' | 'default' | 'small';
+  size?: 'temp' | 'xLarge' | 'large' | 'default' | 'small' | 'xSmall';
   isBadge?: boolean;
+  weight?: 'default' | 'heavy' | 'thin';
 } & TextProps;
 
 const CustomText = ({
   textColor = 'default',
   size = 'default',
   isBadge = false,
+  weight = 'default',
   children,
   ...props
 }: CustomTextProps) => {
@@ -21,6 +23,7 @@ const CustomText = ({
         styles.text,
         styles[`${textColor}Text`],
         styles[`${size}Size`],
+        styles[`${weight}Weight`],
         isBadge && styles.badge,
       ]}
       {...props}>
@@ -31,7 +34,7 @@ const CustomText = ({
 
 const styles = StyleSheet.create({
   text: {
-    fontWeight: 'semibold',
+    fontWeight: '600',
     fontFamily: 'Pretendard',
   },
   defaultText: {
@@ -43,7 +46,15 @@ const styles = StyleSheet.create({
   whiteText: {
     color: colors.WHITE,
   },
-
+  defaultWeight: {
+    fontWeight: '600',
+  },
+  heavyWeight: {
+    fontWeight: '700',
+  },
+  thinWeight: {
+    fontWeight: '500',
+  },
   tempSize: {
     fontSize: 64,
   },
@@ -58,6 +69,9 @@ const styles = StyleSheet.create({
   },
   smallSize: {
     fontSize: 16,
+  },
+  xSmallSize: {
+    fontSize: 14,
   },
   badge: {
     color: colors.PRIMARY,
