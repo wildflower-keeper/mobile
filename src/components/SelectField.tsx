@@ -54,6 +54,9 @@ const SelectField = ({
       <View style={styles.labelWrapper}>
         {isRequired && <Text style={styles.requiredDot}>•</Text>}
         <CustomText>{labelName}</CustomText>
+        {isRequired && (
+          <CustomText style={styles.requiredText}>(필수)</CustomText>
+        )}
       </View>
       <DropDownPicker
         open={open}
@@ -91,6 +94,8 @@ const styles = StyleSheet.create({
   },
   labelWrapper: {
     position: 'relative',
+    flex: 0,
+    flexDirection: 'row',
   },
   requiredDot: {
     position: 'absolute',
@@ -98,6 +103,10 @@ const styles = StyleSheet.create({
     left: -12,
     top: -20,
     fontSize: 32,
+  },
+  requiredText: {
+    color: colors.PRIMARY,
+    fontSize: 18,
   },
   borderClose: {
     borderWidth: 0,

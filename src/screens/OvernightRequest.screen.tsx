@@ -3,7 +3,7 @@ import CustomButton from '@/components/base/CustomButton';
 import CustomText from '@/components/base/CustomText';
 import {colors} from '@/constants';
 import React, {useState} from 'react';
-import {Pressable, StyleSheet, View} from 'react-native';
+import {KeyboardAvoidingView, Pressable, StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Calendar, DateData, LocaleConfig} from 'react-native-calendars';
 import {
@@ -11,9 +11,10 @@ import {
   calenderThemeConfig,
 } from '@/config/calendarConfig';
 import Toast from 'react-native-toast-message';
-import {getNextDay} from '@/utils/date/date';
+import {getDatesBetween, getNextDay} from '@/utils/date/date';
 import {useMutateCreateOvernight} from '@/hooks/queries/useMutateCreateOvernight';
 import useGetOvernightAbleSchedule from '@/hooks/queries/useGetOvernightAbleSchedule';
+import useOvernightRequestStore from '@/stores/useOverNight';
 
 interface OvernightRequestProps {}
 
@@ -35,19 +36,18 @@ LocaleConfig.defaultLocale = 'kr';
 
 const OvernightRequest = ({navigation}: OvernightRequestProps) => {
   const [isNext, setIsNext] = useState<boolean>(false);
-  const [overnightValues, setOvernightValues] = useState({
-    startDate: '',
-    endDate: '',
-    reason: '',
-    emergencyContact: '',
-  });
+  const {overnightRequestValues, setOvernightRequestValues} =
+    useOvernightRequestStore();
   const [selectDate, setSelectDate] = useState<selectOvernightType>({});
   const [ableDate, isSuccess] = useGetOvernightAbleSchedule();
-
+  console.log(overnightRequestValues);
   // 외박 신청 된 날짜를 체크하여 적용할 state
-  const [markedDate, setMarkedDate] = useState<selectOvernightType>({});
-  const overnightPost = useMutateCreateOvernight();
+  // const [markedDate, setMarkedDate] = useState<selectOvernightType>({});
+
   const selectOvernight = (day: DateData) => {
+    if (overnightRequestValues.startDate === day.dateString) {
+      return;
+    }
     if (Object.keys(selectDate).length === 1) {
       const firstDayKey = Object.keys(selectDate)[0];
       const firstDay: calenderOptionType = {
@@ -55,17 +55,29 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
         color: colors.PRIMARY,
         textColor: colors.WHITE,
       };
-
+      const days = getDatesBetween(
+        new Date(firstDayKey),
+        new Date(day.dateString),
+      );
+      const daysObject: selectOvernightType = {};
+      days.forEach(item => {
+        daysObject[item] = {
+          color: colors.PRIMARY,
+          textColor: colors.WHITE,
+        };
+      });
       setSelectDate({
+        ...daysObject,
         [firstDayKey]: firstDay,
+
         [day.dateString]: {
           endingDay: true,
           color: colors.PRIMARY,
           textColor: colors.WHITE,
         },
       });
-      setOvernightValues({
-        ...overnightValues,
+      setOvernightRequestValues({
+        ...overnightRequestValues,
         endDate: getNextDay(day.dateString),
       });
     } else {
@@ -77,8 +89,8 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
           textColor: colors.WHITE,
         },
       });
-      setOvernightValues({
-        ...overnightValues,
+      setOvernightRequestValues({
+        ...overnightRequestValues,
         startDate: day.dateString,
         endDate: getNextDay(day.dateString).toString(),
       });
@@ -94,29 +106,10 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
   };
   const handleNext = () => {
     if (isNext) {
-      overnightPost.mutate(
-        {body: overnightValues},
-        {
-          onSuccess: () => {
-            Toast.show({
-              type: 'success',
-              text1: '외박 신청이 완료되었습니다.',
-              position: 'bottom',
-            });
-            navigation.navigate('Home');
-          },
-          onError: error => {
-            Toast.show({
-              type: 'error',
-              text1: error.message,
-              position: 'bottom',
-            });
-          },
-        },
-      );
+      navigation.navigate('FinalConfirmation');
     }
 
-    if (overnightValues.endDate) {
+    if (overnightRequestValues.endDate) {
       setIsNext(true);
     } else {
       Toast.show({
@@ -128,25 +121,27 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
   };
 
   const selectReasonHandler = (value: string) => {
-    setOvernightValues({
-      ...overnightValues,
+    setOvernightRequestValues({
+      ...overnightRequestValues,
       reason: value,
     });
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{flex: 0, alignItems: 'center'}}>
-        <CustomText size="xLarge">외박을 신청하는</CustomText>
-        <CustomText size="xLarge">{`${
-          !isNext ? '기간을' : '이유를'
+      <View style={styles.titleContainer}>
+        <CustomText size="large" weight="heavy">
+          외박 신청기간
+        </CustomText>
+        <CustomText size="small" textColor="weak">{`${
+          !isNext ? '외박을 신청하는 날짜를' : '아래의 신청 이유 중'
         } 선택해주세요.`}</CustomText>
       </View>
       {!isNext ? (
         <>
           <View
             style={{
-              width: '90%',
+              width: '100%',
             }}>
             <Calendar
               markingType={'period'}
@@ -158,27 +153,12 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
               maxDate={isSuccess ? ableDate[ableDate?.length - 1] : ''}
             />
           </View>
-          {overnightValues.startDate && (
-            <View>
-              <View>
-                <CustomText size="xLarge">
-                  {overnightValues.startDate}일 부터
-                </CustomText>
-              </View>
-              <View style={{flex: 0, flexDirection: 'row'}}>
-                <CustomText size="xLarge">몇일</CustomText>
-                <CustomText size="xLarge">외박</CustomText>
-              </View>
-            </View>
-          )}
         </>
       ) : (
-        <>
-          <View>
-            <CustomText size="small" textColor="weak">
-              아래의 이유 중 선택해주세요.
-            </CustomText>
-          </View>
+        <KeyboardAvoidingView
+          style={{flex: 1, paddingTop: 60, gap: 60}}
+          behavior="padding"
+          enabled>
           <View style={styles.optionContainer}>
             {buttonTextList.map(text => {
               return (
@@ -186,32 +166,48 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
                   key={text}
                   style={[
                     styles.optionItem,
-                    text === overnightValues.reason
+                    text === overnightRequestValues.reason
                       ? styles.selectPress
                       : styles.defaultPress,
                   ]}
                   onPress={() => selectReasonHandler(text)}>
-                  <CustomText>{text}</CustomText>
+                  <CustomText
+                    textColor={
+                      text === overnightRequestValues.reason
+                        ? 'white'
+                        : 'default'
+                    }>
+                    {text}
+                  </CustomText>
                 </Pressable>
               );
             })}
           </View>
-          <InputField
-            labelName="기타 사유"
-            placeholder="사유를 입력해주세요."
-            border={false}
-          />
-        </>
+          <View style={{width: '100%', flex: 0, gap: 30}}>
+            <InputField labelName="기타" placeholder="사유를 입력해주세요." />
+            <InputField
+              labelName="비상연락망"
+              placeholder="비상시 연락할 전화번호를 입력해주세요."
+              value={overnightRequestValues.emergencyContact}
+              onChangeText={text => {
+                setOvernightRequestValues({
+                  ...overnightRequestValues,
+                  emergencyContact: text,
+                });
+              }}
+            />
+          </View>
+        </KeyboardAvoidingView>
       )}
 
       <View style={styles.buttonContainer}>
         <CustomButton
           label="이전"
           variant="outlined"
-          size="sm"
+          size="md"
           onPress={handlePrev}
         />
-        <CustomButton label="계속" size="sm" onPress={handleNext} />
+        <CustomButton label="계속" size="md" onPress={handleNext} />
       </View>
     </SafeAreaView>
   );
@@ -220,10 +216,18 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 60,
+    marginTop: 40,
     marginBottom: 60,
+    alignItems: 'center',
+  },
+  titleContainer: {
+    flex: 0,
+    width: '100%',
+    paddingHorizontal: 20,
+    paddingBottom: 16,
+    borderBottomColor: colors.BRIGHT_PRIMARY,
+    borderBottomWidth: 1,
   },
   optionContainer: {
     flex: 0,
@@ -249,7 +253,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 0,
     flexDirection: 'row',
-    gap: 20,
+    gap: 6,
   },
 });
 

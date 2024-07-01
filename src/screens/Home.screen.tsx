@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Platform,
+  Alert,
+  Linking,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -13,6 +14,11 @@ import {colors, days} from '@/constants';
 import {useGetUserInfo} from '@/hooks/queries/useAuth';
 import {getWeather} from '@/utils/api/weather';
 import LinearGradient from 'react-native-linear-gradient';
+import AntDesignicon from 'react-native-vector-icons/AntDesign';
+import SleepoverScheduleContainer from '@/components/SleepoverScheduleContainer';
+import useUserInfoStore from '@/stores/useUserInfo';
+import {backendAxiosInstance} from '@/utils/api/api';
+import {getAccessToken} from '@/utils/api/auth';
 
 interface HomeProps {}
 
@@ -24,7 +30,8 @@ export type userLocationType = {
 };
 
 const Home = ({navigation}: HomeProps) => {
-  const [userInfo, isSuccess] = useGetUserInfo();
+  const [fetchedUserInfo, isSuccess] = useGetUserInfo();
+  const {userInfo, setUserInfo} = useUserInfoStore();
   const [userLocation, setUserLocation] = useState<userLocationType>({
     latitude: 37,
     longitude: 124,
@@ -33,8 +40,15 @@ const Home = ({navigation}: HomeProps) => {
     weather: '',
     temp: 0,
   });
+
   const [isUserLocationError, setIsUserLocationError] =
     useState<boolean>(false);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setUserInfo({...fetchedUserInfo});
+    }
+  }, [fetchedUserInfo, isSuccess]);
 
   useEffect(() => {
     Geolocation.getCurrentPosition(
@@ -55,13 +69,33 @@ const Home = ({navigation}: HomeProps) => {
     });
   }, [userLocation]);
 
+  const handlePress = () => {
+    const phoneNumber = '01054283576';
+    const url = `tel:${phoneNumber}`;
+
+    Linking.openURL(url);
+  };
+
+  const deleteSchedule = async () => {
+    const res = await backendAxiosInstance({
+      method: 'DELETE',
+      url: `/api/v1/homeless-app/sleepover/${userInfo.sleepoverId}`,
+      headers: {
+        accept: '*/*',
+        'auth-token': await getAccessToken(),
+      },
+    });
+    console.log(res);
+  };
+  console.log(userInfo);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.outContainer}>
         <View style={styles.headerContainer}>
           <View style={styles.headContainer}>
-            <CustomText textColor="white" size="xSmall" weight="thin">
-              {isSuccess && `${userInfo.shelterName}`}
+            <CustomText textColor="white" size="xSmall">
+              {isSuccess && `${fetchedUserInfo.shelterName}`}
             </CustomText>
             <CustomText textColor="white" size="small">{`${
               today.getMonth() + 1
@@ -69,69 +103,64 @@ const Home = ({navigation}: HomeProps) => {
               days.WEEK[today.getDay()]
             }요일`}</CustomText>
             <CustomText textColor="white" weight="heavy">
-              {isSuccess && `${userInfo.homelessName}님, 반갑습니다.`}
+              {isSuccess && `${fetchedUserInfo.homelessName}님, 반갑습니다.`}
             </CustomText>
           </View>
           <View style={styles.weatherContainer}>
             <View style={{flex: 0, flexDirection: 'row', gap: 12}}>
-              <CustomText>{currentWeather.weather}</CustomText>
               <CustomText size="xLarge" textColor="white" weight="heavy">
                 {currentWeather.temp}&#176;
               </CustomText>
+              <AntDesignicon name="cloud" size={70} color={colors.WHITE} />
             </View>
           </View>
         </View>
         <View style={styles.messageContainer}>
-          <CustomText textColor="weak" size="small">
+          <CustomText isBadge size="small">
             외출 시 약을 꼭 챙겨주세요!
           </CustomText>
         </View>
       </View>
       <View style={styles.bodyContainer}>
-        <View style={{flex: 0, gap: 12}}>
+        <View style={styles.bodyItemContainer}>
           <CustomText>긴급도움 요청</CustomText>
-          <Pressable>
-            <LinearGradient
-              colors={['#FF8981', '#FF384D']}
-              style={styles.linearGradient}>
+          <LinearGradient
+            colors={['#FF8981', '#FF384D']}
+            style={styles.linearGradient}>
+            <Pressable
+              onPress={handlePress}
+              style={{
+                width: '100%',
+                paddingVertical: 'auto',
+                flex: 0,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
               <CustomText textColor="white">긴급도움 요청하기</CustomText>
-            </LinearGradient>
-          </Pressable>
+            </Pressable>
+          </LinearGradient>
         </View>
 
-        <View style={{flex: 1, gap: 12}}>
+        <View style={styles.nearOvernightContainer}>
           <CustomText>가까운 외박일정</CustomText>
-          <View style={styles.nearOvernightContainer}>
-            <View style={{flex: 0, alignItems: 'center', gap: 10}}>
-              <View>
-                <CustomText size="large" weight="heavy">
-                  6월 25일 X요일 부터
-                </CustomText>
-                <CustomText size="large" weight="heavy">
-                  6월 30일 X요일 까지
-                </CustomText>
-              </View>
-
-              <CustomText textColor="weak" size="small">
-                n박 일정
-              </CustomText>
-            </View>
-
-            <CustomButton label="현재 진행중" variant="outlined" size="md" />
-          </View>
+          <SleepoverScheduleContainer
+            upcomingSleepover={fetchedUserInfo?.upcomingSleepover}
+            onPress={deleteSchedule}
+          />
         </View>
 
-        <View style={{flex: 0, gap: 10}}>
+        <View style={styles.bodyItemContainer}>
           <CustomText>외박신청</CustomText>
           <View style={styles.buttonContainer}>
             <CustomButton
               size="md"
               label="신청내역"
               variant="outlined"
-              onPress={() => navigation.navigate('OvernightRequest')}
+              onPress={() => navigation.navigate('OvernightList')}
             />
             <CustomButton
               size="md"
+              variant="outlined"
               label="외박신청"
               onPress={() => navigation.navigate('OvernightRequest')}
             />
@@ -146,8 +175,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    gap: 16,
-    marginBottom: 36,
+    gap: 30,
+    marginBottom: 60,
   },
   outContainer: {
     flex: 0,
@@ -167,6 +196,10 @@ const styles = StyleSheet.create({
     borderColor: colors.FONT_WEAK,
     borderWidth: 1,
   },
+  bodyItemContainer: {
+    flex: 0,
+    gap: 16,
+  },
   headerContainer: {
     paddingHorizontal: 10,
     flex: 0,
@@ -177,7 +210,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '90%',
     marginHorizontal: 10,
-    gap: 20,
+    gap: 28,
     marginVertical: 16,
   },
   headContainer: {
@@ -197,20 +230,7 @@ const styles = StyleSheet.create({
   },
   nearOvernightContainer: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.WHITE,
-    borderRadius: 20,
-    padding: 16,
-    width: '100%',
-    gap: 20,
-    borderColor: colors.BORDER_COLOR,
-    borderWidth: 2,
-    ...Platform.select({
-      android: {
-        elevation: 2,
-      },
-    }),
+    gap: 16,
   },
   linearGradient: {
     flex: 0,
@@ -218,6 +238,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 24,
+    height: 'auto',
   },
 });
 

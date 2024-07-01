@@ -1,13 +1,13 @@
+import {upcomingSleepoverType} from '@/components/SleepoverScheduleContainer';
 import {create} from 'zustand';
 
 export type userInfoType = {
   id: number;
-  name: string;
+  sleepoverId: number;
+  shelterId: number;
+  homelessName: string;
   shelterName: string;
-  targetDateTime: string;
-  yesterdaySleepoverExists: boolean;
-  todaySleepoverExists: boolean;
-  futureSleepoverExists: boolean;
+  upcomingSleepover: upcomingSleepoverType;
 };
 
 type userInfoStoreType = {
@@ -18,14 +18,19 @@ type userInfoStoreType = {
 const useUserInfoStore = create<userInfoStoreType>(set => ({
   userInfo: {
     id: 0,
-    name: '',
+    sleepoverId: 0,
+    shelterId: 0,
+    homelessName: '',
     shelterName: '',
-    targetDateTime: '',
-    yesterdaySleepoverExists: false,
-    todaySleepoverExists: false,
-    futureSleepoverExists: false,
+    upcomingSleepover: {
+      endDate: '',
+      nightCount: 0,
+      sleepoverId: 0,
+      startDate: '',
+      status: '',
+    },
   },
-  setUserInfo: newUserInfo => set(state => ({...state, ...newUserInfo})),
+  setUserInfo: newUserInfo => set(() => ({userInfo: {...newUserInfo}})),
 }));
 
 export default useUserInfoStore;

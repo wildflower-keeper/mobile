@@ -5,23 +5,32 @@ import CheckBox from '@react-native-community/checkbox';
 
 interface ConsentFieldProps {
   label: string;
+  isRequired?: boolean;
+  isArrow?: boolean;
+  check: boolean;
+  onChange: (id: string, value: boolean) => void;
+  id: string;
 }
 
-const ConsentField = ({label}: ConsentFieldProps) => {
-  const [check, setCheck] = useState<boolean>(false);
+const ConsentField = ({
+  label,
+  isRequired = true,
+  isArrow = true,
+  check,
+  onChange,
+  id,
+}: ConsentFieldProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
-        <CustomText isBadge>필수</CustomText>
+        {isRequired && <CustomText isBadge>필수</CustomText>}
         <CustomText>{label}</CustomText>
-        <Pressable>
-          <CustomText>{'>'}</CustomText>
-        </Pressable>
+        <Pressable>{isArrow && <CustomText>{'>'}</CustomText>}</Pressable>
       </View>
       <CheckBox
         style={styles.checkbox}
         value={check}
-        onValueChange={newValue => setCheck(newValue)}
+        onValueChange={newValue => onChange(id, newValue)}
       />
     </View>
   );

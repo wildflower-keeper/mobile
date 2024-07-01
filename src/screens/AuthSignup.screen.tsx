@@ -14,6 +14,13 @@ import useLoggedInStore from '@/stores/useLoggedIn';
 
 interface AuthSignupProps {}
 
+type termsIdsToAgreeType = {
+  id: number;
+  title: string;
+  detail: string;
+  isEssential: boolean;
+};
+
 type signupValueType = {
   name: string;
   shelterId: number;
@@ -30,10 +37,10 @@ const AuthSignup = ({}: AuthSignupProps) => {
   const [signupValues, setSignupValues] = useState<signupValueType>({
     name: '',
     shelterId: 0,
-    shelterPin: '8643',
+    shelterPin: '',
     deviceId: '',
     room: '',
-    termsIdsToAgree: [1],
+    termsIdsToAgree: [1, 2, 3, 4],
     birthDate: '1970-05-15',
     phoneNumber: '010-0000-0000',
     admissionDate: '2024-08-01',
@@ -51,15 +58,23 @@ const AuthSignup = ({}: AuthSignupProps) => {
     setSignupValues({...signupValues, shelterId: value});
   };
 
+  const [checkList, setCheckList] = useState({
+    one: false,
+    two: false,
+  });
+
+  const checkListHandler = (id: string, value: boolean) => {
+    setCheckList({...checkList, [id]: value});
+  };
+
   const handleSubmit = async () => {
     try {
       const res = await backendAxiosInstance({
         method: 'POST',
-        headers: {'content-type': 'application/json'},
+        headers: {'content-type': 'application/json', accept: '*/*'},
         url: '/api/v1/homeless-app/homeless',
         data: JSON.stringify(signupValues),
       });
-      console.log(res);
       const result = await res.data;
       if (res.status === 201) {
         setToken(signupValues.deviceId, result.accessToken);
@@ -94,9 +109,10 @@ const AuthSignup = ({}: AuthSignupProps) => {
           handleChange={handleChangeSelect}
         />
         <InputField
-          labelName="비밀번호"
-          placeholder="비밀번호를 입력해주세요"
+          labelName="핀번호"
+          placeholder="관리자에게 안내받은 숫자를 입력해주세요."
           isRequired
+          isPinNumber
           secureTextEntry
           value={signupValues.shelterPin}
           onChangeText={text => handleChangeText('shelterPin', text)}
@@ -107,8 +123,18 @@ const AuthSignup = ({}: AuthSignupProps) => {
           value={signupValues.room}
           onChangeText={text => handleChangeText('room', text)}
         />
-        <ConsentField label="이용약관 동의" />
-        <ConsentField label="개인정보 수집 및 이용동의" />
+        <ConsentField
+          label="이용약관 동의"
+          check={checkList.one}
+          onChange={checkListHandler}
+          id="one"
+        />
+        <ConsentField
+          label="개인정보 수집 및 이용동의"
+          check={checkList.two}
+          onChange={checkListHandler}
+          id="two"
+        />
       </View>
 
       <CustomButton label="완료" variant="filled" onPress={handleSubmit} />

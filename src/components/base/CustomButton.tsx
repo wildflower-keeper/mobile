@@ -12,6 +12,7 @@ type CustomButtonProps = {
   label: string;
   variant?: 'filled' | 'outlined';
   size?: 'xl' | 'lg' | 'md' | 'sm';
+  disabled?: boolean;
 } & PressableProps;
 
 // 추가로 디바이스 높이 별 반응형이 구현되어야 할 때 사용 할 예정.
@@ -21,11 +22,18 @@ const CustomButton = ({
   label,
   variant = 'filled',
   size = 'lg',
+  disabled = false,
   ...props
 }: CustomButtonProps) => {
   return (
     <Pressable
-      style={[styles.container, styles[variant], styles[size]]}
+      style={[
+        styles.container,
+        styles[variant],
+        styles[size],
+        disabled && styles.disabled,
+      ]}
+      disabled={disabled}
       {...props}>
       <Text style={[styles.text, styles[`${variant}Text`]]}>{label}</Text>
     </Pressable>
@@ -34,7 +42,7 @@ const CustomButton = ({
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 5,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -45,6 +53,9 @@ const styles = StyleSheet.create({
     borderColor: colors.PRIMARY,
     backgroundColor: colors.WHITE,
     borderWidth: 1,
+  },
+  disabled: {
+    backgroundColor: colors.FONT_WEAK,
   },
   text: {
     fontSize: 18,
