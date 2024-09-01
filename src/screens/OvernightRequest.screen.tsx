@@ -1,103 +1,25 @@
-import InputField from '@/components/InputField';
 import CustomButton from '@/components/base/CustomButton';
 import CustomText from '@/components/base/CustomText';
 import {colors} from '@/constants';
 import React, {useState} from 'react';
-import {KeyboardAvoidingView, Pressable, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {Calendar, DateData, LocaleConfig} from 'react-native-calendars';
-import {
-  calendarLocationConfig,
-  calenderThemeConfig,
-} from '@/config/calendarConfig';
 import Toast from 'react-native-toast-message';
-import {getDatesBetween, getNextDay} from '@/utils/date/date';
-import {useMutateCreateOvernight} from '@/hooks/queries/useMutateCreateOvernight';
-import useGetOvernightAbleSchedule from '@/hooks/queries/useGetOvernightAbleSchedule';
 import useOvernightRequestStore from '@/stores/useOverNight';
+import CalendarContainer from '@/components/CalendarContainer';
+import ReasonSelectorContainer from '@/components/ReasonSelectorContainer';
 
 interface OvernightRequestProps {}
 
-const buttonTextList = ['가족', '모임', '일', '운동', '기타'];
-
-type selectOvernightType = {
-  [day: string]: calenderOptionType;
-};
-
-type calenderOptionType = {
-  startingDay?: boolean;
-  endingDay?: boolean;
-  color: string;
-  textColor: string;
-};
-
-LocaleConfig.locales.kr = calendarLocationConfig;
-LocaleConfig.defaultLocale = 'kr';
-
 const OvernightRequest = ({navigation}: OvernightRequestProps) => {
   const [isNext, setIsNext] = useState<boolean>(false);
-  const {overnightRequestValues, setOvernightRequestValues} =
-    useOvernightRequestStore();
-  const [selectDate, setSelectDate] = useState<selectOvernightType>({});
-  const [ableDate, isSuccess] = useGetOvernightAbleSchedule();
-  console.log(overnightRequestValues);
-  // 외박 신청 된 날짜를 체크하여 적용할 state
-  // const [markedDate, setMarkedDate] = useState<selectOvernightType>({});
-
-  const selectOvernight = (day: DateData) => {
-    if (overnightRequestValues.startDate === day.dateString) {
-      return;
-    }
-    if (Object.keys(selectDate).length === 1) {
-      const firstDayKey = Object.keys(selectDate)[0];
-      const firstDay: calenderOptionType = {
-        startingDay: true,
-        color: colors.PRIMARY,
-        textColor: colors.WHITE,
-      };
-      const days = getDatesBetween(
-        new Date(firstDayKey),
-        new Date(day.dateString),
-      );
-      const daysObject: selectOvernightType = {};
-      days.forEach(item => {
-        daysObject[item] = {
-          color: colors.PRIMARY,
-          textColor: colors.WHITE,
-        };
-      });
-      setSelectDate({
-        ...daysObject,
-        [firstDayKey]: firstDay,
-
-        [day.dateString]: {
-          endingDay: true,
-          color: colors.PRIMARY,
-          textColor: colors.WHITE,
-        },
-      });
-      setOvernightRequestValues({
-        ...overnightRequestValues,
-        endDate: getNextDay(day.dateString),
-      });
-    } else {
-      setSelectDate({
-        [day.dateString]: {
-          startingDay: true,
-          endingDay: true,
-          color: colors.PRIMARY,
-          textColor: colors.WHITE,
-        },
-      });
-      setOvernightRequestValues({
-        ...overnightRequestValues,
-        startDate: day.dateString,
-        endDate: getNextDay(day.dateString).toString(),
-      });
-    }
-  };
+  const {overnightRequestValues} = useOvernightRequestStore();
 
   const handlePrev = () => {
+    /**
+     * 이전 버튼을 눌렀을 때, isNext가 true이면 state를 false로 변경하여 달력으로 이동하고,
+     * isNext가 false이면 navigation으로 Home으로 이동하는 함수.
+     */
     if (isNext) {
       setIsNext(false);
       return;
@@ -105,6 +27,10 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
     navigation.navigate('Home');
   };
   const handleNext = () => {
+    /**
+     * 다음 버튼을 눌렀을 때, isNext가 true이면 state를 FinalConfirmation으로 이동하고,
+     * isNext가 false이면 true로 변경, 사유 작성으로 이동하는 함수.
+     */
     if (isNext) {
       navigation.navigate('FinalConfirmation');
     }
@@ -119,14 +45,6 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
       });
     }
   };
-
-  const selectReasonHandler = (value: string) => {
-    setOvernightRequestValues({
-      ...overnightRequestValues,
-      reason: value,
-    });
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>
@@ -137,68 +55,7 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
           !isNext ? '외박을 신청하는 날짜를' : '아래의 신청 이유 중'
         } 선택해주세요.`}</CustomText>
       </View>
-      {!isNext ? (
-        <>
-          <View
-            style={{
-              width: '100%',
-            }}>
-            <Calendar
-              markingType={'period'}
-              monthFormat={'yyyy년 M월'}
-              onDayPress={day => selectOvernight(day)}
-              markedDates={selectDate}
-              theme={calenderThemeConfig}
-              minDate={isSuccess ? ableDate[0] : ''}
-              maxDate={isSuccess ? ableDate[ableDate?.length - 1] : ''}
-            />
-          </View>
-        </>
-      ) : (
-        <KeyboardAvoidingView
-          style={{flex: 1, paddingTop: 60, gap: 60}}
-          behavior="padding"
-          enabled>
-          <View style={styles.optionContainer}>
-            {buttonTextList.map(text => {
-              return (
-                <Pressable
-                  key={text}
-                  style={[
-                    styles.optionItem,
-                    text === overnightRequestValues.reason
-                      ? styles.selectPress
-                      : styles.defaultPress,
-                  ]}
-                  onPress={() => selectReasonHandler(text)}>
-                  <CustomText
-                    textColor={
-                      text === overnightRequestValues.reason
-                        ? 'white'
-                        : 'default'
-                    }>
-                    {text}
-                  </CustomText>
-                </Pressable>
-              );
-            })}
-          </View>
-          <View style={{width: '100%', flex: 0, gap: 30}}>
-            <InputField labelName="기타" placeholder="사유를 입력해주세요." />
-            <InputField
-              labelName="비상연락망"
-              placeholder="비상시 연락할 전화번호를 입력해주세요."
-              value={overnightRequestValues.emergencyContact}
-              onChangeText={text => {
-                setOvernightRequestValues({
-                  ...overnightRequestValues,
-                  emergencyContact: text,
-                });
-              }}
-            />
-          </View>
-        </KeyboardAvoidingView>
-      )}
+      {!isNext ? <CalendarContainer /> : <ReasonSelectorContainer />}
 
       <View style={styles.buttonContainer}>
         <CustomButton
@@ -229,27 +86,7 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.BRIGHT_PRIMARY,
     borderBottomWidth: 1,
   },
-  optionContainer: {
-    flex: 0,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginHorizontal: 30,
-  },
-  optionItem: {
-    width: '30%',
-    borderRadius: 24,
-    borderWidth: 2,
-    alignItems: 'center',
-    paddingVertical: 8,
-  },
-  defaultPress: {
-    borderColor: colors.BORDER_COLOR,
-  },
-  selectPress: {
-    backgroundColor: colors.PRIMARY,
-    borderColor: colors.WHITE,
-  },
+
   buttonContainer: {
     flex: 0,
     flexDirection: 'row',
