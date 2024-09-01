@@ -50,6 +50,9 @@ const InputField = ({
               ref={inputRef}
               placeholderTextColor={colors.FONT_WEAK}
               style={styles.input}
+              autoCapitalize="none"
+              spellCheck={false}
+              autoCorrect={false}
               {...props}
             />
           </View>
