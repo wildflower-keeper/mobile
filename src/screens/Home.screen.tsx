@@ -23,7 +23,7 @@ export type userLocationType = {
 
 const Home = ({navigation}: HomeProps) => {
   const [fetchedUserInfo, isSuccess] = useGetUserInfo();
-  const {userInfo, setUserInfo} = useUserInfoStore();
+  const {setUserInfo} = useUserInfoStore();
   const [userLocation, setUserLocation] = useState<userLocationType>({
     latitude: 37,
     longitude: 124,
@@ -32,7 +32,6 @@ const Home = ({navigation}: HomeProps) => {
     weather: '',
     temp: 0,
   });
-
   const [isUserLocationError, setIsUserLocationError] =
     useState<boolean>(false);
 
@@ -68,18 +67,6 @@ const Home = ({navigation}: HomeProps) => {
     Linking.openURL(url);
   };
 
-  const deleteSchedule = async () => {
-    const res = await backendAxiosInstance({
-      method: 'DELETE',
-      url: `/api/v1/homeless-app/sleepover/${userInfo.sleepoverId}`,
-      headers: {
-        accept: '*/*',
-        'auth-token': await getAccessToken(),
-      },
-    });
-    console.log(res);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       {isSuccess && (
@@ -109,7 +96,6 @@ const Home = ({navigation}: HomeProps) => {
           <CustomText>가까운 외박일정</CustomText>
           <SleepoverScheduleContainer
             upcomingSleepover={fetchedUserInfo?.upcomingSleepover}
-            onPress={deleteSchedule}
           />
         </View>
 

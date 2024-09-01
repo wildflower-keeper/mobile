@@ -29,4 +29,20 @@ const getOvernightAbleSchedule = async () => {
   return data;
 };
 
-export {createOvernightSchedule, getOvernightAbleSchedule};
+const deleteOvernightSchedule = async (sleepoverId: number) => {
+  const url = `/api/v1/homeless-app/sleepover/${sleepoverId}`;
+  await backendAxiosInstance({
+    method: 'DELETE',
+    url,
+    headers: {
+      accept: '*/*',
+      'auth-token': await getAccessToken(),
+    },
+  });
+};
+
+export {
+  createOvernightSchedule,
+  getOvernightAbleSchedule,
+  deleteOvernightSchedule,
+};

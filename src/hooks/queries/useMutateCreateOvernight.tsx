@@ -1,4 +1,7 @@
-import {createOvernightSchedule} from '@/utils/api/overnight';
+import {
+  createOvernightSchedule,
+  deleteOvernightSchedule,
+} from '@/utils/api/overnight';
 import {useMutation} from '@tanstack/react-query';
 import {UseMutationCustomOptions} from 'types/common';
 
@@ -11,4 +14,13 @@ const useMutateCreateOvernight = (
   });
 };
 
-export {useMutateCreateOvernight};
+const useMutateDeleteOvernight = (
+  mutationOptions?: UseMutationCustomOptions,
+) => {
+  return useMutation({
+    mutationFn: deleteOvernightSchedule,
+    ...mutationOptions,
+  });
+};
+
+export {useMutateCreateOvernight, useMutateDeleteOvernight};
