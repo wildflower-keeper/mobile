@@ -62,7 +62,7 @@ const Home = ({navigation}: HomeProps) => {
     });
   }, [userLocation]);
 
-  const handlePress = () => {
+  const handlePressEmergency = () => {
     const phoneNumber = '01054283576';
     const url = `tel:${phoneNumber}`;
 
@@ -121,7 +121,7 @@ const Home = ({navigation}: HomeProps) => {
             colors={['#FF8981', '#FF384D']}
             style={styles.linearGradient}>
             <Pressable
-              onPress={handlePress}
+              onPress={handlePressEmergency}
               style={{
                 width: '100%',
                 paddingVertical: 'auto',
