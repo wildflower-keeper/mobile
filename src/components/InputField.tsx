@@ -44,7 +44,7 @@ const InputField = ({
           )}
         </View>
         {isPinNumber && <PinComment />}
-        <DropShadow style={styles.inputShadow}>
+        <DropShadow>
           <View style={styles.inputWrapper}>
             <TextInput
               ref={inputRef}
