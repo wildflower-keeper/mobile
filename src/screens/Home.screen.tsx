@@ -3,15 +3,14 @@ import {Linking, Pressable, SafeAreaView, StyleSheet, View} from 'react-native';
 import CustomText from '../components/base/CustomText';
 import Geolocation from '@react-native-community/geolocation';
 import CustomButton from '@/components/base/CustomButton';
-import {colors, days} from '@/constants';
 import {useGetUserInfo} from '@/hooks/queries/useAuth';
 import {getWeather} from '@/utils/api/weather';
 import LinearGradient from 'react-native-linear-gradient';
-import AntDesignicon from 'react-native-vector-icons/AntDesign';
 import SleepoverScheduleContainer from '@/components/SleepoverScheduleContainer';
 import useUserInfoStore from '@/stores/useUserInfo';
 import {backendAxiosInstance} from '@/utils/api/api';
 import {getAccessToken} from '@/utils/api/auth';
+import HomeHeader from '@/components/HomeHeader';
 
 interface HomeProps {}
 
@@ -80,40 +79,18 @@ const Home = ({navigation}: HomeProps) => {
     });
     console.log(res);
   };
-  console.log(userInfo);
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.outContainer}>
-        <View style={styles.headerContainer}>
-          <View style={styles.headContainer}>
-            <CustomText textColor="white" size="xSmall">
-              {isSuccess && `${fetchedUserInfo.shelterName}`}
-            </CustomText>
-            <CustomText textColor="white" size="small">{`${
-              today.getMonth() + 1
-            }월 ${today.getDate()}일 ${
-              days.WEEK[today.getDay()]
-            }요일`}</CustomText>
-            <CustomText textColor="white" weight="heavy">
-              {isSuccess && `${fetchedUserInfo.homelessName}님, 반갑습니다.`}
-            </CustomText>
-          </View>
-          <View style={styles.weatherContainer}>
-            <View style={{flex: 0, flexDirection: 'row', gap: 12}}>
-              <CustomText size="xLarge" textColor="white" weight="heavy">
-                {currentWeather.temp}&#176;
-              </CustomText>
-              <AntDesignicon name="cloud" size={70} color={colors.WHITE} />
-            </View>
-          </View>
-        </View>
-        <View style={styles.messageContainer}>
-          <CustomText isBadge size="small">
-            외출 시 약을 꼭 챙겨주세요!
-          </CustomText>
-        </View>
-      </View>
+      {isSuccess && (
+        <HomeHeader
+          shelterName={fetchedUserInfo.shelterName}
+          homelessName={fetchedUserInfo.homelessName}
+          temp={currentWeather.temp}
+          today={today}
+        />
+      )}
+
       <View style={styles.bodyContainer}>
         <View style={styles.bodyItemContainer}>
           <CustomText>긴급도움 요청</CustomText>
@@ -122,13 +99,7 @@ const Home = ({navigation}: HomeProps) => {
             style={styles.linearGradient}>
             <Pressable
               onPress={handlePressEmergency}
-              style={{
-                width: '100%',
-                paddingVertical: 'auto',
-                flex: 0,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+              style={styles.emergencyButton}>
               <CustomText textColor="white">긴급도움 요청하기</CustomText>
             </Pressable>
           </LinearGradient>
@@ -171,34 +142,18 @@ const styles = StyleSheet.create({
     gap: 30,
     marginBottom: 60,
   },
-  outContainer: {
-    flex: 0,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    backgroundColor: colors.BRIGHT_PRIMARY,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+  emergencyButton: {
     width: '100%',
-    gap: 22,
-  },
-  messageContainer: {
-    backgroundColor: colors.WHITE,
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-    borderRadius: 30,
-    borderColor: colors.FONT_WEAK,
-    borderWidth: 1,
+    paddingVertical: 'auto',
+    flex: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   bodyItemContainer: {
     flex: 0,
     gap: 16,
   },
-  headerContainer: {
-    paddingHorizontal: 10,
-    flex: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+
   bodyContainer: {
     flex: 1,
     width: '90%',
@@ -206,14 +161,7 @@ const styles = StyleSheet.create({
     gap: 28,
     marginVertical: 16,
   },
-  headContainer: {
-    flex: 0,
-    gap: 6,
-  },
-  weatherContainer: {
-    flex: 0,
-    alignItems: 'center',
-  },
+
   buttonContainer: {
     flex: 0,
     flexDirection: 'row',
