@@ -9,7 +9,8 @@ import {
 } from 'react-native';
 import {colors} from '@/constants';
 import CustomText from './base/CustomText';
-import AntDesignIcons from 'react-native-vector-icons/AntDesign';
+import PinComment from './PinComment';
+import DropShadow from 'react-native-drop-shadow';
 
 type InputFieldProps = {
   labelName: string;
@@ -22,7 +23,7 @@ const InputField = ({
   labelName,
   isRequired = false,
   isPinNumber = false,
-  border = true,
+  border = false,
   ...props
 }: InputFieldProps) => {
   const inputRef = useRef<TextInput | null>(null);
@@ -42,30 +43,17 @@ const InputField = ({
             <CustomText style={styles.requiredText}>(필수)</CustomText>
           )}
         </View>
-        {isPinNumber && (
-          <View style={styles.infoContainer}>
-            <AntDesignIcons
-              name="infocirlceo"
-              size={16}
-              color={colors.FONT_WEAK}
-              style={{marginTop: 3}}
+        {isPinNumber && <PinComment />}
+        <DropShadow style={styles.inputShadow}>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              ref={inputRef}
+              placeholderTextColor={colors.FONT_WEAK}
+              style={styles.input}
+              {...props}
             />
-            <View>
-              <CustomText style={styles.infoText}>
-                매일 바뀌는 보안숫자로, 센터에 입소하지 않은
-              </CustomText>
-              <CustomText style={styles.infoText}>
-                사람은 회원가입 진행이 어렵습니다.
-              </CustomText>
-            </View>
           </View>
-        )}
-        <TextInput
-          ref={inputRef}
-          placeholderTextColor={colors.FONT_WEAK}
-          style={styles.input}
-          {...props}
-        />
+        </DropShadow>
       </View>
     </Pressable>
   );
@@ -80,11 +68,17 @@ const styles = StyleSheet.create({
   },
   containerBorder: {
     borderBottomColor: colors.BORDER_COLOR,
-    borderBottomWidth: 4,
+    borderBottomWidth: 1,
   },
   input: {
     fontSize: 18,
-    padding: 0,
+    paddingHorizontal: 6,
+    width: '100%',
+  },
+  inputWrapper: {
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: colors.BORDER_PRIMARY,
   },
   labelWrapper: {
     position: 'relative',
@@ -101,15 +95,6 @@ const styles = StyleSheet.create({
   requiredText: {
     color: colors.PRIMARY,
     fontSize: 18,
-  },
-  infoContainer: {
-    flex: 0,
-    flexDirection: 'row',
-    gap: 4,
-  },
-  infoText: {
-    color: colors.FONT_WEAK,
-    fontSize: 16,
   },
 });
 
