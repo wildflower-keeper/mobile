@@ -2,7 +2,7 @@ import SleepoverScheduleContainer from '@/components/SleepoverScheduleContainer'
 import CustomText from '@/components/base/CustomText';
 import {colors} from '@/constants';
 import useUserInfoStore from '@/stores/useUserInfo';
-import {formatSimpleDate, formatUpdateTime} from '@/utils/date/date';
+import {formatSimpleDate} from '@/utils/date/date';
 import React, {useState} from 'react';
 import {Modal, Pressable, StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -33,51 +33,60 @@ const OvernightList = ({}: OvernightListProps) => {
         <View>
           <CustomText>가까운 외박일정</CustomText>
           <View style={styles.viewCard}>
-            <SleepoverScheduleContainer
-              upcomingSleepover={userInfo.upcomingSleepover}
-              onPress={onPressModalOpen}
-            />
+            {userInfo.upcomingSleepover && (
+              <SleepoverScheduleContainer
+                upcomingSleepover={userInfo.upcomingSleepover}
+                onPress={onPressModalOpen}
+              />
+            )}
           </View>
         </View>
       </View>
 
-      <View style={{marginTop: 500}}>
-        <Modal animationType="fade" visible={isModalVisible} transparent={true}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <View style={styles.modalTextStyle}>
-                <CustomText weight="heavy">
-                  {formatSimpleDate(
-                    new Date(userInfo.upcomingSleepover.startDate),
-                  )}
-                  ~
-                  {formatSimpleDate(
-                    new Date(userInfo.upcomingSleepover.endDate),
-                  )}
-                </CustomText>
-                <CustomText weight="heavy">일정을 취소하시겠습니까?</CustomText>
-              </View>
-              <View style={{flex: 0, flexDirection: 'row', width: '100%'}}>
-                <Pressable
-                  onPress={onPressModalClose}
-                  style={[styles.modalButton, {borderBottomLeftRadius: 20}]}>
-                  <CustomText>아니오</CustomText>
-                </Pressable>
-                <Pressable
-                  style={[
-                    styles.modalButton,
-                    {
-                      backgroundColor: colors.BRIGHT_PRIMARY,
-                      borderBottomRightRadius: 20,
-                    },
-                  ]}>
-                  <CustomText textColor="white">네</CustomText>
-                </Pressable>
+      {userInfo.upcomingSleepover && (
+        <View style={{marginTop: 500}}>
+          <Modal
+            animationType="fade"
+            visible={isModalVisible}
+            transparent={true}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <View style={styles.modalTextStyle}>
+                  <CustomText weight="heavy">
+                    {formatSimpleDate(
+                      new Date(userInfo.upcomingSleepover.startDate),
+                    )}
+                    ~
+                    {formatSimpleDate(
+                      new Date(userInfo.upcomingSleepover.endDate),
+                    )}
+                  </CustomText>
+                  <CustomText weight="heavy">
+                    일정을 취소하시겠습니까?
+                  </CustomText>
+                </View>
+                <View style={{flex: 0, flexDirection: 'row', width: '100%'}}>
+                  <Pressable
+                    onPress={onPressModalClose}
+                    style={[styles.modalButton, {borderBottomLeftRadius: 20}]}>
+                    <CustomText>아니오</CustomText>
+                  </Pressable>
+                  <Pressable
+                    style={[
+                      styles.modalButton,
+                      {
+                        backgroundColor: colors.BRIGHT_PRIMARY,
+                        borderBottomRightRadius: 20,
+                      },
+                    ]}>
+                    <CustomText textColor="white">네</CustomText>
+                  </Pressable>
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
-      </View>
+          </Modal>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
