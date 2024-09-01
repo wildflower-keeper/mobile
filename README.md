@@ -1,79 +1,27 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+## 사용 방법
 
-# Getting Started
+---
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
-
-## Step 1: Start the Metro Server
-
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
-
-```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+```
+yarn run start:clean
 ```
 
-## Step 2: Start your Application
+으로 실행. 종종 캐시가 남아 번들링 과정에서 에러가 발생하기 때문에 이 방식으로 사용하는 것을 추천합니다.
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
+구현되어 있는 기능.
 
-### For Android
+- 회원가입
+  - 이름, 센터, 핀번호, 방 번호, 약관 동의까지의 과정을 거친 후, api 호출을 하면 accessToken이 발급 되고 이를 스토리지에 영구저장하여 사용하는 방식.
+- 로그인
 
-```bash
-# using npm
-npm run android
+  - 스토리지에 저장된 토큰을 기반으로 로그인 상태를 유지, 디바이스의 변경이나, 앱을 재설치하는 등의 특별한 이슈가 없다면 자동로그인 되는 것을 목표로 설계.
+  - 자동로그인을 기본으로 설계하였기에 로그인 메서드를 작성해두지 않았고, 현재 api에서 요구하는 데이터와 프론트에서 전달해줄 수 있는 데이터가 다른 것으로 파악되고 있어 백엔드 api의 수정이 필요하다고 판단됩니다.
 
-# OR using Yarn
-yarn android
-```
-
-### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- 사전외박신청
+  - 기간과 사유를 선택하여, 외박신청. useMutation에서 onSuccess 시 invalidateQuery메서드를 사용하여 신청 후 홈 화면에서 신청한 내역을 바로 볼 수 있도록 설계.
+  - 기간을 선택하는 달력이 나오는 페이지와 사유를 선택하는 페이지를 분리하지 않고 작업을 해두어서, 분리 작업이 필요할 수도 있습니다.
+  - 최종확인 페이지만 별도로 분리되어 있습니다.
+- 사전외박신청 취소
+  - 외박 신청 내용을 확인하고, 불필요한 일정이라면 삭제할 수 있도록 설계 되어있고, useMutation에서 onSuccess 시 invalidateQuery메서드를 통해 삭제된 내용이 즉각 반영 되도록 설계.
+- 날씨
+  - https://api.openweathermap.org 에서 날씨 정보를 받아오도록 설계. 현재 개인 아이디로 apiKey를 사용하고 있고, 이를 .env.local에 설정해두어서 사용 화면을 확인하시고자 한다면 해당사이트에서 apiKey를 발급받아 사용해야합니다. 현재 배포를 목적으로 하고 있기에 사업자에게 apiKey 발급 받을 것을 요청하시는 것이 좋을 듯 합니다.
