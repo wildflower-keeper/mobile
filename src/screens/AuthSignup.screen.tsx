@@ -40,11 +40,12 @@ const AuthSignup = ({}: AuthSignupProps) => {
     shelterPin: '',
     deviceId: '',
     room: '',
-    termsIdsToAgree: [1, 2, 3, 4],
+    termsIdsToAgree: [],
     birthDate: '1970-05-15',
-    phoneNumber: '010-0000-0000',
+    phoneNumber: '01011111111',
     admissionDate: '2024-08-01',
   });
+  console.log(signupValues);
   const {setIsLoggedIn} = useLoggedInStore();
   useEffect(() => {
     getDeviceUniqueId().then((result: string) => {
@@ -76,15 +77,14 @@ const AuthSignup = ({}: AuthSignupProps) => {
         data: JSON.stringify(signupValues),
       });
       const result = await res.data;
-      if (res.status === 201) {
-        setToken(signupValues.deviceId, result.accessToken);
-        setIsLoggedIn(true);
-        Toast.show({
-          type: 'success',
-          text1: '회원가입이 정상적으로 완료되었습니다.',
-          position: 'bottom',
-        });
-      }
+      console.log(res);
+      setToken(signupValues.deviceId, result.accessToken);
+      setIsLoggedIn(true);
+      Toast.show({
+        type: 'success',
+        text1: '회원가입이 정상적으로 완료되었습니다.',
+        position: 'bottom',
+      });
     } catch (error) {
       throw error;
     }
