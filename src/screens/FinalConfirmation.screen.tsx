@@ -76,7 +76,7 @@ const FinalConfirmation = ({navigation}: FinalConfirmationProps) => {
           </CustomText>
           <View style={styles.reasonContainer}>
             <CustomText size="large">이유는</CustomText>
-            <CustomText size="large" isBadge>
+            <CustomText size="large" isBadge weight="heavy">
               {overnightRequestValues.reason}
             </CustomText>
             <CustomText size="large">이 맞으신가요?</CustomText>
