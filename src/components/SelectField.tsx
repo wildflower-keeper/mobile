@@ -81,8 +81,6 @@ const SelectField = ({
 
 const styles = StyleSheet.create({
   container: {
-    borderBottomColor: colors.BORDER_COLOR,
-    borderBottomWidth: 4,
     width: '100%',
     paddingTop: 16,
     paddingHorizontal: 30,
@@ -109,7 +107,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   borderClose: {
-    borderWidth: 0,
+    borderWidth: 1,
+    borderColor: colors.BORDER_PRIMARY,
+    shadowColor: colors.SHADOW_PRIMARY,
+    elevation: 1,
   },
   dropdownText: {
     color: colors.FONT_WEAK,
