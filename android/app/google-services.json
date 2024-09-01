@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "471355912680",
+    "project_id": "wildflower-keeper",
+    "storage_bucket": "wildflower-keeper.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471355912680:android:4b041b54de693e4f5db45d",
+        "android_client_info": {
+          "package_name": "com.wildflower"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5ctP91MhV1L3cRy_kbbovEUufuaBNp04"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
