@@ -3,7 +3,6 @@ import {create} from 'zustand';
 
 export type userInfoType = {
   id: number;
-  sleepoverId: number;
   shelterId: number;
   homelessName: string;
   shelterName: string;
@@ -18,7 +17,6 @@ type userInfoStoreType = {
 const useUserInfoStore = create<userInfoStoreType>(set => ({
   userInfo: {
     id: 0,
-    sleepoverId: 0,
     shelterId: 0,
     homelessName: '',
     shelterName: '',
