@@ -1,16 +1,54 @@
-## 사용 방법
+## 환경 설정
+* node : 18 버전 이상
+* packageManger : Yarn 3.6.4
+* jdk(java) : 17 이상
+* android studio :
+  * API target 33이상
+  * gradle : 8.6
+* React-native : 7.4.1
 
----
+### .env.local
 
-### 안드로이드 스튜디오가 필요합니다!
+```text
+WEATHER_API_KEY: 날씨 api key
+```
+
+### 가상 디바이스 사용 시
+안드로이드 스튜디오에서
+
+![image](https://github.com/user-attachments/assets/406df0b8-a376-4bfd-af0d-750a7e54e213)
+
+more action >> virtual device manager
+
+![image](https://github.com/user-attachments/assets/0d102614-568b-49c9-9a74-27df6a9810a7)
+
+재생 버튼 클릭
+![image](https://github.com/user-attachments/assets/43a1f78a-0457-4029-a36b-2951ad2a877d)
+
+### 실제 기기를 연결하여 사용 시
+
+안드로이드 개발자 디버그 모드 진입이 필요합니다.
+
+[디버그 모드 진입 참고 블로그 글](https://mainia.tistory.com/6197)
+
+진입 후 사용 방법 따라 안드로이드 프로젝트 빌드 후 실행
+
+### 사용 방법
+
+안드로이드 기기가 연결(실행) 되어 있어야 합니다. (가상, 실제 기기 둘 중 하나)
+
+```text
+git clone https://github.com/wildflower-keeper/mobile.git
+
+cd mobile
+
+yarn install
+
+yarn start || yarn run start:clean
+
+in terminal : press a for lunch android project
 
 ```
-//설치
-yarn
-//실행
-yarn run start:clean
-```
-
 으로 실행. 종종 캐시가 남아 번들링 과정에서 에러가 발생하기 때문에 이 방식으로 사용하는 것을 추천합니다.
 
 구현되어 있는 기능.
