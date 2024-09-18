@@ -8,6 +8,14 @@ import Loading from '@/screens/Loading.screen';
 
 interface HomeStackNavigatorProps {}
 
+export type HomeStackParamList = {
+  Home: undefined; 
+  OvernightRequest: undefined;
+  FinalConfirmation: undefined;
+  OvernightList: undefined;
+  Loading: undefined;
+};
+
 const HomeStackNavigator = ({}: HomeStackNavigatorProps) => {
   const Stack = createStackNavigator();
   return (
