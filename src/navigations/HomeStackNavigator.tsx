@@ -4,6 +4,7 @@ import React from 'react';
 import OvernightRequest from '@/screens/OvernightRequest.screen';
 import FinalConfirmation from '@/screens/FinalConfirmation.screen';
 import OvernightList from '@/screens/OvernightList.screen';
+import Loading from '@/screens/Loading.screen';
 
 interface HomeStackNavigatorProps {}
 
@@ -15,6 +16,7 @@ const HomeStackNavigator = ({}: HomeStackNavigatorProps) => {
       <Stack.Screen name="OvernightRequest" component={OvernightRequest} />
       <Stack.Screen name="FinalConfirmation" component={FinalConfirmation} />
       <Stack.Screen name="OvernightList" component={OvernightList} />
+      <Stack.Screen name="Loading" component={Loading} />
     </Stack.Navigator>
   );
 };

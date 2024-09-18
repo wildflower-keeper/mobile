@@ -5,6 +5,15 @@ import useLoggedInStore from '@/stores/useLoggedIn';
 import AuthStackNavigator from './AuthStackNavigator';
 import {useGetUserInfo} from '@/hooks/queries/useAuth';
 
+const linking = {
+  prefixes: ['wildflower-keeper://'], // URL 스킴
+  config: {
+    screens: {
+      Loading: 'loading', // loading 경로가 Loading 스크린에 매핑됨
+    },
+  },
+};
+
 const RootNavigator = ({}) => {
   const {isLoggedIn, setIsLoggedIn} = useLoggedInStore();
   const [_, isSuccess, isError] = useGetUserInfo();
@@ -21,7 +30,7 @@ const RootNavigator = ({}) => {
   }, [isError, isSuccess]);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       {isLoggedIn ? <HomeStackNavigator /> : <AuthStackNavigator />}
     </NavigationContainer>
   );
