@@ -21,6 +21,7 @@ export type userLocationType = {
   longitude: number;
 };
 
+//TODO : home screen 리팩토링
 const Home = ({navigation}: HomeProps) => {
   const [fetchedUserInfo, isSuccess] = useGetUserInfo();
   const {setUserInfo} = useUserInfoStore();
@@ -59,7 +60,7 @@ const Home = ({navigation}: HomeProps) => {
       setCurrentWeather({weather, temp});
     });
   }, [userLocation]);
-
+  // TODO : 긴급도움 요청하기 api 연결해서 test
   const handlePressEmergency = () => {
     const phoneNumber = '01054283576';
     const url = `tel:${phoneNumber}`;

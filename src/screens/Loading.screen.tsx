@@ -16,6 +16,8 @@ type navigationProps = NavigationProp<HomeStackParamList>;
 const Loading = () => {
   const navigation = useNavigation<navigationProps>();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true);
+
+  //TODO : 딥링크 파라미터 읽고 post 처리
   const handlePressConfirm = () => {
     setIsModalVisible(false);
     setTimeout(() => {
