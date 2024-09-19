@@ -1,5 +1,5 @@
 import CustomText from '@/components/base/CustomText';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -10,12 +10,14 @@ import {
 } from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
+import useScan from '@/hooks/queries/useScan';
 
 type navigationProps = NavigationProp<HomeStackParamList>;
 
-const Loading = () => {
+const ScanResult = () => {
   const navigation = useNavigation<navigationProps>();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true);
+  const { data : QRCodeData, isLoading, isError} = useScan();
 
   //TODO : 딥링크 파라미터 읽고 post 처리
   const handlePressConfirm = () => {
@@ -24,6 +26,10 @@ const Loading = () => {
       navigation.navigate('Home');
     }, 300);
   };
+
+  useEffect(()=>{
+    
+  })  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -105,4 +111,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Loading;
+export default ScanResult;
