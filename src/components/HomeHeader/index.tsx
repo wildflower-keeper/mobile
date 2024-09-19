@@ -4,6 +4,7 @@ import CustomText from '../base/CustomText';
 import AntDesignicon from 'react-native-vector-icons/AntDesign';
 import {colors} from '@/constants';
 import {formatUpdateTime} from '@/utils/date/date';
+import useLocation from '@/hooks/queries/useLocation';
 
 interface HomeHeaderProps {
   shelterName: string;
@@ -18,6 +19,15 @@ const HomeHeader = ({
   temp,
   today,
 }: HomeHeaderProps) => {
+  const {data : locationStatus} = useLocation();
+  function locationStatusText(locationStatus?: string) {
+    if (locationStatus === 'IN_SHELTER') {
+      return '재실';
+    }
+    if(locationStatus === 'OUT_SHELTER') {
+      return '외출';
+    }
+  }
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -34,10 +44,9 @@ const HomeHeader = ({
         </View>
         <View style={styles.weatherContainer}>
           <View style={styles.weatherFlexContainer}>
-            <CustomText size="xLarge" textColor="white" weight="heavy">
-              {temp}&#176;
+            <CustomText textColor="white" weight="heavy">
+              {`${locationStatusText(locationStatus)} 중`}
             </CustomText>
-            <AntDesignicon name="cloud" size={70} color={colors.WHITE} />
           </View>
         </View>
       </View>

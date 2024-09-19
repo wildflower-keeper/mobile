@@ -11,6 +11,7 @@ import useUserInfoStore from '@/stores/useUserInfo';
 import {backendAxiosInstance} from '@/utils/api/api';
 import {getAccessToken} from '@/utils/api/auth';
 import HomeHeader from '@/components/HomeHeader';
+import useLocation from '@/hooks/queries/useLocation';
 
 interface HomeProps {}
 
@@ -21,7 +22,7 @@ export type userLocationType = {
   longitude: number;
 };
 
-//TODO : home screen
+//TODO : home screen 리팩토링 필요
 const Home = ({navigation}: HomeProps) => {
   const {data, isSuccess} = useGetUserInfo();
   const {setUserInfo} = useUserInfoStore();

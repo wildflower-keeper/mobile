@@ -1,5 +1,5 @@
 import CustomText from '@/components/base/CustomText';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,21 +8,37 @@ import {
   Modal,
   TouchableOpacity,
 } from 'react-native';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
 import useScan from '@/hooks/queries/useScan';
+import useLocation from '@/hooks/queries/useLocation';
 
 type navigationProps = NavigationProp<HomeStackParamList>;
 
 const ScanResult = () => {
   const navigation = useNavigation<navigationProps>();
-  const {locationStatus, isFetched} = useScan();
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(true);
+  const {deepLinkData} = useScan();
+  const {mutate} = useLocation();
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
   useEffect(() => {
-    if (isFetched) {
-      setIsModalVisible(true); // QR 스캔 시 모달을 다시 띄움
+    if (
+      deepLinkData.locationStatus === 'IN_SHELTER' ||
+      deepLinkData.locationStatus === 'OUT_SHELTER'
+    ) {
+      mutate.mutate(deepLinkData.locationStatus);
     }
-  }, [isFetched]);
+  }, [deepLinkData]);
+
+  useEffect(() => {
+    if (mutate.status === 'success') {
+      setIsModalVisible(true);
+    }
+  }, [mutate.status]);
 
   const handlePressConfirm = () => {
     setIsModalVisible(false);
@@ -40,7 +56,7 @@ const ScanResult = () => {
             <View style={styles.modalContainer}>
               <View style={styles.modalTextContainer}>
                 <CustomText style={styles.modalText}>
-                  {locationStatus} 신청이 완료 되었습니다.
+                  {deepLinkData.locationStatus} 신청이 완료 되었습니다.
                 </CustomText>
               </View>
               <View style={styles.modalButtonContainer}>

@@ -14,7 +14,7 @@ const getToken = async (userName: string) => {
   try {
     const credentials = await Keychain.getInternetCredentials(userName);
     if (credentials) {
-      console.log(credentials.password);
+      // console.log(credentials.password);
       return credentials.password;
     } else {
       console.log('No token stored');
