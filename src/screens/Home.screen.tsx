@@ -21,9 +21,9 @@ export type userLocationType = {
   longitude: number;
 };
 
-//TODO : home screen 리팩토링
+//TODO : home screen
 const Home = ({navigation}: HomeProps) => {
-  const [fetchedUserInfo, isSuccess] = useGetUserInfo();
+  const {data, isSuccess} = useGetUserInfo();
   const {setUserInfo} = useUserInfoStore();
   const [userLocation, setUserLocation] = useState<userLocationType>({
     latitude: 37,
@@ -38,9 +38,9 @@ const Home = ({navigation}: HomeProps) => {
 
   useEffect(() => {
     if (isSuccess) {
-      setUserInfo({...fetchedUserInfo});
+      setUserInfo({...data});
     }
-  }, [fetchedUserInfo, isSuccess]);
+  }, [data, isSuccess]);
 
   useEffect(() => {
     Geolocation.getCurrentPosition(
@@ -72,8 +72,8 @@ const Home = ({navigation}: HomeProps) => {
     <SafeAreaView style={styles.container}>
       {isSuccess && (
         <HomeHeader
-          shelterName={fetchedUserInfo.shelterName}
-          homelessName={fetchedUserInfo.homelessName}
+          shelterName={data.shelterName}
+          homelessName={data.homelessName}
           temp={currentWeather.temp}
           today={today}
         />
@@ -96,7 +96,7 @@ const Home = ({navigation}: HomeProps) => {
         <View style={styles.nearOvernightContainer}>
           <CustomText>가까운 외박일정</CustomText>
           <SleepoverScheduleContainer
-            upcomingSleepover={fetchedUserInfo?.upcomingSleepover}
+            upcomingSleepover={data?.upcomingSleepover}
           />
         </View>
 
