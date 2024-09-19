@@ -22,11 +22,10 @@ const createUser = async ({body}) => {
 };
 
 const getUserInfo = async () => {
-  console.log('getUserInfo api function called');
   const {data} = await backendAxiosInstance({
     method: 'GET',
     headers: {
-       'content-type': 'application/json',
+      'content-type': 'application/json',
       'auth-token': await getAccessToken(),
     },
     url: '/api/v1/homeless-app/homeless',
