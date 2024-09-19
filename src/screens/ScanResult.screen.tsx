@@ -16,10 +16,14 @@ type navigationProps = NavigationProp<HomeStackParamList>;
 
 const ScanResult = () => {
   const navigation = useNavigation<navigationProps>();
+  const {locationStatus, isFetched} = useScan();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(true);
-  const { data : QRCodeData, isLoading, isError} = useScan();
+  useEffect(() => {
+    if (isFetched) {
+      setIsModalVisible(true); // QR 스캔 시 모달을 다시 띄움
+    }
+  }, [isFetched]);
 
-  //TODO : 딥링크 파라미터 읽고 post 처리
   const handlePressConfirm = () => {
     setIsModalVisible(false);
     setTimeout(() => {
@@ -27,20 +31,16 @@ const ScanResult = () => {
     }, 300);
   };
 
-  useEffect(()=>{
-    
-  })  
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-        {/* <ActivityIndicator style={styles.indicator} color="#19C23D" /> */}
-        <Modal  transparent={true} animationType="fade" visible={isModalVisible}>
+        <ActivityIndicator style={styles.indicator} color="#19C23D" />
+        <Modal transparent={true} animationType="fade" visible={isModalVisible}>
           <View style={styles.modalBackground}>
             <View style={styles.modalContainer}>
               <View style={styles.modalTextContainer}>
                 <CustomText style={styles.modalText}>
-                  외출 신청이 완료 되었습니다.
+                  {locationStatus} 신청이 완료 되었습니다.
                 </CustomText>
               </View>
               <View style={styles.modalButtonContainer}>

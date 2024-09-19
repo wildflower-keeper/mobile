@@ -8,7 +8,7 @@ const useGetUserInfo = () => {
     staleTime: 1000 * 60 * 60,
   });
 
-  return [data, isSuccess, isError, isPending];
+  return {data, isSuccess, isError, isPending};
 };
 
 export {useGetUserInfo};

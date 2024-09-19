@@ -9,15 +9,16 @@ const linking = {
   prefixes: ['wildflower-keeper://'], // URL 스킴
   config: {
     screens: {
-      Loading: 'loading', // loading 경로가 Loading 스크린에 매핑됨
+      ScanResult: 'ScanResult', // loading 경로가 Loading 스크린에 매핑됨
     },
   },
 };
 
 const RootNavigator = ({}) => {
   const {isLoggedIn, setIsLoggedIn} = useLoggedInStore();
-  const [_, isSuccess, isError] = useGetUserInfo();
+  const {isSuccess, isError} = useGetUserInfo();
   useEffect(() => {
+    console.log(isLoggedIn, isSuccess);
     const loginCheck = async () => {
       if (isSuccess) {
         setIsLoggedIn(true);
