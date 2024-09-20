@@ -96,10 +96,8 @@ const AuthSignup = ({}: AuthSignupProps) => {
   };
 
   const updateAllTermsIdsAgree = () => {
-    termsList.map(term => {
-      const updatedTermsList = termsList.map(term => ({...term, agree: true}));
-      setTermsList(updatedTermsList);
-    });
+    const updatedTermsList = termsList.map(term => ({...term, agree: true}));
+    setTermsList(updatedTermsList);
   };
 
   useEffect(() => {
