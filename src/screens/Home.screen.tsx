@@ -11,8 +11,8 @@ import useUserInfoStore from '@/stores/useUserInfo';
 import {backendAxiosInstance} from '@/utils/api/api';
 import {getAccessToken} from '@/utils/api/auth';
 import HomeHeader from '@/components/HomeHeader';
+import emergencyCall from '@/utils/api/emergency';
 import useLocation from '@/hooks/queries/useLocation';
-
 interface HomeProps {}
 
 const today = new Date();
@@ -61,12 +61,20 @@ const Home = ({navigation}: HomeProps) => {
       setCurrentWeather({weather, temp});
     });
   }, [userLocation]);
-  // TODO : 긴급도움 요청하기 api 연결해서 test
-  const handlePressEmergency = () => {
-    const phoneNumber = '01054283576';
-    const url = `tel:${phoneNumber}`;
 
-    Linking.openURL(url);
+  const handlePressEmergency = async () => {
+    // const phoneNumber = '01054283576';
+    // const url = `tel:${phoneNumber}`;
+    Geolocation.getCurrentPosition(
+      info => {
+        const {latitude, longitude} = info.coords;
+        emergencyCall({latitude, longitude});
+      },
+      () => setIsUserLocationError(true),
+      {enableHighAccuracy: true},
+    );
+
+    // Linking.openURL(url);
   };
 
   return (
