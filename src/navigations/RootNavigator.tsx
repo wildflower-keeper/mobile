@@ -9,7 +9,7 @@ const linking = {
   prefixes: ['wildflower-keeper://'], // URL 스킴
   config: {
     screens: {
-      ScanResult: 'ScanResult', 
+      ScanResult: 'ScanResult',
     },
   },
 };
@@ -31,7 +31,7 @@ const RootNavigator = ({}) => {
 
   return (
     <NavigationContainer linking={linking}>
-      {!isLoggedIn ? <HomeStackNavigator /> : <AuthStackNavigator />}
+      {isLoggedIn ? <HomeStackNavigator /> : <AuthStackNavigator />}
     </NavigationContainer>
   );
 };
