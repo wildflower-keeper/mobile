@@ -6,6 +6,7 @@ export type userInfoType = {
   shelterId: number;
   homelessName: string;
   shelterName: string;
+  shelterPhone : string;
   upcomingSleepover: upcomingSleepoverType;
 };
 
@@ -20,6 +21,7 @@ const useUserInfoStore = create<userInfoStoreType>(set => ({
     shelterId: 0,
     homelessName: '',
     shelterName: '',
+    shelterPhone: '',
     upcomingSleepover: {
       endDate: '',
       nightCount: 0,

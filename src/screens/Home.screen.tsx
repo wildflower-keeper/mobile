@@ -12,7 +12,6 @@ import {backendAxiosInstance} from '@/utils/api/api';
 import {getAccessToken} from '@/utils/api/auth';
 import HomeHeader from '@/components/HomeHeader';
 import emergencyCall from '@/utils/api/emergency';
-import useLocation from '@/hooks/queries/useLocation';
 interface HomeProps {}
 
 const today = new Date();
@@ -25,7 +24,7 @@ export type userLocationType = {
 //TODO : home screen 리팩토링 필요
 const Home = ({navigation}: HomeProps) => {
   const {data, isSuccess} = useGetUserInfo();
-  const {setUserInfo} = useUserInfoStore();
+  const {userInfo, setUserInfo} = useUserInfoStore();
   const [userLocation, setUserLocation] = useState<userLocationType>({
     latitude: 37,
     longitude: 124,
@@ -63,8 +62,8 @@ const Home = ({navigation}: HomeProps) => {
   }, [userLocation]);
 
   const handlePressEmergency = async () => {
-    // const phoneNumber = '01054283576';
-    // const url = `tel:${phoneNumber}`;
+    const phoneNumber = userInfo.shelterPhone;
+    const url = `tel:${phoneNumber}`;
     Geolocation.getCurrentPosition(
       info => {
         const {latitude, longitude} = info.coords;
@@ -74,7 +73,7 @@ const Home = ({navigation}: HomeProps) => {
       {enableHighAccuracy: true},
     );
 
-    // Linking.openURL(url);
+    Linking.openURL(url);
   };
 
   return (
