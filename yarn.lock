@@ -2377,6 +2377,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@react-native-firebase/analytics@npm:^20.5.0":
+  version: 20.5.0
+  resolution: "@react-native-firebase/analytics@npm:20.5.0"
+  peerDependencies:
+    "@react-native-firebase/app": 20.5.0
+  checksum: af59364f0b02d6f2e15c19dabc414a7bb512f4475b965691d8ac9296639140143ccc3e8eb374e0e1e8ebc5618af6015f33ff3b2ad8ee757bbd7bfb364003f789
+  languageName: node
+  linkType: hard
+
 "@react-native-firebase/app@npm:^20.1.0":
   version: 20.1.0
   resolution: "@react-native-firebase/app@npm:20.1.0"
@@ -10883,6 +10892,7 @@ __metadata:
     "@notifee/react-native": ^7.8.2
     "@react-native-community/checkbox": ^0.5.17
     "@react-native-community/geolocation": ^3.2.1
+    "@react-native-firebase/analytics": ^20.5.0
     "@react-native-firebase/app": ^20.1.0
     "@react-native-firebase/messaging": ^20.1.0
     "@react-native-masked-view/masked-view": ^0.3.1

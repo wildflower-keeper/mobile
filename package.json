@@ -15,6 +15,7 @@
     "@notifee/react-native": "^7.8.2",
     "@react-native-community/checkbox": "^0.5.17",
     "@react-native-community/geolocation": "^3.2.1",
+    "@react-native-firebase/analytics": "^20.5.0",
     "@react-native-firebase/app": "^20.1.0",
     "@react-native-firebase/messaging": "^20.1.0",
     "@react-native-masked-view/masked-view": "^0.3.1",
