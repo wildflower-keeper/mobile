@@ -26,7 +26,6 @@ const useScan = () => {
             ...deepLinkData,
             locationStatus: locationStatusParam,
           });
-          // console.log('locationStatus', locationStatusParam);
         }
       }
     };
@@ -35,7 +34,6 @@ const useScan = () => {
 
     Linking.getInitialURL().then(url => {
       if (url) {
-        // console.log('deep link 로 열림', url);
         handleDeepLink({url});
       }
     });
@@ -44,32 +42,6 @@ const useScan = () => {
       linkEvent.remove();
     };
   }, []);
-
-  // const mutate = useMutation<{
-  //   locationStatus: locationStatusType;
-  // }>({
-  //   mutationKey: ['scan'],
-  //   mutationFn: async () => {
-  //     const response = await fetch(
-  //       'https://api.wildflower-gardening.com/api/v1/homeless-app/location',
-  //       {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           accept: '*/*',
-  //           'auth-token': token,
-  //         },
-
-  //         body: JSON.stringify({locationStatus}),
-  //       },
-  //     );
-  //     const result = await response.json();
-  //     console.log('data', result);
-  //     return result;
-  //   },
-  //   // staleTime: 0,
-  //   // gcTime: 0,
-  // });
 
   return {
     deepLinkData,

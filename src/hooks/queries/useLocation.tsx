@@ -6,11 +6,10 @@ import type {locationStatusType} from '@/hooks/queries/useScan';
 const useLocation = () => {
   const [token, setToken] = useState<string>('');
   useEffect(() => {
-    const fetchToken = async () => {
+    (async () => {
       const data = await getAccessToken();
       if (data) setToken(data);
-    };
-    fetchToken();
+    })();
   }, []);
 
   const {data} = useQuery({
@@ -41,7 +40,6 @@ const useLocation = () => {
   const mutate = useMutation({
     mutationKey: ['location'],
     mutationFn: async (newLocationStatus: locationStatusType) => {
-      console.log('newLocationStatus', newLocationStatus);
       return fetch(
         'https://api.wildflower-gardening.com/api/v1/homeless-app/location',
         {

@@ -16,9 +16,10 @@ import {
 import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
 import useScan from '@/hooks/queries/useScan';
 import useLocation from '@/hooks/queries/useLocation';
+import { locationStatusType } from '@/hooks/queries/useScan';
 
 type navigationProps = NavigationProp<HomeStackParamList>;
-
+const MUTATE_STATUS_ARR = ["IN_SHELTER","OUT_SHELTER"];
 const ScanResult = () => {
   const navigation = useNavigation<navigationProps>();
   const {deepLinkData} = useScan();
@@ -26,11 +27,9 @@ const ScanResult = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
-    if (
-      deepLinkData.locationStatus === 'IN_SHELTER' ||
-      deepLinkData.locationStatus === 'OUT_SHELTER'
-    ) {
-      mutate.mutate(deepLinkData.locationStatus);
+    const { locationStatus } = deepLinkData;
+    if (MUTATE_STATUS_ARR.includes(locationStatus)) {
+      mutate.mutate(locationStatus);
     }
   }, [deepLinkData]);
 
