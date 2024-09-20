@@ -31,7 +31,7 @@ const RootNavigator = ({}) => {
 
   return (
     <NavigationContainer linking={linking}>
-      {isLoggedIn ? <HomeStackNavigator /> : <AuthStackNavigator />}
+      {!isLoggedIn ? <HomeStackNavigator /> : <AuthStackNavigator />}
     </NavigationContainer>
   );
 };

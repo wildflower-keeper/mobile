@@ -38,7 +38,7 @@ type signupValueType = {
   shelterPin: string;
   deviceId: string;
   room?: string;
-  termsIdsToAgree?: number[];
+  termsIdsToAgree: number[];
   birthDate?: string | null;
   phoneNumber?: string;
   admissionDate?: string | null;
@@ -56,6 +56,11 @@ const AuthSignup = ({}: AuthSignupProps) => {
     phoneNumber: '',
     admissionDate: null,
   });
+  const submitActive =
+    signupValues.name &&
+    signupValues.shelterPin &&
+    signupValues.shelterId !== 0 &&
+    signupValues.termsIdsToAgree.length === 4;
   const {setIsLoggedIn} = useLoggedInStore();
   useEffect(() => {
     getDeviceUniqueId().then((result: string) => {
@@ -72,6 +77,8 @@ const AuthSignup = ({}: AuthSignupProps) => {
   const [termsList, setTermsList] = useState<TermsType[]>([
     {id: 1, agree: false},
     {id: 2, agree: false},
+    {id: 3, agree: false},
+    {id: 4, agree: false},
   ]);
   const termsListHandler = (id: string, value: boolean) => {
     const numberId = parseInt(id, 10);
@@ -81,26 +88,38 @@ const AuthSignup = ({}: AuthSignupProps) => {
     setTermsList(updatedTermsList);
   };
 
-  // 현재 약관이 존재하지 않아 이 부분은 주석처리 하였습니다.
-  // const updateTermsIdsAgree = () => {
-  //   const updatedTermsIdsToAgree = termsList
-  //     .filter(term => term.agree)
-  //     .map(term => term.id);
-  //   setSignupValues({...signupValues, termsIdsToAgree: updatedTermsIdsToAgree});
-  // };
-  // useEffect(() => {
-  //   updateTermsIdsAgree();
-  // }, [termsList]);
+  const updateTermsIdsAgree = () => {
+    const updatedTermsIdsToAgree = termsList
+      .filter(term => term.agree)
+      .map(term => term.id);
+    setSignupValues({...signupValues, termsIdsToAgree: updatedTermsIdsToAgree});
+  };
+
+  const updateAllTermsIdsAgree = () => {
+    termsList.map(term => {
+      const updatedTermsList = termsList.map(term => ({...term, agree: true}));
+      setTermsList(updatedTermsList);
+    });
+  };
+
+  useEffect(() => {
+    updateTermsIdsAgree();
+  }, [termsList]);
 
   const handleSubmit = async () => {
     try {
-      const res = await backendAxiosInstance({
-        method: 'POST',
-        headers: {'content-type': 'application/json', accept: '*/*'},
-        url: '/api/v1/homeless-app/homeless',
-        data: JSON.stringify(signupValues),
-      });
+      console.log(signupValues);
+      const res = await backendAxiosInstance.post(
+        '/api/v1/homeless-app/homeless',
+        signupValues,
+        {
+          headers: {'content-type': 'application/json', accept: '*/*'},
+        },
+      );
       const result = await res.data;
+      if (result.errorCode) {
+        throw new Error(result.description);
+      }
       setToken(signupValues.deviceId, result.accessToken);
       setIsLoggedIn(true);
       Toast.show({
@@ -108,8 +127,18 @@ const AuthSignup = ({}: AuthSignupProps) => {
         text1: '회원가입이 정상적으로 완료되었습니다.',
         position: 'bottom',
       });
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error) {
+          Toast.show({
+            type: 'error',
+            text1: '가입 오류',
+            text2: error.message,
+            text2Style: {fontSize: 10},
+            position: 'bottom',
+          });
+        }
+      }
     }
   };
 
@@ -153,23 +182,55 @@ const AuthSignup = ({}: AuthSignupProps) => {
             value={signupValues.phoneNumber}
             onChangeText={text => handleChangeText('phoneNumber', text)}
           />
-          <ConsentField
-            label="이용약관 동의"
-            check={termsList[0].agree}
-            onChange={termsListHandler}
-            id={String(termsList[0].id)}
-          />
-          <ConsentField
-            label="개인정보 수집 및 이용동의"
-            check={termsList[1].agree}
-            onChange={termsListHandler}
-            id={String(termsList[1].id)}
-          />
+          <View style={styles.termsContainer}>
+            <ConsentField
+              label="전체 동의"
+              isRequired={false}
+              isArrow={false}
+              onChange={updateAllTermsIdsAgree}
+              check={termsList.every(term => term.agree)}
+              id={'all'}
+              size="large"
+            />
+            <ConsentField
+              label="서비스 이용약관 동의"
+              isRequired
+              isArrow={false}
+              check={termsList[0].agree}
+              onChange={termsListHandler}
+              id={String(termsList[0].id)}
+            />
+            <ConsentField
+              label="개인정보 수집 및 이용동의"
+              isRequired
+              isArrow={false}
+              check={termsList[1].agree}
+              onChange={termsListHandler}
+              id={String(termsList[1].id)}
+            />
+            <ConsentField
+              label="개인정보 제3자 제공 동의"
+              isRequired
+              isArrow={false}
+              check={termsList[2].agree}
+              onChange={termsListHandler}
+              id={String(termsList[2].id)}
+            />
+            <ConsentField
+              label="위치정보 수집 및 이용에 대한 동의"
+              isRequired
+              isArrow={false}
+              check={termsList[3].agree}
+              onChange={termsListHandler}
+              id={String(termsList[3].id)}
+            />
+          </View>
           <View style={styles.buttonContainer}>
             <CustomButton
               label="완료"
               variant="filled"
               onPress={handleSubmit}
+              disabled={!submitActive}
             />
           </View>
         </ScrollView>
@@ -202,6 +263,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   buttonContainer: {width: '100%', alignItems: 'center'},
+  termsContainer: {
+    flex: 0,
+    width: '100%',
+    paddingHorizontal: 5,
+    paddingVertical: 10,
+  },
 });
 
 export default AuthSignup;
