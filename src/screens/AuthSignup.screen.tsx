@@ -108,7 +108,6 @@ const AuthSignup = ({}: AuthSignupProps) => {
 
   const handleSubmit = async () => {
     try {
-      console.log(signupValues);
       const res = await backendAxiosInstance.post(
         '/api/v1/homeless-app/homeless',
         signupValues,
