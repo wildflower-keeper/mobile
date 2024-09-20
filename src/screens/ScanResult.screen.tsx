@@ -1,5 +1,5 @@
 import CustomText from '@/components/base/CustomText';
-import {useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -8,16 +8,37 @@ import {
   Modal,
   TouchableOpacity,
 } from 'react-native';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
+import useScan from '@/hooks/queries/useScan';
+import useLocation from '@/hooks/queries/useLocation';
+import { locationStatusType } from '@/hooks/queries/useScan';
 
 type navigationProps = NavigationProp<HomeStackParamList>;
-
-const Loading = () => {
+const MUTATE_STATUS_ARR = ["IN_SHELTER","OUT_SHELTER"];
+const ScanResult = () => {
   const navigation = useNavigation<navigationProps>();
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(true);
+  const {deepLinkData} = useScan();
+  const {mutate} = useLocation();
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
-  //TODO : 딥링크 파라미터 읽고 post 처리
+  useEffect(() => {
+    const { locationStatus } = deepLinkData;
+    if (MUTATE_STATUS_ARR.includes(locationStatus)) {
+      mutate.mutate(locationStatus);
+    }
+  }, [deepLinkData]);
+
+  useEffect(() => {
+    if (mutate.status === 'success') {
+      setIsModalVisible(true);
+    }
+  }, [mutate.status]);
+
   const handlePressConfirm = () => {
     setIsModalVisible(false);
     setTimeout(() => {
@@ -28,13 +49,13 @@ const Loading = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-        {/* <ActivityIndicator style={styles.indicator} color="#19C23D" /> */}
-        <Modal  transparent={true} animationType="fade" visible={isModalVisible}>
+        <ActivityIndicator style={styles.indicator} color="#19C23D" />
+        <Modal transparent={true} animationType="fade" visible={isModalVisible}>
           <View style={styles.modalBackground}>
             <View style={styles.modalContainer}>
               <View style={styles.modalTextContainer}>
                 <CustomText style={styles.modalText}>
-                  외출 신청이 완료 되었습니다.
+                  {deepLinkData.locationStatus} 신청이 완료 되었습니다.
                 </CustomText>
               </View>
               <View style={styles.modalButtonContainer}>
@@ -105,4 +126,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Loading;
+export default ScanResult;
