@@ -26,7 +26,6 @@ const getUserInfo = async () => {
     method: 'GET',
     headers: {
       'content-type': 'application/json',
-      accept: '*/*',
       'auth-token': await getAccessToken(),
     },
     url: '/api/v1/homeless-app/homeless',
