@@ -8,8 +8,6 @@ import {getWeather} from '@/utils/api/weather';
 import LinearGradient from 'react-native-linear-gradient';
 import SleepoverScheduleContainer from '@/components/SleepoverScheduleContainer';
 import useUserInfoStore from '@/stores/useUserInfo';
-import {backendAxiosInstance} from '@/utils/api/api';
-import {getAccessToken} from '@/utils/api/auth';
 import HomeHeader from '@/components/HomeHeader';
 import emergencyCall from '@/utils/api/emergency';
 interface HomeProps {}
@@ -25,41 +23,11 @@ export type userLocationType = {
 const Home = ({navigation}: HomeProps) => {
   const {data, isSuccess} = useGetUserInfo();
   const {userInfo, setUserInfo} = useUserInfoStore();
-  const [userLocation, setUserLocation] = useState<userLocationType>({
-    latitude: 37,
-    longitude: 124,
-  });
-  const [currentWeather, setCurrentWeather] = useState({
-    weather: '',
-    temp: 0,
-  });
-  const [isUserLocationError, setIsUserLocationError] =
-    useState<boolean>(false);
-
   useEffect(() => {
     if (isSuccess) {
       setUserInfo({...data});
     }
   }, [data, isSuccess]);
-
-  useEffect(() => {
-    Geolocation.getCurrentPosition(
-      info => {
-        const {latitude, longitude} = info.coords;
-        setUserLocation({latitude, longitude});
-        setIsUserLocationError(false);
-      },
-      () => setIsUserLocationError(true),
-      {enableHighAccuracy: true},
-    );
-  }, []);
-
-  useEffect(() => {
-    const weatherItem = getWeather(userLocation);
-    weatherItem.then(({weather, temp}) => {
-      setCurrentWeather({weather, temp});
-    });
-  }, [userLocation]);
 
   const handlePressEmergency = async () => {
     const phoneNumber = userInfo.shelterPhone;
@@ -69,7 +37,7 @@ const Home = ({navigation}: HomeProps) => {
         const {latitude, longitude} = info.coords;
         emergencyCall({latitude, longitude});
       },
-      () => setIsUserLocationError(true),
+      () => {},
       {enableHighAccuracy: true},
     );
 
@@ -82,7 +50,6 @@ const Home = ({navigation}: HomeProps) => {
         <HomeHeader
           shelterName={data.shelterName}
           homelessName={data.homelessName}
-          temp={currentWeather.temp}
           today={today}
         />
       )}

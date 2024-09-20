@@ -12,7 +12,9 @@ const useLocation = () => {
     })();
   }, []);
 
-  const {data} = useQuery({
+  const {data} = useQuery<{
+    locationStatus: locationStatusType;
+  }>({
     queryKey: ['location'],
     enabled: !!token,
     queryFn: async () => {
@@ -32,7 +34,14 @@ const useLocation = () => {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
+
       const result = await response.json();
+
+      // 서버 응답 확인 (필요시 에러 처리)
+      if (!result.locationStatus) {
+        throw new Error('Location status is missing from the response');
+      }
+
       return result;
     },
   });

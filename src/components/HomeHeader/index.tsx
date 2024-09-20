@@ -1,7 +1,6 @@
 import React, {useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import CustomText from '../base/CustomText';
-import AntDesignicon from 'react-native-vector-icons/AntDesign';
 import {colors} from '@/constants';
 import {formatUpdateTime} from '@/utils/date/date';
 import useLocation from '@/hooks/queries/useLocation';
@@ -9,22 +8,16 @@ import useLocation from '@/hooks/queries/useLocation';
 interface HomeHeaderProps {
   shelterName: string;
   homelessName: string;
-  temp: number;
   today: Date;
 }
 
-const HomeHeader = ({
-  shelterName,
-  homelessName,
-  temp,
-  today,
-}: HomeHeaderProps) => {
+const HomeHeader = ({shelterName, homelessName, today}: HomeHeaderProps) => {
   const {data: locationStatusQuery} = useLocation();
   const locationStatus = useMemo(() => {
-    if (locationStatusQuery === 'IN_SHELTER') {
+    if (locationStatusQuery?.locationStatus === 'IN_SHELTER') {
       return '재실';
     }
-    if (locationStatusQuery === 'OUT_SHELTER') {
+    if (locationStatusQuery?.locationStatus === 'OUT_SHELTER') {
       return '외출';
     }
   }, [locationStatusQuery]);
