@@ -42,9 +42,6 @@ const CalendarContainer = () => {
      * 최대 2개의 날짜를 선택할 수 있으며, 하나의 날짜가 선택되어 있는 경우,
      * 늦게 선택된 날짜까지의 기간을 구해 중간을 색칠해주는 기능.
      */
-    if (overnightRequestValues.startDate === day.dateString) {
-      return;
-    }
     if (Object.keys(selectDate).length === 1) {
       const firstDayKey = Object.keys(selectDate)[0];
       const firstDay: calenderOptionType = {
@@ -56,13 +53,24 @@ const CalendarContainer = () => {
         new Date(firstDayKey),
         new Date(day.dateString),
       );
+      if (days.length === 0) {
+        setSelectDate({
+          [day.dateString]: {
+            startingDay: true,
+            endingDay: true,
+            color: colors.PRIMARY,
+            textColor: colors.WHITE,
+          },
+        });
+        return;
+      }
       const daysObject: selectOvernightType = {};
-      days.forEach(item => {
-        daysObject[item] = {
+      for (const day of days) {
+        daysObject[day] = {
           color: colors.PRIMARY,
           textColor: colors.WHITE,
         };
-      });
+      }
       setSelectDate({
         ...daysObject,
         [firstDayKey]: firstDay,
