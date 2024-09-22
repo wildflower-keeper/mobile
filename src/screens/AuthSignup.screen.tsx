@@ -192,7 +192,6 @@ const AuthSignup = ({}: AuthSignupProps) => {
               label="전체 동의"
               isRequired={false}
               isArrow={false}
-              isLink={false}
               onChange={updateAllTermsIdsAgree}
               check={termsList.every(term => term.agree)}
               id={'all'}
