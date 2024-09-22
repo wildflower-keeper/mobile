@@ -74,6 +74,7 @@ const SelectField = ({
         textStyle={styles.dropdownText}
         style={styles.borderClose}
         tickIconContainerStyle={styles.tick}
+        listMode="SCROLLVIEW"
       />
     </View>
   );
