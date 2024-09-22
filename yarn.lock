@@ -9694,19 +9694,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-background-fetch@npm:^4.2.1, react-native-background-fetch@npm:~4.2.5":
+"react-native-background-fetch@npm:^4.2.1":
   version: 4.2.5
   resolution: "react-native-background-fetch@npm:4.2.5"
   checksum: d124418a69377f0399b72cb86bfea5e801a4dc2d5b8215e6736fd21836a82ad514a3b89fd2915b866c205e6e7f2feddd0486d4893a0261e7d978502773397d45
-  languageName: node
-  linkType: hard
-
-"react-native-background-geolocation@npm:^4.16.2":
-  version: 4.16.2
-  resolution: "react-native-background-geolocation@npm:4.16.2"
-  dependencies:
-    react-native-background-fetch: ~4.2.5
-  checksum: 24134d0022d9edb315f108699046ec45ed22715f1c940253f6d8369eb9fe81e8279500a95f9269e6d23871ba8096f64650baca0afee066c0dccf8f30990261cb
   languageName: node
   linkType: hard
 
@@ -11676,7 +11667,6 @@ __metadata:
     react: ^18.3.1
     react-native: 0.74.1
     react-native-background-fetch: ^4.2.1
-    react-native-background-geolocation: ^4.16.2
     react-native-calendars: ^1.1305.0
     react-native-device-info: ^11.1.0
     react-native-dotenv: ^3.4.11
