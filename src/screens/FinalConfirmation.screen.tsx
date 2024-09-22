@@ -15,7 +15,8 @@ interface FinalConfirmationProps {}
 
 const FinalConfirmation = ({navigation}: FinalConfirmationProps) => {
   const {userInfo} = useUserInfoStore();
-  const {overnightRequestValues} = useOvernightRequestStore();
+  const {overnightRequestValues, setOvernightRequestValues} =
+    useOvernightRequestStore();
   const overnightPost = useMutateCreateOvernight();
   const [checkList, setCheckList] = useState({
     optionOne: false,
@@ -37,6 +38,12 @@ const FinalConfirmation = ({navigation}: FinalConfirmationProps) => {
               text1: '외박 신청이 완료되었습니다.',
               position: 'bottom',
             });
+          setOvernightRequestValues({
+            startDate: '',
+            endDate: '',
+            reason: '',
+            emergencyContact: '',
+          });
           navigation.navigate('Home');
         },
         onError: error => {
