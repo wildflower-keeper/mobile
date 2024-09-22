@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Pressable, StyleSheet, View} from 'react-native';
+import {Linking, Pressable, StyleSheet, View} from 'react-native';
 import CustomText from './base/CustomText';
 import CheckBox from '@react-native-community/checkbox';
 
@@ -11,6 +11,7 @@ interface ConsentFieldProps {
   onChange: (id: string, value: boolean) => void;
   id: string;
   size?: 'temp' | 'xLarge' | 'large' | 'default' | 'small' | 'xSmall';
+  url?: string;
 }
 
 const ConsentField = ({
@@ -21,7 +22,20 @@ const ConsentField = ({
   onChange,
   id,
   size = 'small',
+  url,
 }: ConsentFieldProps) => {
+  const handleLink = async () => {
+    if (!url) {
+      return;
+    }
+    const supported = await Linking.canOpenURL(url);
+    if (supported) {
+      await Linking.openURL(url);
+    } else {
+      throw new Error(`${url} 정보를 찾을수 없습니다.`);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.innerContainer}>
@@ -32,7 +46,14 @@ const ConsentField = ({
             </CustomText>
           )}
           <CustomText size={size}>{label}</CustomText>
-          <Pressable>{isArrow && <CustomText>{'>'}</CustomText>}</Pressable>
+          <Pressable onPress={handleLink}>
+            {Boolean(url) && (
+              <CustomText size="small" textColor="weak">
+                보기
+              </CustomText>
+            )}
+            {isArrow && <CustomText>{'>'}</CustomText>}
+          </Pressable>
         </View>
         <CheckBox
           style={styles.checkbox}

@@ -44,6 +44,13 @@ type signupValueType = {
   admissionDate?: string | null;
 };
 
+const TERMS_URL: string[] = [
+  'https://stripe-hugger-a45.notion.site/10986ca3c001802e9e4bf75faed85c6b',
+  'https://stripe-hugger-a45.notion.site/10986ca3c001805b9925ca43ccab661a?pvs=74',
+  'https://stripe-hugger-a45.notion.site/3-10986ca3c00180c280afc613fa89ef8b?pvs=4',
+  'https://stripe-hugger-a45.notion.site/32eff02711704b2da716b5b3b9baab1c?pvs=4',
+];
+
 const AuthSignup = ({}: AuthSignupProps) => {
   const [signupValues, setSignupValues] = useState<signupValueType>({
     name: '',
@@ -106,6 +113,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
 
   const handleSubmit = async () => {
     try {
+      console.log(signupValues);
       const res = await backendAxiosInstance.post(
         '/api/v1/homeless-app/homeless',
         signupValues,
@@ -184,6 +192,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
               label="전체 동의"
               isRequired={false}
               isArrow={false}
+              isLink={false}
               onChange={updateAllTermsIdsAgree}
               check={termsList.every(term => term.agree)}
               id={'all'}
@@ -196,6 +205,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
               check={termsList[0].agree}
               onChange={termsListHandler}
               id={String(termsList[0].id)}
+              url={TERMS_URL[0]}
             />
             <ConsentField
               label="개인정보 수집 및 이용동의"
@@ -204,6 +214,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
               check={termsList[1].agree}
               onChange={termsListHandler}
               id={String(termsList[1].id)}
+              url={TERMS_URL[1]}
             />
             <ConsentField
               label="개인정보 제3자 제공 동의"
@@ -212,6 +223,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
               check={termsList[2].agree}
               onChange={termsListHandler}
               id={String(termsList[2].id)}
+              url={TERMS_URL[2]}
             />
             <ConsentField
               label="위치정보 수집 및 이용에 대한 동의"
@@ -220,6 +232,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
               check={termsList[3].agree}
               onChange={termsListHandler}
               id={String(termsList[3].id)}
+              url={TERMS_URL[3]}
             />
           </View>
           <View style={styles.buttonContainer}>
