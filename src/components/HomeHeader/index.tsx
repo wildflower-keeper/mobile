@@ -38,7 +38,7 @@ const HomeHeader = ({shelterName, homelessName, today}: HomeHeaderProps) => {
         <View style={styles.weatherContainer}>
           <View style={styles.weatherFlexContainer}>
             <CustomText textColor="white" weight="heavy">
-              {`${locationStatus} 중`}
+              {locationStatus ? `${locationStatus} 중` : '상태창'}
             </CustomText>
           </View>
         </View>
