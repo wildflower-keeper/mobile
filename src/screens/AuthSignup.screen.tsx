@@ -57,12 +57,14 @@ const AuthSignup = ({}: AuthSignupProps) => {
     phoneNumber: '',
     admissionDate: null,
   });
+  const [termsList, setTermsList] = useState<TermsType[]>([]);
+
   const submitActive =
     signupValues.name &&
     signupValues.shelterPin &&
     signupValues.shelterId !== 0 &&
     signupValues.room.length !== 0 &&
-    signupValues.termsIdsToAgree.length === 4;
+    signupValues.termsIdsToAgree.length === termsList.length;
   const {setIsLoggedIn} = useLoggedInStore();
   useEffect(() => {
     getDeviceUniqueId().then((result: string) => {
@@ -113,8 +115,6 @@ const AuthSignup = ({}: AuthSignupProps) => {
       }
     });
   }, []);
-
-  const [termsList, setTermsList] = useState<TermsType[]>([]);
 
   const termsListHandler = (id: string, value: boolean) => {
     const numberId = parseInt(id, 10);
