@@ -1,17 +1,11 @@
-import {userLocationType} from '@/screens/Home.screen';
-import {backendAxiosInstance} from './api';
 import {getAccessToken} from './auth';
 
-const emergencyCall = async (location: userLocationType) => {
+const emergencyCall = async () => {
   try {
-    const {latitude, longitude} = location;
     const reqData = {
-      location: {
-        lat: latitude,
-        lon: longitude,
-      },
+      location: {},
     };
-    console.log(reqData, location);
+    console.log(reqData);
     const response = await fetch(
       'https://api.wildflower-gardening.com/api/v1/homeless-app/emergency',
       {
