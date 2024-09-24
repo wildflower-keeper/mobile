@@ -17,17 +17,18 @@ import Toast from 'react-native-toast-message';
 import {getDeviceUniqueId} from '@/utils/api/auth';
 import useLoggedInStore from '@/stores/useLoggedIn';
 import {ScrollView} from 'react-native-gesture-handler';
+import {AxiosResponse} from 'axios';
 
 interface AuthSignupProps {}
 
-type termsIdsToAgreeType = {
+type TermsIdsToAgreeType = {
   id: number;
   title: string;
   detail: string;
   isEssential: boolean;
 };
 
-interface TermsType {
+interface TermsType extends TermsIdsToAgreeType {
   id: number;
   agree: boolean;
 }
@@ -37,19 +38,12 @@ type signupValueType = {
   shelterId: number;
   shelterPin: string;
   deviceId: string;
-  room?: string;
+  room: string;
   termsIdsToAgree: number[];
   birthDate?: string | null;
   phoneNumber?: string;
   admissionDate?: string | null;
 };
-
-const TERMS_URL: string[] = [
-  'https://stripe-hugger-a45.notion.site/10986ca3c001802e9e4bf75faed85c6b',
-  'https://stripe-hugger-a45.notion.site/10986ca3c001805b9925ca43ccab661a?pvs=74',
-  'https://stripe-hugger-a45.notion.site/3-10986ca3c00180c280afc613fa89ef8b?pvs=4',
-  'https://stripe-hugger-a45.notion.site/32eff02711704b2da716b5b3b9baab1c?pvs=4',
-];
 
 const AuthSignup = ({}: AuthSignupProps) => {
   const [signupValues, setSignupValues] = useState<signupValueType>({
@@ -63,11 +57,14 @@ const AuthSignup = ({}: AuthSignupProps) => {
     phoneNumber: '',
     admissionDate: null,
   });
+  const [termsList, setTermsList] = useState<TermsType[]>([]);
+
   const submitActive =
     signupValues.name &&
     signupValues.shelterPin &&
     signupValues.shelterId !== 0 &&
-    signupValues.termsIdsToAgree.length === 4;
+    signupValues.room.length !== 0 &&
+    signupValues.termsIdsToAgree.length === termsList.length;
   const {setIsLoggedIn} = useLoggedInStore();
   useEffect(() => {
     getDeviceUniqueId().then((result: string) => {
@@ -77,16 +74,48 @@ const AuthSignup = ({}: AuthSignupProps) => {
   const handleChangeText = (name: string, text: string) => {
     setSignupValues({...signupValues, [name]: text});
   };
+
+  const handleNumericText = (name: string, text: string) => {
+    if (isNaN(Number(text))) {
+      return;
+    }
+    const newValue = text.replace('.', '').trim();
+    setSignupValues({...signupValues, [name]: newValue});
+  };
+
   const handleChangeSelect = (value: number) => {
     setSignupValues({...signupValues, shelterId: value});
   };
 
-  const [termsList, setTermsList] = useState<TermsType[]>([
-    {id: 1, agree: false},
-    {id: 2, agree: false},
-    {id: 3, agree: false},
-    {id: 4, agree: false},
-  ]);
+  const getTerms = async () => {
+    try {
+      const res: AxiosResponse<TermsIdsToAgreeType[]> =
+        await backendAxiosInstance.get('api/v1/homeless-app/terms', {
+          headers: {Accept: '*/*'},
+        });
+      return res.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error) {
+          Toast.show({
+            text1: '서버 에러',
+            type: 'error',
+            text2: error.message,
+            text2Style: {fontSize: 10},
+            position: 'bottom',
+          });
+        }
+      }
+    }
+  };
+  useEffect(() => {
+    getTerms().then(terms => {
+      if (terms) {
+        setTermsList(terms.map(term => ({...term, agree: false})));
+      }
+    });
+  }, []);
+
   const termsListHandler = (id: string, value: boolean) => {
     const numberId = parseInt(id, 10);
     const updatedTermsList = termsList.map(term =>
@@ -171,20 +200,24 @@ const AuthSignup = ({}: AuthSignupProps) => {
             isRequired
             isPinNumber
             secureTextEntry
+            keyboardType="numeric"
             value={signupValues.shelterPin}
-            onChangeText={text => handleChangeText('shelterPin', text)}
+            onChangeText={text => handleNumericText('shelterPin', text)}
           />
           <InputField
             labelName="호실"
             placeholder="이용하시는 호실을 입력해주세요"
+            isRequired
+            keyboardType="numeric"
             value={signupValues.room}
-            onChangeText={text => handleChangeText('room', text)}
+            onChangeText={text => handleNumericText('room', text)}
           />
           <InputField
             labelName="전화번호"
             placeholder="전화번호를 입력해주세요"
+            keyboardType="numeric"
             value={signupValues.phoneNumber}
-            onChangeText={text => handleChangeText('phoneNumber', text)}
+            onChangeText={text => handleNumericText('phoneNumber', text)}
           />
           <View style={styles.termsContainer}>
             <ConsentField
@@ -196,42 +229,20 @@ const AuthSignup = ({}: AuthSignupProps) => {
               id={'all'}
               size="large"
             />
-            <ConsentField
-              label="서비스 이용약관 동의"
-              isRequired
-              isArrow={false}
-              check={termsList[0].agree}
-              onChange={termsListHandler}
-              id={String(termsList[0].id)}
-              url={TERMS_URL[0]}
-            />
-            <ConsentField
-              label="개인정보 수집 및 이용동의"
-              isRequired
-              isArrow={false}
-              check={termsList[1].agree}
-              onChange={termsListHandler}
-              id={String(termsList[1].id)}
-              url={TERMS_URL[1]}
-            />
-            <ConsentField
-              label="개인정보 제3자 제공 동의"
-              isRequired
-              isArrow={false}
-              check={termsList[2].agree}
-              onChange={termsListHandler}
-              id={String(termsList[2].id)}
-              url={TERMS_URL[2]}
-            />
-            <ConsentField
-              label="위치정보 수집 및 이용에 대한 동의"
-              isRequired
-              isArrow={false}
-              check={termsList[3].agree}
-              onChange={termsListHandler}
-              id={String(termsList[3].id)}
-              url={TERMS_URL[3]}
-            />
+            {termsList.map(({id, title, detail, agree}) => {
+              return (
+                <ConsentField
+                  key={id}
+                  label={title}
+                  isRequired
+                  isArrow={false}
+                  check={agree}
+                  onChange={termsListHandler}
+                  id={String(id)}
+                  url={detail}
+                />
+              );
+            })}
           </View>
           <View style={styles.buttonContainer}>
             <CustomButton

@@ -29,18 +29,10 @@ const Home = ({navigation}: HomeProps) => {
     }
   }, [data, isSuccess]);
 
-  const handlePressEmergency = async () => {
+  const handlePressEmergency = () => {
     const phoneNumber = userInfo.shelterPhone;
     const url = `tel:${phoneNumber}`;
-    Geolocation.getCurrentPosition(
-      info => {
-        const {latitude, longitude} = info.coords;
-        emergencyCall({latitude, longitude});
-      },
-      () => {},
-      {enableHighAccuracy: true},
-    );
-
+    emergencyCall();
     Linking.openURL(url);
   };
 
