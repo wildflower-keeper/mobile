@@ -37,7 +37,7 @@ type signupValueType = {
   shelterId: number;
   shelterPin: string;
   deviceId: string;
-  room?: string;
+  room: string;
   termsIdsToAgree: number[];
   birthDate?: string | null;
   phoneNumber?: string;
@@ -67,6 +67,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
     signupValues.name &&
     signupValues.shelterPin &&
     signupValues.shelterId !== 0 &&
+    signupValues.room.length !== 0 &&
     signupValues.termsIdsToAgree.length === 4;
   const {setIsLoggedIn} = useLoggedInStore();
   useEffect(() => {
@@ -171,18 +172,22 @@ const AuthSignup = ({}: AuthSignupProps) => {
             isRequired
             isPinNumber
             secureTextEntry
+            keyboardType="numeric"
             value={signupValues.shelterPin}
             onChangeText={text => handleChangeText('shelterPin', text)}
           />
           <InputField
             labelName="호실"
             placeholder="이용하시는 호실을 입력해주세요"
+            isRequired
+            keyboardType="numeric"
             value={signupValues.room}
             onChangeText={text => handleChangeText('room', text)}
           />
           <InputField
             labelName="전화번호"
             placeholder="전화번호를 입력해주세요"
+            keyboardType="numeric"
             value={signupValues.phoneNumber}
             onChangeText={text => handleChangeText('phoneNumber', text)}
           />
