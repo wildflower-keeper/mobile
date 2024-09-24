@@ -15,11 +15,11 @@ const AuthHome = ({navigation}: AuthHomeProps) => {
         <Image source={WildFlowerTitle} style={styles.titleImage} />
       </View>
       <View style={styles.buttonContainer}>
-        <CustomButton
+        {/* <CustomButton
           label="로그인"
           size="lg"
           onPress={() => navigation.navigate('AuthLogin')}
-        />
+        /> */}
         <CustomButton
           label="회원가입"
           size="lg"
