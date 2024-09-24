@@ -72,6 +72,15 @@ const AuthSignup = ({}: AuthSignupProps) => {
   const handleChangeText = (name: string, text: string) => {
     setSignupValues({...signupValues, [name]: text});
   };
+
+  const handleNumericText = (name: string, text: string) => {
+    if (isNaN(Number(text))) {
+      return;
+    }
+    const newValue = text.replace('.', '').trim();
+    setSignupValues({...signupValues, [name]: newValue});
+  };
+
   const handleChangeSelect = (value: number) => {
     setSignupValues({...signupValues, shelterId: value});
   };
@@ -193,7 +202,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
             secureTextEntry
             keyboardType="numeric"
             value={signupValues.shelterPin}
-            onChangeText={text => handleChangeText('shelterPin', text)}
+            onChangeText={text => handleNumericText('shelterPin', text)}
           />
           <InputField
             labelName="호실"
@@ -201,14 +210,14 @@ const AuthSignup = ({}: AuthSignupProps) => {
             isRequired
             keyboardType="numeric"
             value={signupValues.room}
-            onChangeText={text => handleChangeText('room', text)}
+            onChangeText={text => handleNumericText('room', text)}
           />
           <InputField
             labelName="전화번호"
             placeholder="전화번호를 입력해주세요"
             keyboardType="numeric"
             value={signupValues.phoneNumber}
-            onChangeText={text => handleChangeText('phoneNumber', text)}
+            onChangeText={text => handleNumericText('phoneNumber', text)}
           />
           <View style={styles.termsContainer}>
             <ConsentField
