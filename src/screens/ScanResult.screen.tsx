@@ -16,10 +16,22 @@ import {
 import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
 import useScan from '@/hooks/queries/useScan';
 import useLocation from '@/hooks/queries/useLocation';
-import { locationStatusType } from '@/hooks/queries/useScan';
+import {locationStatusType} from '@/hooks/queries/useScan';
 
 type navigationProps = NavigationProp<HomeStackParamList>;
-const MUTATE_STATUS_ARR = ["IN_SHELTER","OUT_SHELTER"];
+
+type MutationStatusType = 'IN_SHELTER' | 'OUT_SHELTER' | '';
+
+interface ModalResult {
+  IN_SHELTER: string;
+  OUT_SHELTER: string;
+}
+
+const MUTATE_STATUS_ARR: MutationStatusType[] = ['IN_SHELTER', 'OUT_SHELTER'];
+const MODAL_RESULT: ModalResult = {
+  IN_SHELTER: '재실',
+  OUT_SHELTER: '외출',
+};
 const ScanResult = () => {
   const navigation = useNavigation<navigationProps>();
   const {deepLinkData} = useScan();
@@ -27,7 +39,7 @@ const ScanResult = () => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   useEffect(() => {
-    const { locationStatus } = deepLinkData;
+    const {locationStatus} = deepLinkData;
     if (MUTATE_STATUS_ARR.includes(locationStatus)) {
       mutate.mutate(locationStatus);
     }
@@ -55,7 +67,9 @@ const ScanResult = () => {
             <View style={styles.modalContainer}>
               <View style={styles.modalTextContainer}>
                 <CustomText style={styles.modalText}>
-                  {deepLinkData.locationStatus} 신청이 완료 되었습니다.
+                  {deepLinkData.locationStatus &&
+                    MODAL_RESULT[deepLinkData.locationStatus]}
+                  신청이 완료 되었습니다.
                 </CustomText>
               </View>
               <View style={styles.modalButtonContainer}>
