@@ -19,6 +19,7 @@ const CustomText = ({
 }: CustomTextProps) => {
   return (
     <Text
+      allowFontScaling={false}
       style={[
         styles.text,
         styles[`${textColor}Text`],

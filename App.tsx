@@ -6,7 +6,23 @@ import queryClient from '@/utils/api/queryClient';
 import RootNavigator from '@/navigations/RootNavigator';
 import messaging from '@react-native-firebase/messaging';
 import {Alert, AppRegistry} from 'react-native';
+import {Text, TextInput} from 'react-native';
 
+interface TextWithDefaultProps extends Text {
+  defaultProps?: {allowFontScaling?: boolean};
+}
+interface TextInputWithDefaultProps extends TextInput {
+  defaultProps?: {allowFontScaling?: boolean};
+}
+(Text as unknown as TextWithDefaultProps).defaultProps =
+  (Text as unknown as TextWithDefaultProps).defaultProps || {};
+(Text as unknown as TextWithDefaultProps).defaultProps!.allowFontScaling =
+  false;
+(TextInput as unknown as TextInputWithDefaultProps).defaultProps =
+  (TextInput as unknown as TextInputWithDefaultProps).defaultProps || {};
+(
+  TextInput as unknown as TextInputWithDefaultProps
+).defaultProps!.allowFontScaling = false;
 // Register main application
 
 function App(): React.JSX.Element {
