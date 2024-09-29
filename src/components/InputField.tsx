@@ -37,7 +37,11 @@ const InputField = ({
       }}>
       <View style={[styles.container, border && styles.containerBorder]}>
         <View style={styles.labelWrapper}>
-          {isRequired && <Text style={styles.requiredDot}>•</Text>}
+          {isRequired && (
+            <Text allowFontScaling={false} style={styles.requiredDot}>
+              •
+            </Text>
+          )}
           <CustomText>{labelName}</CustomText>
           {isRequired && (
             <CustomText style={styles.requiredText}>(필수)</CustomText>
@@ -47,6 +51,7 @@ const InputField = ({
         <DropShadow>
           <View style={styles.inputWrapper}>
             <TextInput
+              allowFontScaling={false}
               ref={inputRef}
               placeholderTextColor={colors.FONT_WEAK}
               style={styles.input}
