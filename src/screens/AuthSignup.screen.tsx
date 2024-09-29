@@ -63,8 +63,9 @@ const AuthSignup = ({}: AuthSignupProps) => {
     signupValues.name &&
     signupValues.shelterPin &&
     signupValues.shelterId !== 0 &&
-    signupValues.room.length !== 0 &&
+    /^[가-힣a-zA-Z0-9\s]+$/.test(signupValues.room) &&
     signupValues.termsIdsToAgree.length === termsList.length;
+
   const {setIsLoggedIn} = useLoggedInStore();
   useEffect(() => {
     getDeviceUniqueId().then((result: string) => {
@@ -208,9 +209,8 @@ const AuthSignup = ({}: AuthSignupProps) => {
             labelName="호실"
             placeholder="이용하시는 호실을 입력해주세요"
             isRequired
-            keyboardType="numeric"
             value={signupValues.room}
-            onChangeText={text => handleNumericText('room', text)}
+            onChangeText={text => handleChangeText('room', text)}
           />
           <InputField
             labelName="전화번호"
