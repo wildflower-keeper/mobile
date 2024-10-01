@@ -1,16 +1,31 @@
 import SleepoverScheduleContainer from '@/components/SleepoverScheduleContainer';
 import CustomText from '@/components/base/CustomText';
 import {colors} from '@/constants';
+import useSleepovers from '@/hooks/queries/useSleepovers';
 import useUserInfoStore from '@/stores/useUserInfo';
 import {formatSimpleDate} from '@/utils/date/date';
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import {Modal, Pressable, StyleSheet, View} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 interface OvernightListProps {}
 
 const OvernightList = ({}: OvernightListProps) => {
+  const {userInfo} = useUserInfoStore();
+  const {data} = useSleepovers();
+
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+
+  const sleepovers = useMemo(() => {
+    return data?.map(({startDate, endDate, cancelable, sleepoverId}) => ({
+      startDate,
+      endDate,
+      sleepoverId,
+      status: cancelable,
+    }));
+  }, [data]);
+
   const onPressModalOpen = () => {
     setIsModalVisible(true);
   };
@@ -18,7 +33,6 @@ const OvernightList = ({}: OvernightListProps) => {
   const onPressModalClose = () => {
     setIsModalVisible(false);
   };
-  const {userInfo} = useUserInfoStore();
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>
@@ -29,22 +43,24 @@ const OvernightList = ({}: OvernightListProps) => {
           외박 예정일과 상관없이 센터를 이용할 수 있습니다.
         </CustomText>
       </View>
+
       <View style={styles.bodyContainer}>
-        <View>
+        <View style={styles.infoComment}>
           <CustomText>가까운 외박일정</CustomText>
-          <View style={styles.viewCard}>
-            {userInfo.upcomingSleepover && (
-              <SleepoverScheduleContainer
-                upcomingSleepover={userInfo.upcomingSleepover}
-                onPress={onPressModalOpen}
-              />
-            )}
-          </View>
         </View>
+        <ScrollView>
+          {sleepovers?.map(sleepover => {
+            return (
+              <View style={styles.viewCard} key={sleepover.sleepoverId}>
+                <SleepoverScheduleContainer sleepover={sleepover} />
+              </View>
+            );
+          })}
+        </ScrollView>
       </View>
 
       {userInfo.upcomingSleepover && (
-        <View style={{marginTop: 500}}>
+        <View>
           <Modal
             animationType="fade"
             visible={isModalVisible}
@@ -94,10 +110,11 @@ const OvernightList = ({}: OvernightListProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
     justifyContent: 'space-between',
     marginTop: 40,
     marginBottom: 20,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   titleContainer: {
     flex: 0,
@@ -110,11 +127,13 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     flex: 1,
-    paddingVertical: 20,
-    marginHorizontal: 30,
+  },
+  infoComment: {
+    paddingVertical: 10,
   },
   viewCard: {
     height: 200,
+    marginHorizontal: 10,
   },
   modalView: {
     paddingTop: 40,
