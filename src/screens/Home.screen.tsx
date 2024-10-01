@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Linking, Pressable, SafeAreaView, StyleSheet, View} from 'react-native';
 import CustomText from '../components/base/CustomText';
 import Geolocation from '@react-native-community/geolocation';
@@ -27,6 +27,16 @@ const Home = ({navigation}: HomeProps) => {
     if (isSuccess) {
       setUserInfo({...data});
     }
+  }, [data, isSuccess]);
+
+  const sleepover = useMemo(() => {
+    if (!data.upcomingSleepover) {
+      return null;
+    }
+    const {startDate, endDate, sleepoverId} = data.upcomingSleepover;
+    const status = data.upcomingSleepover.status === 'FUTURE_SCHEDULED';
+    const newSleepover = {startDate, endDate, sleepoverId, status};
+    return newSleepover;
   }, [data, isSuccess]);
 
   const handlePressEmergency = () => {
@@ -62,9 +72,7 @@ const Home = ({navigation}: HomeProps) => {
 
         <View style={styles.nearOvernightContainer}>
           <CustomText>가까운 외박일정</CustomText>
-          <SleepoverScheduleContainer
-            upcomingSleepover={data?.upcomingSleepover}
-          />
+          <SleepoverScheduleContainer sleepover={sleepover} />
         </View>
 
         <View style={styles.bodyItemContainer}>

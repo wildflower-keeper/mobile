@@ -8,32 +8,34 @@ import {formatUpdateTime} from '@/utils/date/date';
 import {useMutateDeleteOvernight} from '@/hooks/queries/useMutateCreateOvernight';
 import queryClient from '@/utils/api/queryClient';
 
-export type upcomingSleepoverType = {
+export type SleepoverType = {
   endDate: string;
-  nightCount: number;
   sleepoverId: number;
   startDate: string;
-  status: string;
+  status: boolean;
 };
 
 interface SleepoverScheduleContainerProps {
-  upcomingSleepover?: upcomingSleepoverType;
+  sleepover: SleepoverType | null;
 }
 
 const SleepoverScheduleContainer = ({
-  upcomingSleepover,
+  sleepover,
 }: SleepoverScheduleContainerProps) => {
   const deleteSchedule = useMutateDeleteOvernight();
 
-  const handleDeleteSchedule = (sleepoverId: number) => {
-    deleteSchedule.mutate(sleepoverId, {
-      onSuccess: () => queryClient.invalidateQueries({queryKey: ['userInfo']}),
+  const handleDeleteSchedule = (id: number) => {
+    deleteSchedule.mutate(id, {
+      onSuccess: () => {
+        queryClient.invalidateQueries({queryKey: ['userInfo']});
+        queryClient.invalidateQueries({queryKey: ['sleepovers']});
+      },
     });
   };
 
   return (
     <View style={styles.container}>
-      {upcomingSleepover ? (
+      {sleepover ? (
         <>
           <View style={{flex: 0, alignItems: 'center', gap: 10}}>
             <View
@@ -49,7 +51,7 @@ const SleepoverScheduleContainer = ({
                   시작일
                 </CustomText>
                 <CustomText size="large">
-                  {formatUpdateTime(new Date(upcomingSleepover.startDate))}
+                  {formatUpdateTime(new Date(sleepover.startDate))}
                 </CustomText>
               </View>
 
@@ -64,18 +66,16 @@ const SleepoverScheduleContainer = ({
                   종료일
                 </CustomText>
                 <CustomText size="large">
-                  {formatUpdateTime(new Date(upcomingSleepover.endDate))}
+                  {formatUpdateTime(new Date(sleepover.endDate))}
                 </CustomText>
               </View>
             </View>
           </View>
-          {upcomingSleepover.status === 'FUTURE_SCHEDULED' ? (
+          {sleepover.status ? (
             <CustomButton
               label="일정 취소"
               size="xl"
-              onPress={() =>
-                handleDeleteSchedule(upcomingSleepover.sleepoverId)
-              }
+              onPress={() => handleDeleteSchedule(sleepover.sleepoverId)}
             />
           ) : (
             <CustomButton label="현재 진행중" variant="outlined" size="xl" />
