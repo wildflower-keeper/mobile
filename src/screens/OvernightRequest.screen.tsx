@@ -41,7 +41,7 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
     if (isNext) {
       if (
         !overnightRequestValues.reason ||
-        !overnightRequestValues.emergencyContact
+        overnightRequestValues.emergencyContact.length < 9
       ) {
         Toast.show({
           type: 'error',
@@ -74,7 +74,6 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
         } 선택해주세요.`}</CustomText>
       </View>
       {!isNext ? <CalendarContainer /> : <ReasonSelectorContainer />}
-
       <View style={styles.buttonContainer}>
         <CustomButton
           label="이전"
