@@ -9,7 +9,7 @@ const linking = {
   prefixes: ['wildflower-keeper://'], // URL 스킴
   config: {
     screens: {
-      ScanResult: 'ScanResult',
+      scanresult: 'scanresult',
     },
   },
 };

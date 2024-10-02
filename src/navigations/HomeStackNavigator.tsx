@@ -13,7 +13,7 @@ export type HomeStackParamList = {
   OvernightRequest: undefined;
   FinalConfirmation: undefined;
   OvernightList: undefined;
-  ScanResult: undefined;
+  scanresult: undefined;
 };
 
 const HomeStackNavigator = ({}: HomeStackNavigatorProps) => {
@@ -24,7 +24,7 @@ const HomeStackNavigator = ({}: HomeStackNavigatorProps) => {
       <Stack.Screen name="OvernightRequest" component={OvernightRequest} />
       <Stack.Screen name="FinalConfirmation" component={FinalConfirmation} />
       <Stack.Screen name="OvernightList" component={OvernightList} />
-      <Stack.Screen name="ScanResult" component={ScanResult} />
+      <Stack.Screen name="scanresult" component={ScanResult} />
     </Stack.Navigator>
   );
 };

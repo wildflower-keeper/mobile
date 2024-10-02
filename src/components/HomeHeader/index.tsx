@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {StyleSheet, View} from 'react-native';
 import CustomText from '../base/CustomText';
 import {colors} from '@/constants';
@@ -12,7 +12,7 @@ interface HomeHeaderProps {
 }
 
 const HomeHeader = ({shelterName, homelessName, today}: HomeHeaderProps) => {
-  const {data: locationStatusQuery} = useLocation();
+  const {data: locationStatusQuery, mutate} = useLocation();
   const locationStatus = useMemo(() => {
     if (locationStatusQuery?.locationStatus === 'IN_SHELTER') {
       return '재실';

@@ -1,4 +1,4 @@
-import {useQuery, useMutation} from '@tanstack/react-query';
+import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
 import {getAccessToken} from '@/utils/api/auth';
 import {useEffect, useState} from 'react';
 import type {locationStatusType} from '@/hooks/queries/useScan';
@@ -41,14 +41,13 @@ const useLocation = () => {
       if (!result.locationStatus) {
         throw new Error('Location status is missing from the response');
       }
-
       return result;
     },
   });
 
   const mutate = useMutation({
     mutationKey: ['location'],
-    mutationFn: async (newLocationStatus: locationStatusType) => {
+    mutationFn: (newLocationStatus: locationStatusType) => {
       return fetch(
         'https://api.wildflower-gardening.com/api/v1/homeless-app/location',
         {
@@ -64,9 +63,6 @@ const useLocation = () => {
     },
     onError: error => {
       console.error('Error:', error);
-    },
-    onMutate: (newLocationStatus: locationStatusType) => {
-      console.log('onMutate', newLocationStatus);
     },
     onSuccess: () => {
       console.log('location 변경 성공');

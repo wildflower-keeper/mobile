@@ -22,6 +22,7 @@ const createUser = async ({body}) => {
 };
 
 const getUserInfo = async () => {
+  console.log('get user info');
   const {data} = await backendAxiosInstance({
     method: 'GET',
     headers: {

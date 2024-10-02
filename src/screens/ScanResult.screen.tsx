@@ -17,6 +17,7 @@ import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
 import useScan from '@/hooks/queries/useScan';
 import useLocation from '@/hooks/queries/useLocation';
 import {locationStatusType} from '@/hooks/queries/useScan';
+import { getAccessToken } from '@/utils/api/auth';
 
 type navigationProps = NavigationProp<HomeStackParamList>;
 
@@ -26,6 +27,7 @@ const ScanResult = () => {
   const {deepLinkData} = useScan();
   const {mutate} = useLocation();
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [token, setToken] = useState<string | null>(null);
   const locationStatus = useMemo(() => {
     if (deepLinkData.locationStatus === 'IN_SHELTER') {
       return '재실';
@@ -34,12 +36,20 @@ const ScanResult = () => {
       return '외출';
     }
   }, [deepLinkData]);
+
+  useEffect(() => {
+    (async () => {
+      const data = await getAccessToken();
+      if (data) setToken(data);
+    })();
+  }, []);
+
   useEffect(() => {
     const {locationStatus} = deepLinkData;
-    if (MUTATE_STATUS_ARR.includes(locationStatus)) {
+    if (MUTATE_STATUS_ARR.includes(locationStatus) && !!token) {
       mutate.mutate(locationStatus);
     }
-  }, [deepLinkData]);
+  }, [deepLinkData, token]);
 
   useEffect(() => {
     if (mutate.status === 'success') {

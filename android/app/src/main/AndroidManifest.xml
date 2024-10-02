@@ -37,7 +37,7 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
                     android:scheme="wildflower-keeper"
-                    android:host="ScanResult" />
+                    android:host="scanresult" />
             </intent-filter>
         </activity>
     </application>
