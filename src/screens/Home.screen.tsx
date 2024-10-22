@@ -1,15 +1,19 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {Linking, Pressable, SafeAreaView, StyleSheet, View} from 'react-native';
+import React, {useEffect, useMemo} from 'react';
+import {Linking, Pressable, SafeAreaView, StyleSheet, View, Text, ScrollView} from 'react-native';
 import CustomText from '../components/base/CustomText';
 import Geolocation from '@react-native-community/geolocation';
 import CustomButton from '@/components/base/CustomButton';
 import {useGetUserInfo} from '@/hooks/queries/useAuth';
 import {getWeather} from '@/utils/api/weather';
-import LinearGradient from 'react-native-linear-gradient';
-import SleepoverScheduleContainer from '@/components/SleepoverScheduleContainer';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import useUserInfoStore from '@/stores/useUserInfo';
 import HomeHeader from '@/components/HomeHeader';
+import SleepoverSchedule from '@/components/SleepoverSchedule';
 import emergencyCall from '@/utils/api/emergency';
+import useLocation from '@/hooks/queries/useLocation';
+import useSleepovers from '@/hooks/queries/useSleepovers';
+import {formatUpdateTime, getDaysDifferenceFromToday} from '@/utils/date/date';
+import {ImageSlider} from '@/components/ImageSlider';
 interface HomeProps {}
 
 const today = new Date();
@@ -29,15 +33,20 @@ const Home = ({navigation}: HomeProps) => {
     }
   }, [data, isSuccess]);
 
-  const sleepover = useMemo(() => {
-    if (!data.upcomingSleepover) {
-      return null;
-    }
-    const {startDate, endDate, sleepoverId} = data.upcomingSleepover;
-    const status = data.upcomingSleepover.status === 'FUTURE_SCHEDULED';
-    const newSleepover = {startDate, endDate, sleepoverId, status};
-    return newSleepover;
-  }, [data, isSuccess]);
+  const {data: locationStatusQuery} = useLocation();
+  const locationStatus = useMemo(() => {
+    return locationStatusQuery?.locationStatus;
+  }, [locationStatusQuery]);
+
+  const { data : sleepoversQuery } = useSleepovers();
+  const sleepovers = useMemo(() => {
+    return sleepoversQuery?.map(({startDate, endDate, ...props}) => ({
+      dayDiff: getDaysDifferenceFromToday(new Date(startDate)),
+      startDate: formatUpdateTime(new Date(startDate)),
+      endDate: formatUpdateTime(new Date(endDate)),
+      ...props
+    }));
+  }, [data]);
 
   const handlePressEmergency = () => {
     const phoneNumber = userInfo.shelterPhone;
@@ -58,40 +67,70 @@ const Home = ({navigation}: HomeProps) => {
 
       <View style={styles.bodyContainer}>
         <View style={styles.bodyItemContainer}>
-          <CustomText>긴급도움 요청</CustomText>
-          <LinearGradient
-            colors={['#FF8981', '#FF384D']}
-            style={styles.linearGradient}>
-            <Pressable
-              onPress={handlePressEmergency}
-              style={styles.emergencyButton}>
-              <CustomText textColor="white">긴급도움 요청하기</CustomText>
+          <View style={styles.scheduleHeaderContainer}>
+            <CustomText weight="heavy">다가오는 일정</CustomText>
+            <Pressable onPress={() => navigation.navigate('OvernightList')}>
+              <CustomText style={{textColor:"#616161", fontSize: 18}}>
+                더보기
+                <AntDesignIcon name="right" size={18} color="#616161" style={{ paddingLeft:4 }}/>
+              </CustomText>
             </Pressable>
-          </LinearGradient>
+          </View>
+          <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={styles.scheduleListContainer}>
+            {sleepovers?.map(sleepover => (
+              <View style={styles.scheduleContainer} key={sleepover.sleepoverId}>
+                <Text style={{color : '#19C23D', textAlign: 'right', fontSize: 18}}>
+                  {sleepover.dayDiff}일 남았습니다.
+                </Text>
+                <View style={styles.scheduleRowContainer}>
+                  <CustomText>시작</CustomText>
+                  <CustomText weight="heavy">{sleepover.startDate}</CustomText>
+                </View>
+                <View style={styles.scheduleRowContainer}>
+                  <CustomText>종료</CustomText>
+                  <CustomText weight="heavy">{sleepover.endDate}</CustomText>
+                </View>
+                <View style={styles.scheduleRowContainer}>
+                  <CustomText>일정</CustomText>
+                  <CustomText weight="heavy">{sleepover.reason}</CustomText>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
         </View>
 
         <View style={styles.nearOvernightContainer}>
-          <CustomText>가까운 외박일정</CustomText>
-          <SleepoverScheduleContainer sleepover={sleepover} />
-        </View>
-
-        <View style={styles.bodyItemContainer}>
-          <CustomText>외박신청</CustomText>
-          <View style={styles.buttonContainer}>
-            <CustomButton
-              size="md"
-              label="신청내역"
-              variant="outlined"
-              onPress={() => navigation.navigate('OvernightList')}
-            />
-            <CustomButton
-              size="md"
-              variant="outlined"
-              label="외박신청"
+          <Pressable
               onPress={() => navigation.navigate('OvernightRequest')}
-            />
-          </View>
+              style={styles.nearOvernightButton}>
+            <CustomText weight="heavy">외박 신청</CustomText>
+            <AntDesignIcon name="right" size={18} color="#616161" />
+          </Pressable>
         </View>
+      </View>
+
+      <View style={styles.fixedContainer}>
+        {locationStatus === 'IN_SHELTER'? (
+            <View style={styles.inShelterButton}>
+              <CustomText weight="heavy" textColor="white">재실 중</CustomText>
+            </View>
+          ):(
+          <>
+            <View style={styles.outShelterButton}>
+              <CustomText weight="heavy">외출 중</CustomText>
+            </View>
+            <Pressable
+              onPress={handlePressEmergency}
+              style={styles.emergencyButton}>
+              <CustomText weight="heavy" textColor="white">
+                긴급 도움
+              </CustomText>
+            </Pressable>
+          </>
+          )}
       </View>
     </SafeAreaView>
   );
@@ -101,19 +140,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    gap: 30,
-    marginBottom: 60,
-  },
-  emergencyButton: {
-    width: '100%',
-    paddingVertical: 'auto',
-    flex: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
+    gap: 24,
   },
   bodyItemContainer: {
     flex: 0,
+    gap: 24,
+  },
+  scheduleHeaderContainer : {
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  scheduleListContainer: {
+    flexDirection: 'row',
+  },
+  scheduleContainer : {
+    flex: 1,
+    flexDirection: 'col',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    borderRadius: 8,
+    width: 240,
+    paddingVertical: 24,
+    paddingHorizontal: 16,
     gap: 16,
+    marginRight: 16,
+  },
+  scheduleRowContainer : {
+    flex : 0,
+    flexDirection : 'row',
+    justifyContent: 'space-between',
   },
 
   bodyContainer: {
@@ -134,14 +190,55 @@ const styles = StyleSheet.create({
   nearOvernightContainer: {
     flex: 1,
     gap: 16,
+
   },
-  linearGradient: {
+  nearOvernightButton: {
     flex: 0,
-    borderRadius: 30,
-    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    justifyContent: 'space-between',
+  },
+  fixedContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: 'white',
+    flex: 0,
+    flexDirection: 'row',
+    padding: 16,
+    gap: 16
+  },
+  inShelterButton: {
+    flex: 1,
+    paddingVertical: 8,
     justifyContent: 'center',
-    paddingVertical: 24,
-    height: 'auto',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: '#19C23D',
+    backgroundColor: '#19C23D'
+  },
+  outShelterButton: {
+    flex: 3,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: '#E8E8E8',
+  },
+  emergencyButton: {
+    flex: 1,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: '#FF3D00',
+    backgroundColor: '#FF3D00'
   },
 });
 
