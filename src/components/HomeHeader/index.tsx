@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 import CustomText from '../base/CustomText';
 import {colors} from '@/constants';
 import {formatUpdateTime} from '@/utils/date/date';
@@ -15,10 +15,10 @@ const HomeHeader = ({shelterName, homelessName, today}: HomeHeaderProps) => {
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <View style={styles.headContainer}>
-          <CustomText size="large" weight="heavy">
+          <CustomText size="xLarge" weight="heavy">
             {homelessName}
           </CustomText>
-          <CustomText size="xSmall">
+          <CustomText size="small" weight="thin" textColor="weak">
             {shelterName}
           </CustomText>
         </View>

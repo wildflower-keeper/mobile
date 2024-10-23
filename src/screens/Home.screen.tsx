@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo} from 'react';
-import {Linking, Pressable, SafeAreaView, StyleSheet, View, Text, ScrollView} from 'react-native';
+import {Linking, Pressable, SafeAreaView, StyleSheet, View, ScrollView} from 'react-native';
 import CustomText from '../components/base/CustomText';
 import Geolocation from '@react-native-community/geolocation';
 import CustomButton from '@/components/base/CustomButton';
@@ -15,6 +15,7 @@ import useSleepovers from '@/hooks/queries/useSleepovers';
 import {formatUpdateTime} from '@/utils/date/date';
 import { differenceInDays } from 'date-fns';
 import {ImageSlider} from '@/components/ImageSlider';
+import {colors} from '@/constants';
 interface HomeProps {}
 
 const today = new Date();
@@ -72,11 +73,11 @@ const Home = ({navigation}: HomeProps) => {
       <View style={styles.bodyContainer}>
         <View style={styles.bodyItemContainer}>
           <View style={styles.scheduleHeaderContainer}>
-            <CustomText weight="heavy">다가오는 일정</CustomText>
+            <CustomText size="large" weight="heavy" >다가오는 일정</CustomText>
             <Pressable onPress={() => navigation.navigate('OvernightList')}>
-              <CustomText style={{textColor:"#616161", fontSize: 18}}>
+              <CustomText textColor="weak">
                 더보기
-                <AntDesignIcon name="right" size={18} color="#616161" style={{ paddingLeft:4 }}/>
+                <AntDesignIcon name="right" size={18} color={colors.FONT_WEAK} style={{ paddingLeft:4 }}/>
               </CustomText>
             </Pressable>
           </View>
@@ -86,9 +87,9 @@ const Home = ({navigation}: HomeProps) => {
               style={styles.scheduleListContainer}>
             {sleepovers?.map(sleepover => (
               <View style={styles.scheduleContainer} key={sleepover.sleepoverId}>
-                <Text style={{color : '#19C23D', textAlign: 'right', fontSize: 18}}>
+                <CustomText style={{fontSize: 18, color : colors.PRIMARY, textAlign: 'right'}}>
                   {sleepover.dayDiff}일 남았습니다.
-                </Text>
+                </CustomText>
                 <View style={styles.scheduleRowContainer}>
                   <CustomText>시작</CustomText>
                   <CustomText weight="heavy">{sleepover.startDate}</CustomText>
@@ -99,7 +100,7 @@ const Home = ({navigation}: HomeProps) => {
                 </View>
                 <View style={styles.scheduleRowContainer}>
                   <CustomText>일정</CustomText>
-                  <CustomText weight="heavy">{sleepover.reason}</CustomText>
+                  <CustomText>{sleepover.reason}</CustomText>
                 </View>
               </View>
             ))}
@@ -222,8 +223,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderRadius: 8,
-    borderColor: '#19C23D',
-    backgroundColor: '#19C23D'
+    borderColor: colors.PRIMARY,
+    backgroundColor: colors.PRIMARY
   },
   outShelterButton: {
     flex: 3,
