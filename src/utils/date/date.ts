@@ -61,15 +61,4 @@ function getDatesBetween(startDate: Date, endDate: Date) {
   return dates;
 }
 
-function getDaysDifferenceFromToday(targetDate: string): number {
-  const today = new Date();
-  targetDate.setHours(0, 0, 0, 0);
-  today.setHours(0, 0, 0, 0);
-
-  const differenceInTime = targetDate.getTime() - today.getTime();
-  const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
-
-  return differenceInDays;
-}
-
-export {getNextDay, getDatesBetween, formatUpdateTime, formatSimpleDate, getDaysDifferenceFromToday};
+export {getNextDay, getDatesBetween, formatUpdateTime, formatSimpleDate};

@@ -12,7 +12,8 @@ import SleepoverSchedule from '@/components/SleepoverSchedule';
 import emergencyCall from '@/utils/api/emergency';
 import useLocation from '@/hooks/queries/useLocation';
 import useSleepovers from '@/hooks/queries/useSleepovers';
-import {formatUpdateTime, getDaysDifferenceFromToday} from '@/utils/date/date';
+import {formatUpdateTime} from '@/utils/date/date';
+import { differenceInDays } from 'date-fns';
 import {ImageSlider} from '@/components/ImageSlider';
 interface HomeProps {}
 
@@ -40,13 +41,16 @@ const Home = ({navigation}: HomeProps) => {
 
   const { data : sleepoversQuery } = useSleepovers();
   const sleepovers = useMemo(() => {
-    return sleepoversQuery?.map(({startDate, endDate, ...props}) => ({
-      dayDiff: getDaysDifferenceFromToday(new Date(startDate)),
-      startDate: formatUpdateTime(new Date(startDate)),
-      endDate: formatUpdateTime(new Date(endDate)),
-      ...props
-    }));
-  }, [data]);
+    return sleepoversQuery?.map(({startDate : startDateStr, endDate, ...props}) => {
+      const startDate = new Date(startDateStr);
+      return {
+        dayDiff: differenceInDays(startDate, new Date()),
+        startDate: formatUpdateTime(startDate),
+        endDate: formatUpdateTime(new Date(endDate)),
+        ...props
+      }
+    });
+  }, [sleepoversQuery]);
 
   const handlePressEmergency = () => {
     const phoneNumber = userInfo.shelterPhone;
