@@ -1,16 +1,6 @@
-import CustomText from '@/components/base/CustomText';
-import {useCallback, useEffect, useMemo, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  ActivityIndicator,
-  Modal,
-  TouchableOpacity,
-} from 'react-native';
+import {useEffect, useMemo, useState} from 'react';
 import {
   NavigationProp,
-  useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
 import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
@@ -18,6 +8,7 @@ import useScan from '@/hooks/queries/useScan';
 import useLocation from '@/hooks/queries/useLocation';
 import {locationStatusType} from '@/hooks/queries/useScan';
 import { getAccessToken } from '@/utils/api/auth';
+import Toast from 'react-native-toast-message';
 
 type navigationProps = NavigationProp<HomeStackParamList>;
 
@@ -26,15 +17,15 @@ const ScanResult = () => {
   const navigation = useNavigation<navigationProps>();
   const {deepLinkData} = useScan();
   const {mutate} = useLocation();
-  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
-  const locationStatus = useMemo(() => {
+  const toast = useMemo(() => {
     if (deepLinkData.locationStatus === 'IN_SHELTER') {
-      return '재실';
+      return { icon: 'check', message : '재실로 전환되었습니다.'};
     }
     if (deepLinkData.locationStatus === 'OUT_SHELTER') {
-      return '외출';
+      return { icon: 'check', message : '외출로 전환되었습니다.'};
     }
+    return { icon: 'exclamationcircleo', message : '다시 시도해주세요.'};
   }, [deepLinkData]);
 
   useEffect(() => {
@@ -48,100 +39,19 @@ const ScanResult = () => {
     const {locationStatus} = deepLinkData;
     if (MUTATE_STATUS_ARR.includes(locationStatus) && !!token) {
       mutate.mutate(locationStatus);
+
+      Toast.show({
+        type: 'info',
+        text1: toast.message,
+        position: 'bottom',
+        bottomOffset: 90,
+        props: { icon: toast.icon }
+      });
     }
+    navigation.navigate('Home');
   }, [deepLinkData, token]);
 
-  useEffect(() => {
-    if (mutate.status === 'success') {
-      setIsModalVisible(true);
-    }
-  }, [mutate.status]);
-
-  const handlePressConfirm = () => {
-    setIsModalVisible(false);
-    setTimeout(() => {
-      navigation.navigate('Home');
-    }, 300);
-  };
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.container}>
-        <ActivityIndicator style={styles.indicator} color="#19C23D" />
-        <Modal transparent={true} animationType="fade" visible={isModalVisible}>
-          <View style={styles.modalBackground}>
-            <View style={styles.modalContainer}>
-              <View style={styles.modalTextContainer}>
-                <CustomText style={styles.modalText}>
-                  {locationStatus} 신청이 완료 되었습니다.
-                </CustomText>
-              </View>
-              <View style={styles.modalButtonContainer}>
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  activeOpacity={0.6}
-                  onPress={handlePressConfirm}>
-                  <CustomText style={styles.buttonText}>확인</CustomText>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-      </View>
-    </SafeAreaView>
-  );
+  return null;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  indicator: {
-    transform: [{scale: 4}],
-  },
-  modalBackground: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 화면을 어둡게 만드는 배경
-  },
-  modalContainer: {
-    height: 180,
-    width: 300,
-    paddingVertical: 7,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  modalTextContainer: {
-    height: 100,
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalText: {
-    fontSize: 16,
-  },
-  modalButtonContainer: {
-    width: '100%',
-    padding: 16,
-    height: 80,
-  },
-  closeButton: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#19C23D',
-    height: 42,
-    borderRadius: 5,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-});
 
 export default ScanResult;
