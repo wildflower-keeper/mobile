@@ -21,10 +21,9 @@ const EmergencyButton = ({shelterPhoneNumber} : EmergencyButtonProps) => {
       setColorIndex((prevIndex) => ((prevIndex + 1) % colors.length));
 
       if(elapsed === 3) {
-        console.log('버튼 동작 완료!');
         clearInterval(timerRef.current);
-//       emergencyCall();
-//       Linking.openURL(`tel:${shelterPhoneNumber}`);
+        emergencyCall();
+        Linking.openURL(`tel:${shelterPhoneNumber}`);
       }
     }, 1000);
   };
