@@ -26,7 +26,6 @@ const CustomText = ({
         styles[`${size}Size`],
         styles[`${weight}Weight`],
         isBadge && styles.badge,
-        props.style
       ]}
       {...props}>
       {children}
