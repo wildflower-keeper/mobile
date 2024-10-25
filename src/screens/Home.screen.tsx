@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo} from 'react';
-import {Linking, Pressable, SafeAreaView, StyleSheet, View, ScrollView} from 'react-native';
+import {Pressable, SafeAreaView, StyleSheet, View, ScrollView} from 'react-native';
 import CustomText from '../components/base/CustomText';
 import Geolocation from '@react-native-community/geolocation';
 import CustomButton from '@/components/base/CustomButton';
@@ -9,11 +9,11 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import useUserInfoStore from '@/stores/useUserInfo';
 import HomeHeader from '@/components/HomeHeader';
 import SleepoverSchedule from '@/components/SleepoverSchedule';
-import emergencyCall from '@/utils/api/emergency';
+import EmergencyButton from '@/components/EmergencyButton';
 import useLocation from '@/hooks/queries/useLocation';
 import useSleepovers from '@/hooks/queries/useSleepovers';
 import {formatUpdateTime} from '@/utils/date/date';
-import { differenceInDays } from 'date-fns';
+import {differenceInDays} from 'date-fns';
 import {ImageSlider} from '@/components/ImageSlider';
 import {colors} from '@/constants';
 interface HomeProps {}
@@ -40,7 +40,7 @@ const Home = ({navigation}: HomeProps) => {
     return locationStatusQuery?.locationStatus;
   }, [locationStatusQuery]);
 
-  const { data : sleepoversQuery } = useSleepovers();
+  const {data: sleepoversQuery} = useSleepovers();
   const sleepovers = useMemo(() => {
     return sleepoversQuery?.map(({startDate : startDateStr, endDate, ...props}) => {
       const startDate = new Date(startDateStr);
@@ -52,13 +52,6 @@ const Home = ({navigation}: HomeProps) => {
       }
     });
   }, [sleepoversQuery]);
-
-  const handlePressEmergency = () => {
-    const phoneNumber = userInfo.shelterPhone;
-    const url = `tel:${phoneNumber}`;
-    emergencyCall();
-    Linking.openURL(url);
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -127,13 +120,7 @@ const Home = ({navigation}: HomeProps) => {
             <View style={styles.outShelterButton}>
               <CustomText weight="heavy">외출 중</CustomText>
             </View>
-            <Pressable
-              onPress={handlePressEmergency}
-              style={styles.emergencyButton}>
-              <CustomText weight="heavy" textColor="white">
-                긴급 도움
-              </CustomText>
-            </Pressable>
+            <EmergencyButton shelterPhone={userInfo.shelterPhone}/>
           </>
           )}
       </View>
@@ -234,16 +221,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     borderColor: '#E8E8E8',
-  },
-  emergencyButton: {
-    flex: 1,
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: '#FF3D00',
-    backgroundColor: '#FF3D00'
   },
 });
 
