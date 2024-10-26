@@ -10,18 +10,7 @@ import {colors} from '@/constants';
 interface SleepoverSchedulesProps {}
 
 const SleepoverSchedules = ({}: SleepoverSchedulesProps) => {
-  const {data: sleepoversQuery} = useSleepovers();
-  const sleepovers = useMemo(() => {
-    return sleepoversQuery?.map(({startDate : startDateStr, endDate, ...props}) => {
-      const startDate = new Date(startDateStr);
-      return {
-        dayDiff: differenceInDays(startDate, new Date()),
-        startDate: formatUpdateTime(startDate),
-        endDate: formatUpdateTime(new Date(endDate)),
-        ...props
-      }
-    });
-  }, [sleepoversQuery]);
+  const {data: sleepovers} = useSleepovers();
 
   if(!sleepovers?.length) {
     return (

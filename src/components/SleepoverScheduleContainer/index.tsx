@@ -51,7 +51,7 @@ const SleepoverScheduleContainer = ({
                   시작일
                 </CustomText>
                 <CustomText size="large">
-                  {formatUpdateTime(new Date(sleepover.startDate))}
+                  {sleepover.startDate}
                 </CustomText>
               </View>
 
@@ -66,7 +66,7 @@ const SleepoverScheduleContainer = ({
                   종료일
                 </CustomText>
                 <CustomText size="large">
-                  {formatUpdateTime(new Date(sleepover.endDate))}
+                  {sleepover.endDate}
                 </CustomText>
               </View>
             </View>
