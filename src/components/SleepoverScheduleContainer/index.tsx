@@ -4,7 +4,6 @@ import CustomText from '../base/CustomText';
 import AntDesignicon from 'react-native-vector-icons/AntDesign';
 import CustomButton from '../base/CustomButton';
 import {colors} from '@/constants';
-import {formatUpdateTime} from '@/utils/date/date';
 import {useMutateDeleteOvernight} from '@/hooks/queries/useMutateCreateOvernight';
 import queryClient from '@/utils/api/queryClient';
 

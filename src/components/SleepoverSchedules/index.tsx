@@ -3,8 +3,6 @@ import {StyleSheet, View, ScrollView, Image} from 'react-native';
 import CustomText from '@/components/base/CustomText';
 import TextBubbleSvg from '@/assets/image/text_bubble.png';
 import useSleepovers from '@/hooks/queries/useSleepovers';
-import {formatUpdateTime} from '@/utils/date/date';
-import {differenceInDays} from 'date-fns';
 import {colors} from '@/constants';
 
 interface SleepoverSchedulesProps {}
