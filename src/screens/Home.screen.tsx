@@ -1,20 +1,13 @@
 import React, {useEffect, useMemo} from 'react';
-import {Linking, Pressable, SafeAreaView, StyleSheet, View, ScrollView} from 'react-native';
-import CustomText from '../components/base/CustomText';
-import Geolocation from '@react-native-community/geolocation';
-import CustomButton from '@/components/base/CustomButton';
+import {Pressable, SafeAreaView, StyleSheet, View} from 'react-native';
+import CustomText from '@/components/base/CustomText';
 import {useGetUserInfo} from '@/hooks/queries/useAuth';
-import {getWeather} from '@/utils/api/weather';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import useUserInfoStore from '@/stores/useUserInfo';
 import HomeHeader from '@/components/HomeHeader';
-import SleepoverSchedule from '@/components/SleepoverSchedule';
-import emergencyCall from '@/utils/api/emergency';
+import SleepoverSchedules from '@/components/SleepoverSchedules';
+import EmergencyButton from '@/components/EmergencyButton';
 import useLocation from '@/hooks/queries/useLocation';
-import useSleepovers from '@/hooks/queries/useSleepovers';
-import {formatUpdateTime} from '@/utils/date/date';
-import { differenceInDays } from 'date-fns';
-import {ImageSlider} from '@/components/ImageSlider';
 import {colors} from '@/constants';
 interface HomeProps {}
 
@@ -40,26 +33,6 @@ const Home = ({navigation}: HomeProps) => {
     return locationStatusQuery?.locationStatus;
   }, [locationStatusQuery]);
 
-  const { data : sleepoversQuery } = useSleepovers();
-  const sleepovers = useMemo(() => {
-    return sleepoversQuery?.map(({startDate : startDateStr, endDate, ...props}) => {
-      const startDate = new Date(startDateStr);
-      return {
-        dayDiff: differenceInDays(startDate, new Date()),
-        startDate: formatUpdateTime(startDate),
-        endDate: formatUpdateTime(new Date(endDate)),
-        ...props
-      }
-    });
-  }, [sleepoversQuery]);
-
-  const handlePressEmergency = () => {
-    const phoneNumber = userInfo.shelterPhone;
-    const url = `tel:${phoneNumber}`;
-    emergencyCall();
-    Linking.openURL(url);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       {isSuccess && (
@@ -73,7 +46,7 @@ const Home = ({navigation}: HomeProps) => {
       <View style={styles.bodyContainer}>
         <View style={styles.bodyItemContainer}>
           <View style={styles.scheduleHeaderContainer}>
-            <CustomText size="large" weight="heavy" >다가오는 일정</CustomText>
+            <CustomText size="large" weight="heavy">다가오는 일정</CustomText>
             <Pressable onPress={() => navigation.navigate('OvernightList')}>
               <CustomText textColor="weak">
                 더보기
@@ -81,30 +54,7 @@ const Home = ({navigation}: HomeProps) => {
               </CustomText>
             </Pressable>
           </View>
-          <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              style={styles.scheduleListContainer}>
-            {sleepovers?.map(sleepover => (
-              <View style={styles.scheduleContainer} key={sleepover.sleepoverId}>
-                <CustomText style={{fontSize: 18, color : colors.PRIMARY, textAlign: 'right'}}>
-                  {sleepover.dayDiff}일 남았습니다.
-                </CustomText>
-                <View style={styles.scheduleRowContainer}>
-                  <CustomText>시작</CustomText>
-                  <CustomText weight="heavy">{sleepover.startDate}</CustomText>
-                </View>
-                <View style={styles.scheduleRowContainer}>
-                  <CustomText>종료</CustomText>
-                  <CustomText weight="heavy">{sleepover.endDate}</CustomText>
-                </View>
-                <View style={styles.scheduleRowContainer}>
-                  <CustomText>일정</CustomText>
-                  <CustomText>{sleepover.reason}</CustomText>
-                </View>
-              </View>
-            ))}
-          </ScrollView>
+          <SleepoverSchedules/>
         </View>
 
         <View style={styles.nearOvernightContainer}>
@@ -127,13 +77,7 @@ const Home = ({navigation}: HomeProps) => {
             <View style={styles.outShelterButton}>
               <CustomText weight="heavy">외출 중</CustomText>
             </View>
-            <Pressable
-              onPress={handlePressEmergency}
-              style={styles.emergencyButton}>
-              <CustomText weight="heavy" textColor="white">
-                긴급 도움
-              </CustomText>
-            </Pressable>
+            <EmergencyButton shelterPhone={userInfo.shelterPhone}/>
           </>
           )}
       </View>
@@ -156,27 +100,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  scheduleListContainer: {
-    flexDirection: 'row',
-  },
-  scheduleContainer : {
-    flex: 1,
-    flexDirection: 'col',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
-    borderRadius: 8,
-    width: 240,
-    paddingVertical: 24,
-    paddingHorizontal: 16,
-    gap: 16,
-    marginRight: 16,
-  },
-  scheduleRowContainer : {
-    flex : 0,
-    flexDirection : 'row',
-    justifyContent: 'space-between',
-  },
-
   bodyContainer: {
     flex: 1,
     width: '90%',
@@ -234,16 +157,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     borderColor: '#E8E8E8',
-  },
-  emergencyButton: {
-    flex: 1,
-    padding: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: '#FF3D00',
-    backgroundColor: '#FF3D00'
   },
 });
 
