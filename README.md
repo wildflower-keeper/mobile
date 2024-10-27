@@ -68,3 +68,38 @@ in terminal : press a for lunch android project
   - 외박 신청 내용을 확인하고, 불필요한 일정이라면 삭제할 수 있도록 설계 되어있고, useMutation에서 onSuccess 시 invalidateQuery메서드를 통해 삭제된 내용이 즉각 반영 되도록 설계.
 - 날씨
   - https://api.openweathermap.org 에서 날씨 정보를 받아오도록 설계. 현재 개인 아이디로 apiKey를 사용하고 있고, 이를 .env.local에 설정해두어서 사용 화면을 확인하시고자 한다면 해당사이트에서 apiKey를 발급받아 사용해야합니다. 현재 배포를 목적으로 하고 있기에 사업자에게 apiKey 발급 받을 것을 요청하시는 것이 좋을 듯 합니다.
+
+# 안드로이드 apk 빌드
+* 빌드 시 기존 라이브러리 파일들이 있어야 하므로 `yarn install` 을 진행해야 합니다.
+* 빌드 할때 keystore 파일이 필요합니다. android/app 하위에 my-update-key.keystore 확인 없다면 다운로드 혹은 생성 필요
+  * 팀 노션 `팀 들꽃지기 본부/ 문서/ 안드로이드 빌드에 필요한 keystore파일` 에서  keystore 다운로드
+  * 만약 생성을 해야 한다면 https://reactnative.dev/docs/signed-apk-android 를 참조해서 keystore 파일을 생성하시기 바랍니다.
+
+```
+cd android
+
+sudo ./gradlew clean build  # 관리자 권한이 필요할 수 있습니다. sudo 넣고 하는 것을 추천
+# 완료 후
+
+sudo ./gradlew assembleRelease
+```
+### 앱스토어 올리기 전 버전 증가
+one store기준으로, 기존 버전보다 높아야 안드로이드 파일이 업로드 됩니다. 
+
+`android/app/build.gradle` 파일을 수정 한 뒤 빌드를 진행하면 됩니다.
+```
+...
+    defaultConfig {
+        applicationId "com.wildflower"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 2 // 버전 코드 더 높게 설정
+        versionName "1.1" // 버전 이름 변경
+    }
+...
+```
+
+
+### 빌드 파일 확인
+
+빌드 후 `android/app/build` 경로확인, 빌드 폴더 아래 `outputs/release` 폴더 안에 app-release.apk 생성 확인
