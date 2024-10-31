@@ -29,10 +29,8 @@ interface TextInputWithDefaultProps extends TextInput {
 function App(): React.JSX.Element {
   useEffect(() => {
     setTimeout(() => {
-      if (SplashScreen) {
-        // TODO ios 앱의 스플래시 화면은 처리하지 않아, 우선 요렇게 임시 분기함
-        SplashScreen.hide();
-      }
+      //TODO Android 앱 splash만 작업함
+      SplashScreen.hide();
     }, 1000);
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
