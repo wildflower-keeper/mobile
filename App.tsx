@@ -7,6 +7,7 @@ import RootNavigator from '@/navigations/RootNavigator';
 import messaging from '@react-native-firebase/messaging';
 import {Alert, AppRegistry} from 'react-native';
 import {Text, TextInput} from 'react-native';
+import SplashScreen from "react-native-splash-screen";
 
 interface TextWithDefaultProps extends Text {
   defaultProps?: {allowFontScaling?: boolean};
@@ -27,6 +28,12 @@ interface TextInputWithDefaultProps extends TextInput {
 
 function App(): React.JSX.Element {
   useEffect(() => {
+    setTimeout(() => {
+      if (SplashScreen) {
+        SplashScreen.hide();
+      }
+    }, 1000);
+
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
     });
