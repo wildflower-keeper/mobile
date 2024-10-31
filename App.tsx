@@ -30,6 +30,7 @@ function App(): React.JSX.Element {
   useEffect(() => {
     setTimeout(() => {
       if (SplashScreen) {
+        // TODO ios 앱의 스플래시 화면은 처리하지 않아, 우선 요렇게 임시 분기함
         SplashScreen.hide();
       }
     }, 1000);
