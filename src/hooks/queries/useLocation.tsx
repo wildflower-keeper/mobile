@@ -5,6 +5,7 @@ import type {locationStatusType} from '@/hooks/queries/useScan';
 
 const useLocation = () => {
   const [token, setToken] = useState<string>('');
+  const queryClient = useQueryClient();
   useEffect(() => {
     (async () => {
       const data = await getAccessToken();
@@ -66,6 +67,7 @@ const useLocation = () => {
     },
     onSuccess: () => {
       console.log('location 변경 성공');
+      queryClient.invalidateQueries({queryKey: ['location']});
     },
   });
 

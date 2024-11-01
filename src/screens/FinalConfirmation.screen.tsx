@@ -33,6 +33,7 @@ const FinalConfirmation = ({navigation}: FinalConfirmationProps) => {
       {
         onSuccess: () => {
           queryClient.invalidateQueries({queryKey: ['userInfo']}),
+          queryClient.invalidateQueries({queryKey: ['sleepovers']});
             Toast.show({
               type: 'success',
               text1: '외박 신청이 완료되었습니다.',
