@@ -35,7 +35,7 @@ const CustomButton = ({
       ]}
       disabled={disabled}
       {...props}>
-      <Text style={[styles.text, styles[`${variant}Text`]]}>{label}</Text>
+      <Text allowFontScaling={false}	 style={[styles.text, styles[`${variant}Text`]]}>{label}</Text>
     </Pressable>
   );
 };

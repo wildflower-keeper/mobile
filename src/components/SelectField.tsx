@@ -52,7 +52,11 @@ const SelectField = ({
   return (
     <View style={styles.container}>
       <View style={styles.labelWrapper}>
-        {isRequired && <Text style={styles.requiredDot}>•</Text>}
+        {isRequired && (
+          <Text allowFontScaling={false} style={styles.requiredDot}>
+            •
+          </Text>
+        )}
         <CustomText>{labelName}</CustomText>
         {isRequired && (
           <CustomText style={styles.requiredText}>(필수)</CustomText>
@@ -65,6 +69,7 @@ const SelectField = ({
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
+        allowFontScaling={false}
         placeholder="센터를 선택해주세요"
         placeholderStyle={styles.placeholder}
         dropDownContainerStyle={[
@@ -74,6 +79,7 @@ const SelectField = ({
         textStyle={styles.dropdownText}
         style={styles.borderClose}
         tickIconContainerStyle={styles.tick}
+        listMode="SCROLLVIEW"
       />
     </View>
   );

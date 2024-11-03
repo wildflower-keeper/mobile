@@ -1,6 +1,8 @@
 import {backendAxiosInstance} from './api';
 import {getAccessToken} from './auth';
 
+
+//TODO : body type 정의
 const createOvernightSchedule = async ({body}) => {
   const axiosObject = {
     method: 'post',

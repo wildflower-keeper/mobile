@@ -13,7 +13,8 @@ interface OvernightRequestProps {}
 
 const OvernightRequest = ({navigation}: OvernightRequestProps) => {
   const [isNext, setIsNext] = useState<boolean>(false);
-  const {overnightRequestValues} = useOvernightRequestStore();
+  const {overnightRequestValues, setOvernightRequestValues} =
+    useOvernightRequestStore();
 
   const handlePrev = () => {
     /**
@@ -24,6 +25,12 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
       setIsNext(false);
       return;
     }
+    setOvernightRequestValues({
+      startDate: '',
+      endDate: '',
+      reason: '',
+      emergencyContact: '',
+    });
     navigation.navigate('Home');
   };
   const handleNext = () => {
@@ -32,6 +39,17 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
      * isNext가 false이면 true로 변경, 사유 작성으로 이동하는 함수.
      */
     if (isNext) {
+      if (
+        !overnightRequestValues.reason ||
+        overnightRequestValues.emergencyContact.length < 9
+      ) {
+        Toast.show({
+          type: 'error',
+          text1: '외출 이유와 연락처를 입력해주세요',
+          position: 'bottom',
+        });
+        return;
+      }
       navigation.navigate('FinalConfirmation');
     }
 
@@ -56,7 +74,6 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
         } 선택해주세요.`}</CustomText>
       </View>
       {!isNext ? <CalendarContainer /> : <ReasonSelectorContainer />}
-
       <View style={styles.buttonContainer}>
         <CustomButton
           label="이전"

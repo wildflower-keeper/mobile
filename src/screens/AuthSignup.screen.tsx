@@ -17,17 +17,18 @@ import Toast from 'react-native-toast-message';
 import {getDeviceUniqueId} from '@/utils/api/auth';
 import useLoggedInStore from '@/stores/useLoggedIn';
 import {ScrollView} from 'react-native-gesture-handler';
+import {AxiosResponse} from 'axios';
 
 interface AuthSignupProps {}
 
-type termsIdsToAgreeType = {
+type TermsIdsToAgreeType = {
   id: number;
   title: string;
   detail: string;
   isEssential: boolean;
 };
 
-interface TermsType {
+interface TermsType extends TermsIdsToAgreeType {
   id: number;
   agree: boolean;
 }
@@ -37,8 +38,8 @@ type signupValueType = {
   shelterId: number;
   shelterPin: string;
   deviceId: string;
-  room?: string;
-  termsIdsToAgree?: number[];
+  room: string;
+  termsIdsToAgree: number[];
   birthDate?: string | null;
   phoneNumber?: string;
   admissionDate?: string | null;
@@ -56,6 +57,15 @@ const AuthSignup = ({}: AuthSignupProps) => {
     phoneNumber: '',
     admissionDate: null,
   });
+  const [termsList, setTermsList] = useState<TermsType[]>([]);
+
+  const submitActive =
+    signupValues.name &&
+    signupValues.shelterPin &&
+    signupValues.shelterId !== 0 &&
+    /^[가-힣a-zA-Z0-9\s]+$/.test(signupValues.room) &&
+    signupValues.termsIdsToAgree.length === termsList.length;
+
   const {setIsLoggedIn} = useLoggedInStore();
   useEffect(() => {
     getDeviceUniqueId().then((result: string) => {
@@ -65,14 +75,48 @@ const AuthSignup = ({}: AuthSignupProps) => {
   const handleChangeText = (name: string, text: string) => {
     setSignupValues({...signupValues, [name]: text});
   };
+
+  const handleNumericText = (name: string, text: string) => {
+    if (isNaN(Number(text))) {
+      return;
+    }
+    const newValue = text.replace('.', '').trim();
+    setSignupValues({...signupValues, [name]: newValue});
+  };
+
   const handleChangeSelect = (value: number) => {
     setSignupValues({...signupValues, shelterId: value});
   };
 
-  const [termsList, setTermsList] = useState<TermsType[]>([
-    {id: 1, agree: false},
-    {id: 2, agree: false},
-  ]);
+  const getTerms = async () => {
+    try {
+      const res: AxiosResponse<TermsIdsToAgreeType[]> =
+        await backendAxiosInstance.get('api/v1/homeless-app/terms', {
+          headers: {Accept: '*/*'},
+        });
+      return res.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error) {
+          Toast.show({
+            text1: '서버 에러',
+            type: 'error',
+            text2: error.message,
+            text2Style: {fontSize: 10},
+            position: 'bottom',
+          });
+        }
+      }
+    }
+  };
+  useEffect(() => {
+    getTerms().then(terms => {
+      if (terms) {
+        setTermsList(terms.map(term => ({...term, agree: false})));
+      }
+    });
+  }, []);
+
   const termsListHandler = (id: string, value: boolean) => {
     const numberId = parseInt(id, 10);
     const updatedTermsList = termsList.map(term =>
@@ -81,26 +125,35 @@ const AuthSignup = ({}: AuthSignupProps) => {
     setTermsList(updatedTermsList);
   };
 
-  // 현재 약관이 존재하지 않아 이 부분은 주석처리 하였습니다.
-  // const updateTermsIdsAgree = () => {
-  //   const updatedTermsIdsToAgree = termsList
-  //     .filter(term => term.agree)
-  //     .map(term => term.id);
-  //   setSignupValues({...signupValues, termsIdsToAgree: updatedTermsIdsToAgree});
-  // };
-  // useEffect(() => {
-  //   updateTermsIdsAgree();
-  // }, [termsList]);
+  const updateTermsIdsAgree = () => {
+    const updatedTermsIdsToAgree = termsList
+      .filter(term => term.agree)
+      .map(term => term.id);
+    setSignupValues({...signupValues, termsIdsToAgree: updatedTermsIdsToAgree});
+  };
+
+  const updateAllTermsIdsAgree = () => {
+    const updatedTermsList = termsList.map(term => ({...term, agree: true}));
+    setTermsList(updatedTermsList);
+  };
+
+  useEffect(() => {
+    updateTermsIdsAgree();
+  }, [termsList]);
 
   const handleSubmit = async () => {
     try {
-      const res = await backendAxiosInstance({
-        method: 'POST',
-        headers: {'content-type': 'application/json', accept: '*/*'},
-        url: '/api/v1/homeless-app/homeless',
-        data: JSON.stringify(signupValues),
-      });
+      const res = await backendAxiosInstance.post(
+        '/api/v1/homeless-app/homeless',
+        signupValues,
+        {
+          headers: {'content-type': 'application/json', accept: '*/*'},
+        },
+      );
       const result = await res.data;
+      if (result.errorCode) {
+        throw new Error(result.description);
+      }
       setToken(signupValues.deviceId, result.accessToken);
       setIsLoggedIn(true);
       Toast.show({
@@ -108,8 +161,18 @@ const AuthSignup = ({}: AuthSignupProps) => {
         text1: '회원가입이 정상적으로 완료되었습니다.',
         position: 'bottom',
       });
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error) {
+          Toast.show({
+            type: 'error',
+            text1: '가입 오류',
+            text2: error.message,
+            text2Style: {fontSize: 10},
+            position: 'bottom',
+          });
+        }
+      }
     }
   };
 
@@ -138,38 +201,55 @@ const AuthSignup = ({}: AuthSignupProps) => {
             isRequired
             isPinNumber
             secureTextEntry
+            keyboardType="numeric"
             value={signupValues.shelterPin}
-            onChangeText={text => handleChangeText('shelterPin', text)}
+            onChangeText={text => handleNumericText('shelterPin', text)}
           />
           <InputField
             labelName="호실"
             placeholder="이용하시는 호실을 입력해주세요"
+            isRequired
             value={signupValues.room}
             onChangeText={text => handleChangeText('room', text)}
           />
           <InputField
             labelName="전화번호"
             placeholder="전화번호를 입력해주세요"
+            keyboardType="numeric"
             value={signupValues.phoneNumber}
-            onChangeText={text => handleChangeText('phoneNumber', text)}
+            onChangeText={text => handleNumericText('phoneNumber', text)}
           />
-          <ConsentField
-            label="이용약관 동의"
-            check={termsList[0].agree}
-            onChange={termsListHandler}
-            id={String(termsList[0].id)}
-          />
-          <ConsentField
-            label="개인정보 수집 및 이용동의"
-            check={termsList[1].agree}
-            onChange={termsListHandler}
-            id={String(termsList[1].id)}
-          />
+          <View style={styles.termsContainer}>
+            <ConsentField
+              label="전체 동의"
+              isRequired={false}
+              isArrow={false}
+              onChange={updateAllTermsIdsAgree}
+              check={termsList.every(term => term.agree)}
+              id={'all'}
+              size="large"
+            />
+            {termsList.map(({id, title, detail, agree}) => {
+              return (
+                <ConsentField
+                  key={id}
+                  label={title}
+                  isRequired
+                  isArrow={false}
+                  check={agree}
+                  onChange={termsListHandler}
+                  id={String(id)}
+                  url={detail}
+                />
+              );
+            })}
+          </View>
           <View style={styles.buttonContainer}>
             <CustomButton
               label="완료"
               variant="filled"
               onPress={handleSubmit}
+              disabled={!submitActive}
             />
           </View>
         </ScrollView>
@@ -202,6 +282,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   buttonContainer: {width: '100%', alignItems: 'center'},
+  termsContainer: {
+    flex: 0,
+    width: '100%',
+    paddingHorizontal: 5,
+    paddingVertical: 10,
+  },
 });
 
 export default AuthSignup;

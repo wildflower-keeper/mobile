@@ -23,6 +23,17 @@ const ReasonSelectorContainer = ({}: ReasonSelectorContainerProps) => {
       reason: value,
     });
   };
+
+  const handleNumericText = (text: string) => {
+    if (isNaN(Number(text))) {
+      return;
+    }
+    const newValue = text.replace('.', '').trim();
+    setOvernightRequestValues({
+      ...overnightRequestValues,
+      emergencyContact: newValue,
+    });
+  };
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
       <View style={styles.optionContainer}>
@@ -47,18 +58,16 @@ const ReasonSelectorContainer = ({}: ReasonSelectorContainerProps) => {
           );
         })}
       </View>
-      <View style={{width: '100%', flex: 0, gap: 30}}>
-        <InputField labelName="기타" placeholder="사유를 입력해주세요." />
+      <View style={{width: '100%', flex: 0, gap: 20}}>
+        {overnightRequestValues.reason === '기타' && (
+          <InputField labelName="기타" placeholder="사유를 입력해주세요." />
+        )}
         <InputField
           labelName="비상연락망"
           placeholder="비상시 연락할 전화번호를 입력해주세요."
+          keyboardType="numeric"
           value={overnightRequestValues.emergencyContact}
-          onChangeText={text => {
-            setOvernightRequestValues({
-              ...overnightRequestValues,
-              emergencyContact: text,
-            });
-          }}
+          onChangeText={text => handleNumericText(text)}
         />
       </View>
     </KeyboardAvoidingView>
@@ -66,7 +75,7 @@ const ReasonSelectorContainer = ({}: ReasonSelectorContainerProps) => {
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1, paddingTop: 60, gap: 60},
+  container: {flex: 1, paddingTop: 60, gap: 50},
   optionContainer: {
     flex: 0,
     flexDirection: 'row',

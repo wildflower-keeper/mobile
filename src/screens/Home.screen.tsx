@@ -1,17 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {Linking, Pressable, SafeAreaView, StyleSheet, View} from 'react-native';
-import CustomText from '../components/base/CustomText';
-import Geolocation from '@react-native-community/geolocation';
-import CustomButton from '@/components/base/CustomButton';
+import React, {useEffect, useMemo} from 'react';
+import {Pressable, SafeAreaView, StyleSheet, View} from 'react-native';
+import CustomText from '@/components/base/CustomText';
 import {useGetUserInfo} from '@/hooks/queries/useAuth';
-import {getWeather} from '@/utils/api/weather';
-import LinearGradient from 'react-native-linear-gradient';
-import SleepoverScheduleContainer from '@/components/SleepoverScheduleContainer';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import useUserInfoStore from '@/stores/useUserInfo';
-import {backendAxiosInstance} from '@/utils/api/api';
-import {getAccessToken} from '@/utils/api/auth';
 import HomeHeader from '@/components/HomeHeader';
-
+import SleepoverSchedules from '@/components/SleepoverSchedules';
+import EmergencyButton from '@/components/EmergencyButton';
+import useLocation from '@/hooks/queries/useLocation';
+import {colors} from '@/constants';
 interface HomeProps {}
 
 const today = new Date();
@@ -21,101 +18,68 @@ export type userLocationType = {
   longitude: number;
 };
 
+//TODO : home screen 리팩토링 필요
 const Home = ({navigation}: HomeProps) => {
-  const [fetchedUserInfo, isSuccess] = useGetUserInfo();
-  const {setUserInfo} = useUserInfoStore();
-  const [userLocation, setUserLocation] = useState<userLocationType>({
-    latitude: 37,
-    longitude: 124,
-  });
-  const [currentWeather, setCurrentWeather] = useState({
-    weather: '',
-    temp: 0,
-  });
-  const [isUserLocationError, setIsUserLocationError] =
-    useState<boolean>(false);
-
+  const {data, isSuccess} = useGetUserInfo();
+  const {userInfo, setUserInfo} = useUserInfoStore();
   useEffect(() => {
     if (isSuccess) {
-      setUserInfo({...fetchedUserInfo});
+      setUserInfo({...data});
     }
-  }, [fetchedUserInfo, isSuccess]);
+  }, [data, isSuccess]);
 
-  useEffect(() => {
-    Geolocation.getCurrentPosition(
-      info => {
-        const {latitude, longitude} = info.coords;
-        setUserLocation({latitude, longitude});
-        setIsUserLocationError(false);
-      },
-      () => setIsUserLocationError(true),
-      {enableHighAccuracy: true},
-    );
-  }, []);
-
-  useEffect(() => {
-    const weatherItem = getWeather(userLocation);
-    weatherItem.then(({weather, temp}) => {
-      setCurrentWeather({weather, temp});
-    });
-  }, [userLocation]);
-
-  const handlePressEmergency = () => {
-    const phoneNumber = '01054283576';
-    const url = `tel:${phoneNumber}`;
-
-    Linking.openURL(url);
-  };
+  const {data: locationStatusQuery} = useLocation();
+  const locationStatus = useMemo(() => {
+    return locationStatusQuery?.locationStatus;
+  }, [locationStatusQuery]);
 
   return (
     <SafeAreaView style={styles.container}>
       {isSuccess && (
         <HomeHeader
-          shelterName={fetchedUserInfo.shelterName}
-          homelessName={fetchedUserInfo.homelessName}
-          temp={currentWeather.temp}
+          shelterName={data.shelterName}
+          homelessName={data.homelessName}
           today={today}
         />
       )}
 
       <View style={styles.bodyContainer}>
         <View style={styles.bodyItemContainer}>
-          <CustomText>긴급도움 요청</CustomText>
-          <LinearGradient
-            colors={['#FF8981', '#FF384D']}
-            style={styles.linearGradient}>
-            <Pressable
-              onPress={handlePressEmergency}
-              style={styles.emergencyButton}>
-              <CustomText textColor="white">긴급도움 요청하기</CustomText>
+          <View style={styles.scheduleHeaderContainer}>
+            <CustomText size="large" weight="heavy">다가오는 일정</CustomText>
+            <Pressable onPress={() => navigation.navigate('OvernightList')}>
+              <CustomText textColor="weak">
+                더보기
+                <AntDesignIcon name="right" size={18} color={colors.FONT_WEAK} style={{ paddingLeft:4 }}/>
+              </CustomText>
             </Pressable>
-          </LinearGradient>
+          </View>
+          <SleepoverSchedules/>
         </View>
 
         <View style={styles.nearOvernightContainer}>
-          <CustomText>가까운 외박일정</CustomText>
-          <SleepoverScheduleContainer
-            upcomingSleepover={fetchedUserInfo?.upcomingSleepover}
-          />
-        </View>
-
-        <View style={styles.bodyItemContainer}>
-          <CustomText>외박신청</CustomText>
-          <View style={styles.buttonContainer}>
-            <CustomButton
-              size="md"
-              label="신청내역"
-              variant="outlined"
-              onPress={() => navigation.navigate('OvernightList')}
-            />
-            <CustomButton
-              size="md"
-              variant="outlined"
-              label="외박신청"
+          <Pressable
               onPress={() => navigation.navigate('OvernightRequest')}
-            />
-          </View>
+              style={styles.nearOvernightButton}>
+            <CustomText weight="heavy">외박 신청</CustomText>
+            <AntDesignIcon name="right" size={18} color="#616161" />
+          </Pressable>
         </View>
+      </View>
+
+      <View style={styles.fixedContainer}>
+        {locationStatus === 'IN_SHELTER'? (
+            <View style={styles.inShelterButton}>
+              <CustomText weight="heavy" textColor="white">재실 중</CustomText>
+            </View>
+          ):(
+          <>
+            <View style={styles.outShelterButton}>
+              <CustomText weight="heavy">외출 중</CustomText>
+            </View>
+            <EmergencyButton shelterPhone={userInfo.shelterPhone}/>
+          </>
+          )}
       </View>
     </SafeAreaView>
   );
@@ -125,21 +89,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    gap: 30,
-    marginBottom: 60,
-  },
-  emergencyButton: {
-    width: '100%',
-    paddingVertical: 'auto',
-    flex: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
+    gap: 24,
   },
   bodyItemContainer: {
     flex: 0,
-    gap: 16,
+    gap: 24,
   },
-
+  scheduleHeaderContainer : {
+    flex: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   bodyContainer: {
     flex: 1,
     width: '90%',
@@ -158,14 +118,45 @@ const styles = StyleSheet.create({
   nearOvernightContainer: {
     flex: 1,
     gap: 16,
+
   },
-  linearGradient: {
+  nearOvernightButton: {
     flex: 0,
-    borderRadius: 30,
-    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    justifyContent: 'space-between',
+  },
+  fixedContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: 'white',
+    flex: 0,
+    flexDirection: 'row',
+    padding: 16,
+    gap: 16
+  },
+  inShelterButton: {
+    flex: 1,
+    paddingVertical: 8,
     justifyContent: 'center',
-    paddingVertical: 24,
-    height: 'auto',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: colors.PRIMARY,
+    backgroundColor: colors.PRIMARY
+  },
+  outShelterButton: {
+    flex: 3,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: '#E8E8E8',
   },
 });
 

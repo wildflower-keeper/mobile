@@ -3,31 +3,44 @@ buildscript {
         buildToolsVersion = "34.0.0"
         ndkVersion = "26.1.10909125"
         kotlinVersion = "1.9.22"
-        minSdkVersion 		= 23	      // Required minimum
-        targetSdkVersion 	= 33          // Or higher.
-        compileSdkVersion 	= 33          // Or higher.
-        appCompatVersion 	= "1.4.2"      // Or higher.  Required for new AndroidX compatibility.
-        googlePlayServicesLocationVersion = "21.0.1"  // Or higher.
+        minSdkVersion = 23 // Required minimum
+        targetSdkVersion = 34 // Or higher.
+        compileSdkVersion = 34 // Or higher.
+        appCompatVersion = "1.4.2" // Or higher. Required for new AndroidX compatibility.
+        googlePlayServicesLocationVersion = "21.0.1" // Or higher.
     }
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle")
+        classpath("com.android.tools.build:gradle:8.0.2") 
         classpath("com.facebook.react:react-native-gradle-plugin")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath 'com.google.gms:google-services:4.4.2'
     }
 }
+
 allprojects {
     repositories {
-       // Required for react-native-background-geolocation
-        maven { url("${project(':react-native-background-geolocation').projectDir}/libs") }
+        google()
+        mavenCentral()
         maven { url 'https://developer.huawei.com/repo/' }
-       // Required for react-native-background-fetch
+        // Required for react-native-background-fetch
         maven { url("${project(':react-native-background-fetch').projectDir}/libs") }
-}
+    }
 }
 
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty("android")) {
+            android {
+                compileSdkVersion compileSdkVersion
+                buildToolsVersion buildToolsVersion
+            }
+        }
+    }
+}
+
+// 적용하는 플러그인
 apply plugin: "com.facebook.react.rootproject"
