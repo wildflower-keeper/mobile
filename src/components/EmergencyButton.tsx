@@ -1,15 +1,22 @@
 import React, {useState, useRef} from 'react';
-import {Linking, Text, Pressable, StyleSheet, View, Animated} from 'react-native';
+import {
+  Linking,
+  Text,
+  Pressable,
+  StyleSheet,
+  View,
+  Animated,
+} from 'react-native';
 import CustomText from '../components/base/CustomText';
 import emergencyCall from '@/utils/api/emergency';
 
 const colors = ['#FF3D00', '#FF5A26', '#FF8C68'];
 
 interface EmergencyButtonProps {
-  shelterPhoneNumber: number;
+  shelterPhoneNumber: string;
 }
 
-const EmergencyButton = ({shelterPhoneNumber} : EmergencyButtonProps) => {
+const EmergencyButton = ({shelterPhoneNumber}: EmergencyButtonProps) => {
   const [colorIndex, setColorIndex] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -18,10 +25,11 @@ const EmergencyButton = ({shelterPhoneNumber} : EmergencyButtonProps) => {
 
     timerRef.current = setInterval(() => {
       elapsed++;
-      setColorIndex((prevIndex) => ((prevIndex + 1) % colors.length));
+      setColorIndex(prevIndex => (prevIndex + 1) % colors.length);
 
-      if(elapsed === 3) {
+      if (timerRef.current !== null && elapsed === 3) {
         clearInterval(timerRef.current);
+
         emergencyCall();
         Linking.openURL(`tel:${shelterPhoneNumber}`);
       }
@@ -39,10 +47,7 @@ const EmergencyButton = ({shelterPhoneNumber} : EmergencyButtonProps) => {
     <Pressable
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      style={[
-        styles.emergencyButton,
-        { backgroundColor: colors[colorIndex] }
-      ]}>
+      style={[styles.emergencyButton, {backgroundColor: colors[colorIndex]}]}>
       <CustomText weight="heavy" textColor="white">
         긴급 도움
       </CustomText>
@@ -59,8 +64,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
     borderColor: '#FF3D00',
-    backgroundColor: '#FF3D00'
-  }
+    backgroundColor: '#FF3D00',
+  },
 });
 
 export default EmergencyButton;

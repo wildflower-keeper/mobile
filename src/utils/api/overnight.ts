@@ -1,8 +1,8 @@
 import {backendAxiosInstance} from './api';
-import {getAccessToken} from './auth';
-
+import {useAuthStore} from '@/providers/AuthProvider';
 
 //TODO : body type 정의
+const {token} = useAuthStore();
 const createOvernightSchedule = async ({body}) => {
   const axiosObject = {
     method: 'post',
@@ -11,7 +11,7 @@ const createOvernightSchedule = async ({body}) => {
     headers: {
       'Content-type': 'application/json',
       accept: '*/*',
-      'auth-token': await getAccessToken(),
+      'auth-token': token,
     },
   };
   const {data} = await backendAxiosInstance(axiosObject);
@@ -24,7 +24,7 @@ const getOvernightAbleSchedule = async () => {
     url: '/api/v1/homeless-app/available-sleepover-dates',
     headers: {
       accept: '*/*',
-      'auth-token': await getAccessToken(),
+      'auth-token': token,
     },
   };
   const {data} = await backendAxiosInstance(axiosObject);
@@ -38,7 +38,7 @@ const deleteOvernightSchedule = async (sleepoverId: number) => {
     url,
     headers: {
       accept: '*/*',
-      'auth-token': await getAccessToken(),
+      'auth-token': token,
     },
   });
 };

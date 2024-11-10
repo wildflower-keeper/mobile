@@ -12,12 +12,11 @@ import CustomButton from '@/components/base/CustomButton';
 import SelectField from '@/components/SelectField';
 import ConsentField from '@/components/ConsentField';
 import {backendAxiosInstance} from '@/utils/api/api';
-import {setToken} from '@/utils/tokenStorage/tokenStorage';
+import authStore from '@/utils/tokenStorage/tokenStorage';
 import Toast from 'react-native-toast-message';
-import {getDeviceUniqueId} from '@/utils/api/auth';
-import useLoggedInStore from '@/stores/useLoggedIn';
 import {ScrollView} from 'react-native-gesture-handler';
 import {AxiosResponse} from 'axios';
+import {useAuthStore} from '@/providers/AuthProvider';
 
 interface AuthSignupProps {}
 
@@ -46,6 +45,7 @@ type signupValueType = {
 };
 
 const AuthSignup = ({}: AuthSignupProps) => {
+  const {setToken} = useAuthStore();
   const [signupValues, setSignupValues] = useState<signupValueType>({
     name: '',
     shelterId: 0,
@@ -66,9 +66,8 @@ const AuthSignup = ({}: AuthSignupProps) => {
     /^[가-힣a-zA-Z0-9\s]+$/.test(signupValues.room) &&
     signupValues.termsIdsToAgree.length === termsList.length;
 
-  const {setIsLoggedIn} = useLoggedInStore();
   useEffect(() => {
-    getDeviceUniqueId().then((result: string) => {
+    authStore.getDeviceUniqueId().then((result: string) => {
       setSignupValues({...signupValues, deviceId: result});
     });
   }, []);
@@ -154,8 +153,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
       if (result.errorCode) {
         throw new Error(result.description);
       }
-      setToken(signupValues.deviceId, result.accessToken);
-      setIsLoggedIn(true);
+      await setToken(result.accessToken);
       Toast.show({
         type: 'success',
         text1: '회원가입이 정상적으로 완료되었습니다.',

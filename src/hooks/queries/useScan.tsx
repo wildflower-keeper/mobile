@@ -1,7 +1,5 @@
-import {useMutation, useQuery} from '@tanstack/react-query';
-import {useCallback, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Linking} from 'react-native';
-import {getAccessToken} from '@/utils/api/auth';
 
 export type locationStatusType = 'IN_SHELTER' | 'OUT_SHELTER' | '';
 

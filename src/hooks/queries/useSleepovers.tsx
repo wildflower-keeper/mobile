@@ -1,9 +1,8 @@
 // Utils
-import {getAccessToken} from '@/utils/api/auth';
 import {useQuery} from '@tanstack/react-query';
-import {useEffect, useState} from 'react';
 import {formatUpdateTime} from '@/utils/date/date';
 import {differenceInDays} from 'date-fns';
+import {useAuthStore} from '@/providers/AuthProvider';
 
 interface OvernightListResponseType {
   startDate: string;
@@ -15,15 +14,7 @@ interface OvernightListResponseType {
 }
 
 const useSleepovers = () => {
-  const [token, setToken] = useState<string>('');
-  useEffect(() => {
-    (async () => {
-      const data = await getAccessToken();
-      if (data) {
-        setToken(data);
-      }
-    })();
-  }, []);
+  const {token} = useAuthStore();
   const {data} = useQuery<OvernightListResponseType[]>({
     queryKey: ['sleepovers'],
     enabled: !!token,
@@ -49,15 +40,17 @@ const useSleepovers = () => {
         throw new Error('SleepoverList is missing from the response');
       }
 
-      return result.map(({startDate: startDateStr, endDate: endDateStr, ...props}) => {
-        const startDate = new Date(startDateStr);
-        return {
-          dayDiff: differenceInDays(startDate, new Date()),
-          startDate: formatUpdateTime(startDate),
-          endDate: formatUpdateTime(new Date(endDateStr)),
-          ...props
-        }
-      });
+      return result.map(
+        ({startDate: startDateStr, endDate: endDateStr, ...props}) => {
+          const startDate = new Date(startDateStr);
+          return {
+            dayDiff: differenceInDays(startDate, new Date()),
+            startDate: formatUpdateTime(startDate),
+            endDate: formatUpdateTime(new Date(endDateStr)),
+            ...props,
+          };
+        },
+      );
     },
   });
 

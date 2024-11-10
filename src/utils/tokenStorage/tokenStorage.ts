@@ -1,26 +1,42 @@
-import * as Keychain from 'react-native-keychain';
+import * as KeyChain from 'react-native-keychain';
+import DeviceInfo from 'react-native-device-info';
 
-// 토큰 저장
-const setToken = async (userName: string, token: string) => {
-  try {
-    await Keychain.setInternetCredentials(userName, userName, token);
-  } catch (error) {
-    console.error('Error storing token', error);
-  }
-};
+interface AuthStore {
+  setToken: (token: string) => Promise<void>;
+  getAccessToken: () => Promise<string>;
+  getDeviceUniqueId: () => Promise<string>;
+}
 
-// 토큰 가져오기
-const getToken = async (userName: string) => {
-  try {
-    const credentials = await Keychain.getInternetCredentials(userName);
-    if (credentials) {
-      return credentials.password;
-    } else {
-      console.log('No token stored');
+const authStore: AuthStore = {
+  getDeviceUniqueId: async () => {
+    return await DeviceInfo.getUniqueId();
+  },
+
+  setToken: async (token: string) => {
+    try {
+      const deviceId = await authStore.getDeviceUniqueId();
+      await KeyChain.setInternetCredentials(deviceId, deviceId, token);
+    } catch (error) {
+      console.error('Error storing token', error);
     }
-  } catch (error) {
-    console.error('Error retrieving token', error);
-  }
+  },
+
+  getAccessToken: async () => {
+    try {
+      const deviceId = await authStore.getDeviceUniqueId();
+      const credentials = await KeyChain.getInternetCredentials(deviceId);
+      console.log('credentials', credentials);
+      if (credentials) {
+        return credentials.password;
+      } else {
+        console.log('No token stored');
+        return '';
+      }
+    } catch (error) {
+      console.error('Error retrieving token', error);
+      return '';
+    }
+  },
 };
 
-export {setToken, getToken};
+export default authStore;

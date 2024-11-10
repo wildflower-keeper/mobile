@@ -1,6 +1,8 @@
-import {getAccessToken} from './auth';
+import { useAuthStore } from '@/providers/AuthProvider';
+import authStore from '../tokenStorage/tokenStorage';
 
 const emergencyCall = async () => {
+  const { token } = useAuthStore();
   try {
     const reqData = {
       location: {},
@@ -13,7 +15,7 @@ const emergencyCall = async () => {
         headers: {
           'Content-Type': 'application/json',
           accept: '*/*',
-          'auth-token': `${await getAccessToken()}`,
+          'auth-token': token,
         },
         body: JSON.stringify(reqData),
       },

@@ -1,17 +1,8 @@
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
-import {getAccessToken} from '@/utils/api/auth';
-import {useEffect, useState} from 'react';
 import type {locationStatusType} from '@/hooks/queries/useScan';
 
-const useLocation = () => {
-  const [token, setToken] = useState<string>('');
+const useLocation = (token : string) => {
   const queryClient = useQueryClient();
-  useEffect(() => {
-    (async () => {
-      const data = await getAccessToken();
-      if (data) setToken(data);
-    })();
-  }, []);
 
   const {data} = useQuery<{
     locationStatus: locationStatusType;
