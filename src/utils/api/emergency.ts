@@ -1,4 +1,5 @@
 import {getAccessToken} from './auth';
+import {POST} from './api';
 
 const emergencyCall = async () => {
   try {
@@ -6,18 +7,16 @@ const emergencyCall = async () => {
       location: {},
     };
     console.log(reqData);
-    const response = await fetch(
-      'https://api.wildflower-gardening.com/api/v1/homeless-app/emergency',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          accept: '*/*',
-          'auth-token': `${await getAccessToken()}`,
-        },
-        body: JSON.stringify(reqData),
+
+    const response = await POST('/api/v1/homeless-app/emergency', {
+      headers: {
+        'Content-Type': 'application/json',
+        accept: '*/*',
+        'auth-token': await getAccessToken(),
       },
-    );
+      body: JSON.stringify(body),
+    });
+
     if (!response.ok) {
       throw new Error('emergency call failed');
     }

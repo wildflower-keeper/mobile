@@ -1,5 +1,5 @@
 import DeviceInfo from 'react-native-device-info';
-import {backendAxiosInstance} from './api';
+import {GET, POST} from '@/utils/api/api';
 import {getToken} from '../tokenStorage/tokenStorage';
 
 const getDeviceUniqueId = async () => {
@@ -10,26 +10,23 @@ const getAccessToken = async () => {
   return await getToken(await getDeviceUniqueId());
 };
 
+// TODO : createUser 사용처가 없는 것 같은데 확인 필요
 // 이 함수가 성공하면 리다이렉트.
-const createUser = async ({body}) => {
-  const {data} = await backendAxiosInstance({
-    method: 'POST',
-    headers: {'content-type': 'application/json', accept: '*/*'},
-    url: '/api/v1/homeless-app/homeless',
-    data: JSON.stringify(body),
+const createUser = async ({ body }) => {
+  const {data} = await POST('/api/v1/homeless-app/homeless', {
+    headers: { 'content-type': 'application/json', accept: '*/*' },
+    body: JSON.stringify(body),
   });
-  return data;
+return data;
 };
 
 const getUserInfo = async () => {
   console.log('get user info');
-  const {data} = await backendAxiosInstance({
-    method: 'GET',
+  const {data} = await GET('/api/v1/homeless-app/homeless', {
     headers: {
       'content-type': 'application/json',
       'auth-token': await getAccessToken(),
     },
-    url: '/api/v1/homeless-app/homeless',
   });
   return data;
 };

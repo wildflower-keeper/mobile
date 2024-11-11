@@ -1,46 +1,35 @@
-import {backendAxiosInstance} from './api';
+import {GET, POST, DELETE} from './api';
 import {getAccessToken} from './auth';
 
 
 //TODO : body type 정의
 const createOvernightSchedule = async ({body}) => {
-  const axiosObject = {
-    method: 'post',
-    url: '/api/v1/homeless-app/sleepover',
-    data: JSON.stringify(body),
-    headers: {
-      'Content-type': 'application/json',
-      accept: '*/*',
-      'auth-token': await getAccessToken(),
-    },
-  };
-  const {data} = await backendAxiosInstance(axiosObject);
-  return data;
+  return (await POST('/api/v1/homeless-app/sleepover', {
+      body: JSON.stringify(body),
+      headers: {
+        'Content-type': 'application/json',
+        accept: '*/*',
+        'auth-token': await getAccessToken(),
+      }
+    })).data;
 };
 
 const getOvernightAbleSchedule = async () => {
-  const axiosObject = {
-    method: 'get',
-    url: '/api/v1/homeless-app/available-sleepover-dates',
-    headers: {
-      accept: '*/*',
-      'auth-token': await getAccessToken(),
-    },
-  };
-  const {data} = await backendAxiosInstance(axiosObject);
-  return data;
+  return (await GET('/api/v1/homeless-app/available-sleepover-dates', {
+      headers: {
+        accept: '*/*',
+        'auth-token': await getAccessToken(),
+      },
+    })).data;
 };
 
 const deleteOvernightSchedule = async (sleepoverId: number) => {
-  const url = `/api/v1/homeless-app/sleepover/${sleepoverId}`;
-  await backendAxiosInstance({
-    method: 'DELETE',
-    url,
-    headers: {
-      accept: '*/*',
-      'auth-token': await getAccessToken(),
-    },
-  });
+  await DELETE(`/api/v1/homeless-app/sleepover/${sleepoverId}`, {
+      headers: {
+        accept: '*/*',
+        'auth-token': await getAccessToken(),
+      },
+    });
 };
 
 export {

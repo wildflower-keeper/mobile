@@ -1,4 +1,5 @@
 // Utils
+import {GET} from '@/utils/api/api';
 import {getAccessToken} from '@/utils/api/auth';
 import {useQuery} from '@tanstack/react-query';
 import {useEffect, useState} from 'react';
@@ -28,10 +29,9 @@ const useSleepovers = () => {
     queryKey: ['sleepovers'],
     enabled: !!token,
     queryFn: async () => {
-      const response: Response = await fetch(
-        'https://api.wildflower-gardening.com/api/v1/homeless-app/sleepovers',
+      const {data: result} = await GET(
+        '/api/v1/homeless-app/sleepovers',
         {
-          method: 'get',
           headers: {
             'Content-Type': 'application/json',
             accept: '*/*',
@@ -39,11 +39,6 @@ const useSleepovers = () => {
           },
         },
       );
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const result = await response.json();
 
       if (!result) {
         throw new Error('SleepoverList is missing from the response');

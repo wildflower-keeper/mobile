@@ -11,7 +11,7 @@ import InputField from '@/components/InputField';
 import CustomButton from '@/components/base/CustomButton';
 import SelectField from '@/components/SelectField';
 import ConsentField from '@/components/ConsentField';
-import {backendAxiosInstance} from '@/utils/api/api';
+import {GET, POST} from '@/utils/api/api';
 import {setToken} from '@/utils/tokenStorage/tokenStorage';
 import Toast from 'react-native-toast-message';
 import {getDeviceUniqueId} from '@/utils/api/auth';
@@ -90,8 +90,7 @@ const AuthSignup = ({}: AuthSignupProps) => {
 
   const getTerms = async () => {
     try {
-      const res: AxiosResponse<TermsIdsToAgreeType[]> =
-        await backendAxiosInstance.get('api/v1/homeless-app/terms', {
+      const res = await GET<TermsIdsToAgreeType[]>('api/v1/homeless-app/terms', {
           headers: {Accept: '*/*'},
         });
       return res.data;
@@ -143,14 +142,10 @@ const AuthSignup = ({}: AuthSignupProps) => {
 
   const handleSubmit = async () => {
     try {
-      const res = await backendAxiosInstance.post(
-        '/api/v1/homeless-app/homeless',
-        signupValues,
-        {
-          headers: {'content-type': 'application/json', accept: '*/*'},
-        },
-      );
-      const result = await res.data;
+      const {data: result} = await POST('/api/v1/homeless-app/homeless', {
+        headers: {'content-type': 'application/json', accept: '*/*'},
+        body : JSON.stringify(signupValues)
+      });
       if (result.errorCode) {
         throw new Error(result.description);
       }
