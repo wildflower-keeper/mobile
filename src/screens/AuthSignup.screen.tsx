@@ -90,9 +90,12 @@ const AuthSignup = ({}: AuthSignupProps) => {
 
   const getTerms = async () => {
     try {
-      const res = await GET<TermsIdsToAgreeType[]>('api/v1/homeless-app/terms', {
+      const res = await GET<TermsIdsToAgreeType[]>('/api/v1/homeless-app/terms', {
           headers: {Accept: '*/*'},
         });
+      if (res.status !== 200) {
+        throw new Error(res.statusText);
+      }
       return res.data;
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -146,8 +149,8 @@ const AuthSignup = ({}: AuthSignupProps) => {
         headers: {'content-type': 'application/json', accept: '*/*'},
         body : JSON.stringify(signupValues)
       });
-      if (result.errorCode) {
-        throw new Error(result.description);
+      if (result.status !== 200) {
+        throw new Error(result.statusText);
       }
       setToken(signupValues.deviceId, result.accessToken);
       setIsLoggedIn(true);

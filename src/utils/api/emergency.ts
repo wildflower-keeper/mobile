@@ -6,7 +6,6 @@ const emergencyCall = async () => {
     const reqData = {
       location: {},
     };
-    console.log(reqData);
 
     const response = await POST('/api/v1/homeless-app/emergency', {
       headers: {
@@ -14,11 +13,11 @@ const emergencyCall = async () => {
         accept: '*/*',
         'auth-token': await getAccessToken(),
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(reqData),
     });
 
-    if (!response.ok) {
-      throw new Error('emergency call failed');
+    if (response.status !== 200) {
+      throw new Error(response.statusText);
     }
 
     console.log('emergency call success??', response);

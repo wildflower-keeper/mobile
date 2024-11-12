@@ -31,7 +31,7 @@ const useLocation = () => {
         });
 
       if (response.status !== 200) {
-        throw new Error('Network response was not ok');
+        throw new Error(response.statusText);
       }
       const result = response.data;
 
