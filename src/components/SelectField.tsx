@@ -27,7 +27,7 @@ const SelectField = ({
   useEffect(() => {
     const getShelters = async () => {
       try {
-        const result = (await GET('/api/v1/shared/shelters')).data;
+        const {data: result} = await GET('/api/v1/shared/shelters');
         setItems(
           result.map(shelter => {
             return {label: shelter.shelterName, value: shelter.shelterId};
