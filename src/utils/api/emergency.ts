@@ -1,18 +1,13 @@
-import {getAccessToken} from './auth';
-import {POST} from './api';
+import { useAuthStore } from '@/providers/AuthProvider';
+import authStore from '../tokenStorage/tokenStorage';
 
 const emergencyCall = async () => {
+  const { token } = useAuthStore();
   try {
     const reqData = {
       location: {},
     };
-
     const response = await POST('/api/v1/homeless-app/emergency', {
-      headers: {
-        'Content-Type': 'application/json',
-        accept: '*/*',
-        'auth-token': await getAccessToken(),
-      },
       body: JSON.stringify(reqData),
     });
 

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {getAccessToken} from '@/utils/api/auth';
+import authStore from '@/utils/tokenStorage/tokenStorage';
 
 export const weatherAxiosInstance = axios.create({
   baseURL: 'https://api.openweathermap.org',
@@ -25,18 +26,22 @@ const hasAuthToken = (header: HeadersInit | undefined): boolean => {
 const interceptors = {
   onRequest: async (option?: RequestInit): RequestInit => {
     const headers = new Headers(option?.headers);
-    if (!hasAuthToken(headers)) {
-      // TODO 여기에서만 token 셋팅하도록 변경하면 좋을 듯
-      const token = await getAccessToken();
-      headers.set('auth-token', token);
-    }
+    headers.set('content-type', 'application/json');
+    headers.set('auth-token', await authStore.getAccessToken());
+    headers.set('accept', '*/*');
 
+//     console.log("API 2", { ...option, headers });
     return { ...option, headers };
   },
   onResponse: async (response) => {
     const data = response.headers.get('content-type') === 'application/json'
       ? await response.json()
       : response;
+    console.log("API 3", {
+      status: response.status,
+      statusText: response.statusText,
+      data: response.ok ? data : null
+    });
 
     return {
       status: response.status,
@@ -57,6 +62,8 @@ type Response<T> = {
 
 async function doFetch<T>(url: string, option?: RequestInit): Promise<Response<T>> {
   try {
+    console.log("-----------");
+//     console.log("API 1", url, option);
     const config = await interceptors.onRequest(option);
 
     return await fetch(

@@ -2,7 +2,7 @@ import SleepoverScheduleContainer from '@/components/SleepoverScheduleContainer'
 import CustomText from '@/components/base/CustomText';
 import {colors} from '@/constants';
 import useSleepovers from '@/hooks/queries/useSleepovers';
-import useUserInfoStore from '@/stores/useUserInfo';
+import {useUserStore} from '@/providers/UserProvider';
 import {formatSimpleDate} from '@/utils/date/date';
 import React, {useMemo, useState} from 'react';
 import {Modal, Pressable, StyleSheet, View} from 'react-native';
@@ -12,11 +12,12 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 interface OvernightListProps {}
 
 const OvernightList = ({}: OvernightListProps) => {
-  const {userInfo} = useUserInfoStore();
+  const {user: userInfo} = useUserStore();
   const {data} = useSleepovers();
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
+console.log("sleepovers>>>>>" , data);
   const sleepovers = useMemo(() => {
     return data?.map(({startDate, endDate, cancelable, sleepoverId}) => ({
       startDate,
@@ -33,6 +34,7 @@ const OvernightList = ({}: OvernightListProps) => {
   const onPressModalClose = () => {
     setIsModalVisible(false);
   };
+console.log("userInfo", userInfo)
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>

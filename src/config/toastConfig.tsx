@@ -1,7 +1,7 @@
 import {colors} from '@/constants';
 import React from 'react';
 import {StyleSheet, View, Text} from 'react-native';
-import {BaseToastProps} from 'react-native-toast-message';
+import {BaseToastProps, ToastConfigParams} from 'react-native-toast-message';
 import {BaseToast, ErrorToast} from 'react-native-toast-message';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
@@ -32,12 +32,12 @@ const toastConfig = {
       text2NumberOfLines={3}
     />
   ),
-  info: ({text1, props}) => (
+  info: ({text1, props}: ToastConfigParams<any>) => (
     <View style={styles.infoToastContainer}>
       <AntDesignIcon name={props.icon} color="white" />
       <Text style={styles.toastText}>{text1}</Text>
     </View>
-    ),
+  ),
 };
 
 const styles = StyleSheet.create({
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderRadius: 8,
     backgroundColor: '#353535',
-  }
+  },
 });
 
 export default toastConfig;
