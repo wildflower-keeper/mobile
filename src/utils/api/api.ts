@@ -30,18 +30,12 @@ const interceptors = {
     headers.set('auth-token', await authStore.getAccessToken());
     headers.set('accept', '*/*');
 
-//     console.log("API 2", { ...option, headers });
     return { ...option, headers };
   },
   onResponse: async (response) => {
     const data = response.headers.get('content-type') === 'application/json'
       ? await response.json()
       : response;
-    console.log("API 3", {
-      status: response.status,
-      statusText: response.statusText,
-      data: response.ok ? data : null
-    });
 
     return {
       status: response.status,
@@ -62,8 +56,6 @@ type Response<T> = {
 
 async function doFetch<T>(url: string, option?: RequestInit): Promise<Response<T>> {
   try {
-    console.log("-----------");
-//     console.log("API 1", url, option);
     const config = await interceptors.onRequest(option);
 
     return await fetch(
