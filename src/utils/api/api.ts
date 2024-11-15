@@ -25,7 +25,7 @@ const hasAuthToken = (header: HeadersInit | undefined): boolean => {
 const interceptors = {
   onRequest: async (option?: RequestInit): RequestInit => {
     const headers = new Headers(option?.headers);
-    if (hasAuthToken(headers)) {
+    if (!hasAuthToken(headers)) {
       // TODO 여기에서만 token 셋팅하도록 변경하면 좋을 듯
       const token = await getAccessToken();
       headers.set('auth-token', token);
