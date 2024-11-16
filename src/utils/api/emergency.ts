@@ -1,14 +1,11 @@
-import { useAuthStore } from '@/providers/AuthProvider';
-import authStore from '../tokenStorage/tokenStorage';
+import {POST} from './api';
 
 const emergencyCall = async () => {
-  const { token } = useAuthStore();
   try {
-    const reqData = {
-      location: {},
-    };
     const response = await POST('/api/v1/homeless-app/emergency', {
-      body: JSON.stringify(reqData),
+      body: JSON.stringify({
+        location: {},
+      }),
     });
 
     if (response.status !== 200) {

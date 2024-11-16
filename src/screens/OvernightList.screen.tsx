@@ -17,7 +17,6 @@ const OvernightList = ({}: OvernightListProps) => {
 
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
-console.log("sleepovers>>>>>" , data);
   const sleepovers = useMemo(() => {
     return data?.map(({startDate, endDate, cancelable, sleepoverId}) => ({
       startDate,
@@ -27,14 +26,10 @@ console.log("sleepovers>>>>>" , data);
     }));
   }, [data]);
 
-  const onPressModalOpen = () => {
-    setIsModalVisible(true);
-  };
-
   const onPressModalClose = () => {
     setIsModalVisible(false);
   };
-console.log("userInfo", userInfo)
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.titleContainer}>

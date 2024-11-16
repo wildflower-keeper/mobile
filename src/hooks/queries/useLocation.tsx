@@ -1,35 +1,27 @@
 import {useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
+import {GET, POST} from '@/utils/api/api';
+import {Location, LocationStatusType} from '@/types/Location';
 
-import type {locationStatusType} from '@/hooks/queries/useScan';
-
-const useLocation = (token : string) => {
+const useLocation = (token: string) => {
   const queryClient = useQueryClient();
 
-  const {data} = useQuery<{
-    locationStatus: locationStatusType;
-  }>({
+  const {data} = useQuery<Location>({
     queryKey: ['location'],
     enabled: !!token,
     queryFn: async () => {
-      if (!token) throw new Error('Token is missing');
+      if (!token) {
+        throw new Error('Token is missing');
+      }
 
-      const response = await fetch(
-        'https://api.wildflower-gardening.com/api/v1/homeless-app/location',
-        {
-          method: 'GET',
-          headers: {
-            accept: '*/*',
-          },
-        },
-      );
-      if (!response.ok) {
+      const response = await GET<Location>('/api/v1/homeless-app/location');
+      if (response.status !== 200) {
         throw new Error('Network response was not ok');
       }
 
-      const result = await response.json();
+      const result = response.data;
 
       // 서버 응답 확인 (필요시 에러 처리)
-      if (!result.locationStatus) {
+      if (!result?.locationStatus) {
         throw new Error('Location status is missing from the response');
       }
       return result;
@@ -38,17 +30,10 @@ const useLocation = (token : string) => {
 
   const mutate = useMutation({
     mutationKey: ['location'],
-    mutationFn: (newLocationStatus: locationStatusType) => {
-      return fetch(
-        'https://api.wildflower-gardening.com/api/v1/homeless-app/location',
-        {
-          method: 'POST',
-          headers: {
-            accept: '*/*',
-          },
-          body: JSON.stringify({locationStatus: newLocationStatus}),
-        },
-      );
+    mutationFn: (newLocationStatus: LocationStatusType) => {
+      return POST('/api/v1/homeless-app/location', {
+        body: JSON.stringify({locationStatus: newLocationStatus}),
+      });
     },
     onError: error => {
       console.error('Error:', error);

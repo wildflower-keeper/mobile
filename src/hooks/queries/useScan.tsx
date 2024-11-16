@@ -1,12 +1,9 @@
+import {Location} from '@/types/Location';
 import {useEffect, useState} from 'react';
 import {Linking} from 'react-native';
 
-export type locationStatusType = 'IN_SHELTER' | 'OUT_SHELTER' | '';
-
 const useScan = () => {
-  const [deepLinkData, setDeepLinkData] = useState<{
-    locationStatus: locationStatusType;
-  }>({
+  const [deepLinkData, setDeepLinkData] = useState<Location>({
     locationStatus: '',
   });
   useEffect(() => {
@@ -39,6 +36,7 @@ const useScan = () => {
     return () => {
       linkEvent.remove();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
