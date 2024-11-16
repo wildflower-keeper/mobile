@@ -3,7 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import CustomText from './base/CustomText';
 import {colors} from '@/constants';
-import {backendAxiosInstance} from '@/utils/api/api';
+import {GET} from '@/utils/api/api';
 
 type SelectFieldProps = {
   isRequired?: boolean;
@@ -27,11 +27,7 @@ const SelectField = ({
   useEffect(() => {
     const getShelters = async () => {
       try {
-        const res = await backendAxiosInstance({
-          method: 'GET',
-          url: '/api/v1/shared/shelters',
-        });
-        const result = await res.data;
+        const {data: result} = await GET('/api/v1/shared/shelters');
         setItems(
           result.map(shelter => {
             return {label: shelter.shelterName, value: shelter.shelterId};

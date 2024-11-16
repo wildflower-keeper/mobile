@@ -1,25 +1,15 @@
-import {getAccessToken} from './auth';
+import {POST} from './api';
 
 const emergencyCall = async () => {
   try {
-    const reqData = {
-      location: {},
-    };
-    console.log(reqData);
-    const response = await fetch(
-      'https://api.wildflower-gardening.com/api/v1/homeless-app/emergency',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          accept: '*/*',
-          'auth-token': `${await getAccessToken()}`,
-        },
-        body: JSON.stringify(reqData),
-      },
-    );
-    if (!response.ok) {
-      throw new Error('emergency call failed');
+    const response = await POST('/api/v1/homeless-app/emergency', {
+      body: JSON.stringify({
+        location: {},
+      }),
+    });
+
+    if (response.status !== 200) {
+      throw new Error(response.statusText);
     }
 
     console.log('emergency call success??', response);

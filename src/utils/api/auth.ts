@@ -1,37 +1,17 @@
-import DeviceInfo from 'react-native-device-info';
-import {backendAxiosInstance} from './api';
-import {getToken} from '../tokenStorage/tokenStorage';
-
-const getDeviceUniqueId = async () => {
-  return await DeviceInfo.getUniqueId();
-};
-
-const getAccessToken = async () => {
-  return await getToken(await getDeviceUniqueId());
-};
+import {GET, POST} from '@/utils/api/api';
 
 // 이 함수가 성공하면 리다이렉트.
-const createUser = async ({body}) => {
-  const {data} = await backendAxiosInstance({
-    method: 'POST',
-    headers: {'content-type': 'application/json', accept: '*/*'},
-    url: '/api/v1/homeless-app/homeless',
-    data: JSON.stringify(body),
+const createUser = async ({body}: {body: unknown}) => {
+  const {data} = await POST('/api/v1/homeless-app/homeless', {
+    body: JSON.stringify(body),
   });
   return data;
 };
 
 const getUserInfo = async () => {
-  console.log('get user info');
-  const {data} = await backendAxiosInstance({
-    method: 'GET',
-    headers: {
-      'content-type': 'application/json',
-      'auth-token': await getAccessToken(),
-    },
-    url: '/api/v1/homeless-app/homeless',
-  });
+  const {data} = await GET('/api/v1/homeless-app/homeless');
+  console.log('getUserInfo', data);
   return data;
 };
 
-export {getDeviceUniqueId, createUser, getUserInfo, getAccessToken};
+export {createUser, getUserInfo};

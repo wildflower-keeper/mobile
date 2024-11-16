@@ -7,7 +7,8 @@ import RootNavigator from '@/navigations/RootNavigator';
 import messaging from '@react-native-firebase/messaging';
 import {Alert, AppRegistry} from 'react-native';
 import {Text, TextInput} from 'react-native';
-import SplashScreen from "react-native-splash-screen";
+import SplashScreen from 'react-native-splash-screen';
+import {AuthProvider} from '@/providers/AuthProvider';
 
 interface TextWithDefaultProps extends Text {
   defaultProps?: {allowFontScaling?: boolean};
@@ -44,8 +45,10 @@ function App(): React.JSX.Element {
   });
   return (
     <QueryClientProvider client={queryClient}>
-      <RootNavigator />
-      <Toast config={toastConfig} />
+      <AuthProvider>
+        <RootNavigator />
+        <Toast config={toastConfig} />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

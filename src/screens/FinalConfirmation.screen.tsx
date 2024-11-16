@@ -3,8 +3,8 @@ import CustomButton from '@/components/base/CustomButton';
 import CustomText from '@/components/base/CustomText';
 import {colors} from '@/constants';
 import {useMutateCreateOvernight} from '@/hooks/queries/useMutateCreateOvernight';
+import {useUserStore} from '@/providers/UserProvider';
 import useOvernightRequestStore from '@/stores/useOverNight';
-import useUserInfoStore from '@/stores/useUserInfo';
 import queryClient from '@/utils/api/queryClient';
 import {formatUpdateTime} from '@/utils/date/date';
 import React, {useState} from 'react';
@@ -14,7 +14,7 @@ import Toast from 'react-native-toast-message';
 interface FinalConfirmationProps {}
 
 const FinalConfirmation = ({navigation}: FinalConfirmationProps) => {
-  const {userInfo} = useUserInfoStore();
+  const {user: userInfo} = useUserStore();
   const {overnightRequestValues, setOvernightRequestValues} =
     useOvernightRequestStore();
   const overnightPost = useMutateCreateOvernight();
@@ -32,13 +32,13 @@ const FinalConfirmation = ({navigation}: FinalConfirmationProps) => {
       {body: overnightRequestValues},
       {
         onSuccess: () => {
-          queryClient.invalidateQueries({queryKey: ['userInfo']}),
+          queryClient.invalidateQueries({queryKey: ['userInfo']});
           queryClient.invalidateQueries({queryKey: ['sleepovers']});
-            Toast.show({
-              type: 'success',
-              text1: '외박 신청이 완료되었습니다.',
-              position: 'bottom',
-            });
+          Toast.show({
+            type: 'success',
+            text1: '외박 신청이 완료되었습니다.',
+            position: 'bottom',
+          });
           setOvernightRequestValues({
             startDate: '',
             endDate: '',
