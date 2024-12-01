@@ -11,11 +11,16 @@ type NoticeProps = {
 
 function Message({message: {title, body, isRead, createdAt}}: NoticeProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleClickMessage = () => {
+    setIsOpen(!isOpen);
+    // TODO setIsOpen unread이면 read api 호출하는 로직 들어가야 함
+  };
   return (
     <View style={[styles.container, !isRead && styles.unreadContainer]}>
       <Image source={noticeIcon} style={styles.icon} />
       <View style={styles.content}>
-        <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
+        <TouchableOpacity onPress={handleClickMessage}>
           <CustomText>{title}</CustomText>
           <CustomText style={styles.date}>{createdAt}</CustomText>
         </TouchableOpacity>
