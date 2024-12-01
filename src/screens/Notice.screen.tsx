@@ -4,7 +4,7 @@ import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
 import {AppPush} from '@/types/PushMessage';
 import {NavigationProp} from '@react-navigation/native';
 import {useQuery} from '@tanstack/react-query';
-import React, {useMemo} from 'react';
+import React from 'react';
 import {ScrollView, StyleSheet} from 'react-native';
 
 interface NoticeProp {
@@ -12,7 +12,7 @@ interface NoticeProp {
 }
 
 const Notice = ({navigation}: NoticeProp) => {
-  const {data: notices} = useQuery({
+  const {data: notices} = useQuery<AppPush[][]>({
     queryKey: ['notices'],
     queryFn: () => {
       //TODO API 연동 후 수정 -> notices 변수로 아래 화면 구성하도록
