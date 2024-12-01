@@ -9,6 +9,7 @@ import {Alert, AppRegistry} from 'react-native';
 import {Text, TextInput} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {AuthProvider} from '@/providers/AuthProvider';
+import useMessageService from '@/hooks/useMessageService';
 
 interface TextWithDefaultProps extends Text {
   defaultProps?: {allowFontScaling?: boolean};
@@ -33,16 +34,10 @@ function App(): React.JSX.Element {
       //TODO Android 앱 splash만 작업함
       SplashScreen.hide();
     }, 1000);
-
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-    });
-
-    return unsubscribe;
   }, []);
-  messaging().setBackgroundMessageHandler(async remoteMessage => {
-    console.log('Message handled in the background!', remoteMessage);
-  });
+
+  useMessageService();
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
