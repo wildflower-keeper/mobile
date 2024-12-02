@@ -3,4 +3,5 @@ export type NoticeMessage = {
   title: string;
   contents: string;
   sendAt: string;
+  read: boolean;
 };

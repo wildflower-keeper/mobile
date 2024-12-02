@@ -5,16 +5,17 @@ import noticeIcon from '@/assets/icon/bell.png';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {PUT} from '@/utils/api/api';
 import {NoticeMessage} from '@/types/NoticeMessage';
+import {formatSimpleDate, formatToString} from '@/utils/date/date';
 
 type NoticesProps = {
   notice: NoticeMessage;
 };
 
 function NoticeContainer({
-  notice: {id, title, contents, sendAt},
+  notice: {id, title, contents, sendAt, read},
 }: NoticesProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isRead, setIsRead] = useState<boolean>(false); // TODO NoticeMessage 규격에 없어서 우선 false처리
+  const [isRead, setIsRead] = useState<boolean>(read);
 
   const handleClickMessage = useCallback(
     (noticeId: number, isAlreadyRead: boolean) => () => {
@@ -37,7 +38,9 @@ function NoticeContainer({
       <View style={styles.content}>
         <TouchableOpacity onPress={handleClickMessage(id, isRead)}>
           <CustomText>{title}</CustomText>
-          <CustomText style={styles.date}>{sendAt}</CustomText>
+          <CustomText style={styles.date}>
+            {formatToString('yyyy.MM.DD', new Date(sendAt))}
+          </CustomText>
         </TouchableOpacity>
         {isOpen && (
           <View style={styles.desc}>

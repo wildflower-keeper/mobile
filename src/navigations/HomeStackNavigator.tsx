@@ -6,7 +6,7 @@ import FinalConfirmation from '@/screens/FinalConfirmation.screen';
 import OvernightList from '@/screens/OvernightList.screen';
 import ScanResult from '@/screens/ScanResult.screen';
 import {UserProvider} from '@/providers/UserProvider';
-import Notice from '@/screens/Notice.screen';
+import NoticePage from '@/screens/Notice.screen';
 
 interface HomeStackNavigatorProps {}
 
@@ -28,7 +28,7 @@ const HomeStackNavigator = ({}: HomeStackNavigatorProps) => {
         <Stack.Screen name="FinalConfirmation" component={FinalConfirmation} />
         <Stack.Screen name="OvernightList" component={OvernightList} />
         <Stack.Screen name="scanresult" component={ScanResult} />
-        <Stack.Screen name="notice" component={Notice} />
+        <Stack.Screen name="notice" component={NoticePage} />
       </Stack.Navigator>
     </UserProvider>
   );

@@ -17,9 +17,10 @@ function Notices({title, messages}: PushMessagesProps) {
           {title}
         </CustomText>
       </View>
-      {messages.map(message => (
-        <NoticeContainer key={message.id} notice={message} />
-      ))}
+      {messages &&
+        messages.map((message, i) => (
+          <NoticeContainer key={i} notice={message} />
+        ))}
     </View>
   );
 }

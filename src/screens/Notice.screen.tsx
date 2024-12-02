@@ -12,7 +12,7 @@ interface NoticeProp {
   navigation: NavigationProp<HomeStackParamList>;
 }
 
-const Notice = ({navigation}: NoticeProp) => {
+const NoticePage = ({navigation}: NoticeProp) => {
   const {data: noticesMap} = useQuery({
     queryKey: ['notices'],
     queryFn: async () =>
@@ -39,9 +39,9 @@ const Notice = ({navigation}: NoticeProp) => {
     <>
       <Header onClickBack={() => navigation.navigate('Home')}>알림</Header>
       <ScrollView style={styles.scheduleListContainer}>
-        <Notices title="오늘" messages={notices[0] ?? []} />
-        <Notices title="어제" messages={notices[1] ?? []} />
-        <Notices title="지난 알림" messages={notices[2] ?? []} />
+        <Notices title="오늘" messages={notices[0]} />
+        <Notices title="어제" messages={notices[1]} />
+        <Notices title="지난 알림" messages={notices[2]} />
       </ScrollView>
     </>
   );
@@ -54,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Notice;
+export default NoticePage;
