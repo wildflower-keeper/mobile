@@ -1,12 +1,12 @@
-import {AppPush} from '@/types/PushMessage';
+import {NoticeMessage} from '@/types/NoticeMessage';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import CustomText from '../base/CustomText';
-import Message from './Message';
+import NoticeContainer from './NoticesGroup';
 
 type PushMessagesProps = {
   title: string;
-  messages: AppPush[];
+  messages: NoticeMessage[];
 };
 
 function Notices({title, messages}: PushMessagesProps) {
@@ -17,8 +17,8 @@ function Notices({title, messages}: PushMessagesProps) {
           {title}
         </CustomText>
       </View>
-      {messages?.map((message, i) => (
-        <Message key={i} message={message} />
+      {messages.map(message => (
+        <NoticeContainer key={message.id} notice={message} />
       ))}
     </View>
   );
