@@ -31,7 +31,7 @@ interface TextInputWithDefaultProps extends TextInput {
 function App(): React.JSX.Element {
   useEffect(() => {
     setTimeout(() => {
-      //TODO Android 앱 splash만 작업함
+      // MEMO Android 앱 splash만 작업함
       SplashScreen.hide();
     }, 1000);
   }, []);
