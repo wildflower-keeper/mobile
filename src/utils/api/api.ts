@@ -61,3 +61,5 @@ export const POST = <T>(url: string, option?: RequestInit) =>
   doFetch<T>(url, {...option, method: 'POST'});
 export const DELETE = <T>(url: string, option?: RequestInit) =>
   doFetch<T>(url, {...option, method: 'DELETE'});
+export const PUT = <T>(url: string, option?: RequestInit) =>
+  doFetch<T>(url, {...option, method: 'PUT'});

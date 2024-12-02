@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 import messaging from '@react-native-firebase/messaging';
-import {Alert} from 'react-native';
+import {PUT} from '@/utils/api/api';
 
 function useMessageService() {
   useEffect(() => {
@@ -11,10 +11,28 @@ function useMessageService() {
         authStatus === messaging.AuthorizationStatus.PROVISIONAL;
       const token = await messaging().getToken();
 
-      console.log(
-        `FCM permission isSuccess: ${isSuccess}, stuats: ${authStatus}, token: ${token}`,
-      );
-      // TODO BE로 전송하기
+      if (!isSuccess) {
+        console.warn(
+          `fail to get FCM permission: ${authStatus} [token: ${token}]`,
+        );
+        return;
+      }
+
+      PUT('/api/v2/homeless-app/device-id', {
+        body: JSON.stringify({
+          deviceId: token,
+        }),
+      })
+        .then(({status, statusText}) => {
+          // TODO 테스트했을 때 token을 계속 등록할 수 있길래, 우선은 기록차 로그 남겨둠 (이후에 불필요하다고 생각들면 삭제할 것)
+          if (status !== 200) {
+            throw Error(
+              `divice id 등록 실패 | status: ${status} | details: ${statusText}\n - token : ${token}`,
+            );
+          }
+          console.log(`divice id 등록 성공\n - token : ${token}`);
+        })
+        .catch(console.error);
     }
 
     initialize();
