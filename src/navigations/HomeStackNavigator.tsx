@@ -5,6 +5,8 @@ import OvernightRequest from '@/screens/OvernightRequest.screen';
 import FinalConfirmation from '@/screens/FinalConfirmation.screen';
 import OvernightList from '@/screens/OvernightList.screen';
 import ScanResult from '@/screens/ScanResult.screen';
+import {UserProvider} from '@/providers/UserProvider';
+import NoticePage from '@/screens/Notice.screen';
 
 interface HomeStackNavigatorProps {}
 
@@ -19,13 +21,16 @@ export type HomeStackParamList = {
 const HomeStackNavigator = ({}: HomeStackNavigatorProps) => {
   const Stack = createStackNavigator();
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="OvernightRequest" component={OvernightRequest} />
-      <Stack.Screen name="FinalConfirmation" component={FinalConfirmation} />
-      <Stack.Screen name="OvernightList" component={OvernightList} />
-      <Stack.Screen name="scanresult" component={ScanResult} />
-    </Stack.Navigator>
+    <UserProvider>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="OvernightRequest" component={OvernightRequest} />
+        <Stack.Screen name="FinalConfirmation" component={FinalConfirmation} />
+        <Stack.Screen name="OvernightList" component={OvernightList} />
+        <Stack.Screen name="scanresult" component={ScanResult} />
+        <Stack.Screen name="notice" component={NoticePage} />
+      </Stack.Navigator>
+    </UserProvider>
   );
 };
 

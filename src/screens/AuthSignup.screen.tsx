@@ -11,13 +11,12 @@ import InputField from '@/components/InputField';
 import CustomButton from '@/components/base/CustomButton';
 import SelectField from '@/components/SelectField';
 import ConsentField from '@/components/ConsentField';
-import {backendAxiosInstance} from '@/utils/api/api';
-import {setToken} from '@/utils/tokenStorage/tokenStorage';
+import {GET, POST} from '@/utils/api/api';
+import authStore from '@/utils/tokenStorage/tokenStorage';
 import Toast from 'react-native-toast-message';
-import {getDeviceUniqueId} from '@/utils/api/auth';
-import useLoggedInStore from '@/stores/useLoggedIn';
 import {ScrollView} from 'react-native-gesture-handler';
-import {AxiosResponse} from 'axios';
+import {useAuthStore} from '@/providers/AuthProvider';
+import {SignUpResponse} from '@/types/ApiResponse';
 
 interface AuthSignupProps {}
 
@@ -46,6 +45,7 @@ type signupValueType = {
 };
 
 const AuthSignup = ({}: AuthSignupProps) => {
+  const {setToken} = useAuthStore();
   const [signupValues, setSignupValues] = useState<signupValueType>({
     name: '',
     shelterId: 0,
@@ -66,11 +66,11 @@ const AuthSignup = ({}: AuthSignupProps) => {
     /^[가-힣a-zA-Z0-9\s]+$/.test(signupValues.room) &&
     signupValues.termsIdsToAgree.length === termsList.length;
 
-  const {setIsLoggedIn} = useLoggedInStore();
   useEffect(() => {
-    getDeviceUniqueId().then((result: string) => {
+    authStore.getDeviceUniqueId().then((result: string) => {
       setSignupValues({...signupValues, deviceId: result});
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const handleChangeText = (name: string, text: string) => {
     setSignupValues({...signupValues, [name]: text});
@@ -90,10 +90,9 @@ const AuthSignup = ({}: AuthSignupProps) => {
 
   const getTerms = async () => {
     try {
-      const res: AxiosResponse<TermsIdsToAgreeType[]> =
-        await backendAxiosInstance.get('api/v1/homeless-app/terms', {
-          headers: {Accept: '*/*'},
-        });
+      const res = await GET<TermsIdsToAgreeType[]>(
+        '/api/v1/homeless-app/terms',
+      );
       return res.data;
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -139,23 +138,24 @@ const AuthSignup = ({}: AuthSignupProps) => {
 
   useEffect(() => {
     updateTermsIdsAgree();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [termsList]);
 
   const handleSubmit = async () => {
     try {
-      const res = await backendAxiosInstance.post(
+      const {data: result} = await POST<SignUpResponse>(
         '/api/v1/homeless-app/homeless',
-        signupValues,
         {
-          headers: {'content-type': 'application/json', accept: '*/*'},
+          body: JSON.stringify(signupValues),
         },
       );
-      const result = await res.data;
-      if (result.errorCode) {
-        throw new Error(result.description);
+      if (!result) {
+        throw Error('response is empty');
       }
-      setToken(signupValues.deviceId, result.accessToken);
-      setIsLoggedIn(true);
+      if ('errorCode' in result) {
+        throw Error(result.description);
+      }
+      await setToken(result.accessToken);
       Toast.show({
         type: 'success',
         text1: '회원가입이 정상적으로 완료되었습니다.',

@@ -12,6 +12,8 @@ const days: daysType = {
   6: '토',
 };
 
+type format = 'MM월 dd일' | 'MM월 dd일 E요일' | 'yyyy.MM.DD';
+
 const getNextDay = (selectDate: string) => {
   const nextDay = new Date(selectDate);
   nextDay.setDate(nextDay.getDate() + 1);
@@ -22,12 +24,23 @@ const getNextDay = (selectDate: string) => {
   );
 };
 
-const formatUpdateTime = (date: Date) => {
+const formatToString = (type: format, date: Date = new Date()) => {
+  const year = date.getFullYear();
   const month = String(date.getMonth() + 1);
   const day = String(date.getDate()).padStart(2, '0');
 
-  return `${month}월 ${day}일 ${days[date.getDay()]}요일`;
+  switch (type) {
+    case 'MM월 dd일':
+      return `${month}월 ${day}일`;
+    case 'MM월 dd일 E요일':
+      return `${month}월 ${day}일 ${days[date.getDay()]}요일`;
+    case 'yyyy.MM.DD':
+      return `${year}.${month.padStart(2, '0')}.${day}`;
+  }
 };
+
+const formatUpdateTime = (date: Date) =>
+  formatToString('MM월 dd일 E요일', date);
 
 const makeDateString = (year: number, month: number, day: number) => {
   return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(
@@ -36,12 +49,7 @@ const makeDateString = (year: number, month: number, day: number) => {
   )}`;
 };
 
-const formatSimpleDate = (date: Date) => {
-  const month = String(date.getMonth() + 1);
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return `${month}월 ${day}일`;
-};
+const formatSimpleDate = (date: Date) => formatToString('MM월 dd일', date);
 
 function getDatesBetween(startDate: Date, endDate: Date) {
   let dates = [];
@@ -61,4 +69,10 @@ function getDatesBetween(startDate: Date, endDate: Date) {
   return dates;
 }
 
-export {getNextDay, getDatesBetween, formatUpdateTime, formatSimpleDate};
+export {
+  getNextDay,
+  getDatesBetween,
+  formatUpdateTime,
+  formatSimpleDate,
+  formatToString,
+};

@@ -1,9 +1,9 @@
 // Utils
-import {getAccessToken} from '@/utils/api/auth';
+import {GET} from '@/utils/api/api';
 import {useQuery} from '@tanstack/react-query';
-import {useEffect, useState} from 'react';
 import {formatUpdateTime} from '@/utils/date/date';
 import {differenceInDays} from 'date-fns';
+import {useAuthStore} from '@/providers/AuthProvider';
 
 interface OvernightListResponseType {
   startDate: string;
@@ -15,49 +15,34 @@ interface OvernightListResponseType {
 }
 
 const useSleepovers = () => {
-  const [token, setToken] = useState<string>('');
-  useEffect(() => {
-    (async () => {
-      const data = await getAccessToken();
-      if (data) {
-        setToken(data);
-      }
-    })();
-  }, []);
+  const {token} = useAuthStore();
   const {data} = useQuery<OvernightListResponseType[]>({
     queryKey: ['sleepovers'],
     enabled: !!token,
     queryFn: async () => {
-      const response: Response = await fetch(
-        'https://api.wildflower-gardening.com/api/v1/homeless-app/sleepovers',
-        {
-          method: 'get',
-          headers: {
-            'Content-Type': 'application/json',
-            accept: '*/*',
-            'auth-token': token,
-          },
-        },
+      const response = await GET<Omit<OvernightListResponseType, 'dayDiff'>[]>(
+        '/api/v1/homeless-app/sleepovers',
       );
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+      const {status, statusText, data: result} = response;
+      if (status !== 200) {
+        throw new Error(statusText);
       }
-
-      const result = await response.json();
 
       if (!result) {
         throw new Error('SleepoverList is missing from the response');
       }
 
-      return result.map(({startDate: startDateStr, endDate: endDateStr, ...props}) => {
-        const startDate = new Date(startDateStr);
-        return {
-          dayDiff: differenceInDays(startDate, new Date()),
-          startDate: formatUpdateTime(startDate),
-          endDate: formatUpdateTime(new Date(endDateStr)),
-          ...props
-        }
-      });
+      return result.map(
+        ({startDate: startDateStr, endDate: endDateStr, ...props}) => {
+          const startDate = new Date(startDateStr);
+          return {
+            dayDiff: differenceInDays(startDate, new Date()),
+            startDate: formatUpdateTime(startDate),
+            endDate: formatUpdateTime(new Date(endDateStr)),
+            ...props,
+          };
+        },
+      );
     },
   });
 

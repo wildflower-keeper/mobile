@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "395631873839",
-    "project_id": "wildflower-947ab",
-    "storage_bucket": "wildflower-947ab.appspot.com"
+    "project_number": "115338358269",
+    "project_id": "wildflower-gardening",
+    "storage_bucket": "wildflower-gardening.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:395631873839:android:4efd86b943418b659c5bda",
+        "mobilesdk_app_id": "1:115338358269:android:06ba7b45b2a840a682bd94",
         "android_client_info": {
           "package_name": "com.wildflower"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC87fKDrUHeOvDZfxp14Iq75zuOAqjjnCw"
+          "current_key": "AIzaSyAApcOOwA9EUJYSx-zi7y2pSrAoFBjNeUk"
         }
       ],
       "services": {
