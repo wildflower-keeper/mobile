@@ -55,8 +55,11 @@ function useMessageService() {
       });
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('포그라운드에서 push 알림 수신 시', remoteMessage);
-      // Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      if (remoteMessage.notification) {
+        // TODO 홈의 알림 닷에 빨간 표시 하게 되는 날이 오지 않을까?
+        console.log('포그라운드에서 push 알림 수신 시', remoteMessage);
+        return;
+      }
     });
 
     return unsubscribe;
