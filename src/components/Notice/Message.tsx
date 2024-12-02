@@ -1,26 +1,40 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import CustomText from '../base/CustomText';
 import {Image, StyleSheet, View} from 'react-native';
 import noticeIcon from '@/assets/icon/bell.png';
 import {AppPush} from '@/types/PushMessage';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {PUT} from '@/utils/api/api';
 
 type NoticeProps = {
   message: AppPush;
 };
 
-function Message({message: {title, body, isRead, createdAt}}: NoticeProps) {
+function Message({
+  message: {noticeId, title, body, isRead: initialIsRead, createdAt},
+}: NoticeProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isRead, setIsRead] = useState<boolean>(initialIsRead ?? false);
 
-  const handleClickMessage = () => {
-    setIsOpen(!isOpen);
-    // TODO setIsOpen unread이면 read api 호출하는 로직 들어가야 함
-  };
+  const handleClickMessage = useCallback(
+    (id: string | undefined, isAlreadyRead: boolean) => () => {
+      setIsOpen(prev => !prev);
+      if (isAlreadyRead || !id) {
+        return;
+      }
+
+      PUT(`/api/v2/homeless-app/notice-target/${id}/read`)
+        .then(() => setIsRead(true))
+        .catch(console.error);
+    },
+    [],
+  );
+
   return (
     <View style={[styles.container, !isRead && styles.unreadContainer]}>
       <Image source={noticeIcon} style={styles.icon} />
       <View style={styles.content}>
-        <TouchableOpacity onPress={handleClickMessage}>
+        <TouchableOpacity onPress={handleClickMessage(noticeId, isRead)}>
           <CustomText>{title}</CustomText>
           <CustomText style={styles.date}>{createdAt}</CustomText>
         </TouchableOpacity>
