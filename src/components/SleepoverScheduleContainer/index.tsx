@@ -36,22 +36,13 @@ const SleepoverScheduleContainer = ({
     <View style={styles.container}>
       {sleepover ? (
         <>
-          <View style={{flex: 0, alignItems: 'center', gap: 10}}>
-            <View
-              style={{
-                flex: 0,
-                flexDirection: 'row',
-                gap: 16,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+          <View style={styles.sleepoverContainer}>
+            <View style={styles.sleepoverDate}>
               <View>
                 <CustomText size="small" weight="heavy">
                   시작일
                 </CustomText>
-                <CustomText size="large">
-                  {sleepover.startDate}
-                </CustomText>
+                <CustomText size="large">{sleepover.startDate}</CustomText>
               </View>
 
               <AntDesignicon
@@ -64,9 +55,7 @@ const SleepoverScheduleContainer = ({
                 <CustomText size="small" weight="heavy">
                   종료일
                 </CustomText>
-                <CustomText size="large">
-                  {sleepover.endDate}
-                </CustomText>
+                <CustomText size="large">{sleepover.endDate}</CustomText>
               </View>
             </View>
           </View>
@@ -113,6 +102,18 @@ const styles = StyleSheet.create({
         elevation: 2,
       },
     }),
+  },
+  sleepoverContainer: {
+    flex: 0,
+    alignItems: 'center',
+    gap: 10,
+  },
+  sleepoverDate: {
+    flex: 0,
+    flexDirection: 'row',
+    gap: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
