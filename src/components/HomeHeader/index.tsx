@@ -1,16 +1,20 @@
-import React, {useEffect, useMemo} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import React from 'react';
+import {Image, Pressable, StyleSheet, View} from 'react-native';
 import CustomText from '../base/CustomText';
-import {colors} from '@/constants';
-import {formatUpdateTime} from '@/utils/date/date';
+import noticeIcon from '@/assets/icon/bell.png';
+import {NavigationProp} from '@react-navigation/native';
 
 interface HomeHeaderProps {
   shelterName: string;
   homelessName: string;
-  today: Date;
+  navigation: NavigationProp<any>;
 }
 
-const HomeHeader = ({shelterName, homelessName, today}: HomeHeaderProps) => {
+const HomeHeader = ({
+  shelterName,
+  homelessName,
+  navigation,
+}: HomeHeaderProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -22,10 +26,12 @@ const HomeHeader = ({shelterName, homelessName, today}: HomeHeaderProps) => {
             {shelterName}
           </CustomText>
         </View>
-        <View style={styles.weatherContainer}>
-          <View style={styles.weatherFlexContainer}>
-          </View>
-        </View>
+
+        <Pressable
+          onPress={() => navigation.navigate('notice')}
+          style={styles.noticeContainer}>
+          <Image source={noticeIcon} style={styles.noticeIcon} />
+        </Pressable>
       </View>
     </View>
   );
@@ -43,17 +49,20 @@ const styles = StyleSheet.create({
     flex: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: 8
+    gap: 8,
   },
   headContainer: {
     flex: 0,
     gap: 6,
   },
-  weatherContainer: {
+  noticeContainer: {
     flex: 0,
-    alignItems: 'center',
+    paddingTop: 10,
   },
-  weatherFlexContainer: {flex: 0, flexDirection: 'row', gap: 12},
+  noticeIcon: {
+    width: 27,
+    height: 27,
+  },
 });
 
 export default HomeHeader;

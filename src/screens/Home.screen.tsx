@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useMemo} from 'react';
 import {Pressable, SafeAreaView, StyleSheet, View} from 'react-native';
 import CustomText from '@/components/base/CustomText';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -10,12 +10,11 @@ import {colors} from '@/constants';
 import {useUserStore} from '@/providers/UserProvider';
 import {NavigationProp} from '@react-navigation/native';
 import {useAuthStore} from '@/providers/AuthProvider';
+import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
 
 interface HomeProps {
-  navigation: NavigationProp<any>;
+  navigation: NavigationProp<HomeStackParamList>;
 }
-
-const today = new Date();
 
 export type userLocationType = {
   latitude: number;
@@ -31,14 +30,12 @@ const Home = ({navigation}: HomeProps) => {
     return locationStatusQuery?.locationStatus;
   }, [locationStatusQuery]);
 
-  console.log("users!!!!", user);
-
   return (
     <SafeAreaView style={styles.container}>
       <HomeHeader
         shelterName={user.shelterName}
         homelessName={user.homelessName}
-        today={today}
+        navigation={navigation}
       />
 
       <View style={styles.bodyContainer}>
@@ -64,10 +61,7 @@ const Home = ({navigation}: HomeProps) => {
 
         <View style={styles.nearOvernightContainer}>
           <Pressable
-            onPress={() => {
-              navigation.navigate('OvernightRequest');
-              console.log('외박 신청 버튼 클릭됨');
-            }}
+            onPress={() => navigation.navigate('OvernightRequest')}
             style={styles.nearOvernightButton}>
             <CustomText weight="heavy">외박 신청</CustomText>
             <AntDesignIcon name="right" size={18} color="#616161" />
