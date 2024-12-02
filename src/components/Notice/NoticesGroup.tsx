@@ -1,32 +1,50 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import CustomText from '../base/CustomText';
 import {Image, StyleSheet, View} from 'react-native';
 import noticeIcon from '@/assets/icon/bell.png';
-import {AppPush} from '@/types/PushMessage';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {PUT} from '@/utils/api/api';
+import {NoticeMessage} from '@/types/NoticeMessage';
+import {formatSimpleDate, formatToString} from '@/utils/date/date';
 
-type NoticeProps = {
-  message: AppPush;
+type NoticesProps = {
+  notice: NoticeMessage;
 };
 
-function Message({message: {title, body, isRead, createdAt}}: NoticeProps) {
+function NoticeContainer({
+  notice: {id, title, contents, sendAt, read},
+}: NoticesProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isRead, setIsRead] = useState<boolean>(read);
 
-  const handleClickMessage = () => {
-    setIsOpen(!isOpen);
-    // TODO setIsOpen unread이면 read api 호출하는 로직 들어가야 함
-  };
+  const handleClickMessage = useCallback(
+    (noticeId: number, isAlreadyRead: boolean) => () => {
+      console.log(noticeId, isAlreadyRead);
+      setIsOpen(prev => !prev);
+      if (isAlreadyRead || !noticeId) {
+        return;
+      }
+
+      PUT(`/api/v2/homeless-app/notice-target/${noticeId}/read`)
+        .then(() => setIsRead(true))
+        .catch(console.error);
+    },
+    [],
+  );
+
   return (
     <View style={[styles.container, !isRead && styles.unreadContainer]}>
       <Image source={noticeIcon} style={styles.icon} />
       <View style={styles.content}>
-        <TouchableOpacity onPress={handleClickMessage}>
+        <TouchableOpacity onPress={handleClickMessage(id, isRead)}>
           <CustomText>{title}</CustomText>
-          <CustomText style={styles.date}>{createdAt}</CustomText>
+          <CustomText style={styles.date}>
+            {formatToString('yyyy.MM.DD', new Date(sendAt))}
+          </CustomText>
         </TouchableOpacity>
         {isOpen && (
           <View style={styles.desc}>
-            <CustomText size="small">{body}</CustomText>
+            <CustomText size="small">{contents}</CustomText>
           </View>
         )}
       </View>
@@ -79,4 +97,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Message;
+export default NoticeContainer;
