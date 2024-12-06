@@ -12,11 +12,11 @@ import CustomButton from '@/components/base/CustomButton';
 import SelectField from '@/components/SelectField';
 import ConsentField from '@/components/ConsentField';
 import {GET, POST} from '@/utils/api/api';
-import authStore from '@/utils/tokenStorage/tokenStorage';
 import Toast from 'react-native-toast-message';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useAuthStore} from '@/providers/AuthProvider';
 import {SignUpResponse} from '@/types/ApiResponse';
+import useMessageService from '@/hooks/useMessageService';
 
 interface AuthSignupProps {}
 
@@ -45,12 +45,13 @@ type signupValueType = {
 };
 
 const AuthSignup = ({}: AuthSignupProps) => {
+  const {deviceId} = useMessageService();
   const {setToken} = useAuthStore();
   const [signupValues, setSignupValues] = useState<signupValueType>({
     name: '',
     shelterId: 0,
     shelterPin: '',
-    deviceId: '',
+    deviceId,
     room: '',
     termsIdsToAgree: [],
     birthDate: null,
@@ -66,12 +67,6 @@ const AuthSignup = ({}: AuthSignupProps) => {
     /^[가-힣a-zA-Z0-9\s]+$/.test(signupValues.room) &&
     signupValues.termsIdsToAgree.length === termsList.length;
 
-  useEffect(() => {
-    authStore.getDeviceUniqueId().then((result: string) => {
-      setSignupValues({...signupValues, deviceId: result});
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   const handleChangeText = (name: string, text: string) => {
     setSignupValues({...signupValues, [name]: text});
   };
