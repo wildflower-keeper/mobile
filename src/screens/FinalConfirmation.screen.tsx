@@ -3,7 +3,7 @@ import CustomButton from '@/components/base/CustomButton';
 import CustomText from '@/components/base/CustomText';
 import {colors} from '@/constants';
 import {useMutateCreateOvernight} from '@/hooks/queries/useMutateCreateOvernight';
-import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
+import {HomeStackParamList} from '@/types/Stack';
 import {useUserStore} from '@/providers/UserProvider';
 import useOvernightRequestStore from '@/stores/useOverNight';
 import {formatUpdateTime} from '@/utils/date/date';

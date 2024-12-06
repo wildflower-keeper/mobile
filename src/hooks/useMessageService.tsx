@@ -1,8 +1,11 @@
 import {useEffect, useState} from 'react';
 import messaging from '@react-native-firebase/messaging';
 import {PUT} from '@/utils/api/api';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {HomeStackParamList} from '@/types/Stack';
 
 function useMessageService() {
+  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
   const [deviceId, setDeviceId] = useState<string>('');
 
   useEffect(() => {
@@ -31,14 +34,14 @@ function useMessageService() {
       console.log('종료/백그라운드에서 push 수신 시', remoteMessage);
     });
 
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log('백그라운드에서 push 클릭', remoteMessage);
+    messaging().onNotificationOpenedApp(() => {
+      navigation.navigate('notice');
     });
 
     messaging()
       .getInitialNotification()
-      .then(async remoteMessage => {
-        console.log('종료 상태에서 push 클릭 시', remoteMessage);
+      .then(() => {
+        navigation.navigate('notice');
       });
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
@@ -50,7 +53,7 @@ function useMessageService() {
     });
 
     return unsubscribe;
-  }, []);
+  }, [navigation]);
 
   return {
     deviceId,

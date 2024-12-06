@@ -7,19 +7,15 @@ import OvernightList from '@/screens/OvernightList.screen';
 import ScanResult from '@/screens/ScanResult.screen';
 import {UserProvider} from '@/providers/UserProvider';
 import NoticePage from '@/screens/Notice.screen';
+import useMessageService from '@/hooks/useMessageService';
 
 interface HomeStackNavigatorProps {}
 
-export type HomeStackParamList = {
-  Home: undefined;
-  OvernightRequest: undefined;
-  FinalConfirmation: undefined;
-  OvernightList: undefined;
-  scanresult: undefined;
-};
-
 const HomeStackNavigator = ({}: HomeStackNavigatorProps) => {
   const Stack = createStackNavigator();
+
+  useMessageService();
+
   return (
     <UserProvider>
       <Stack.Navigator screenOptions={{headerShown: false}}>

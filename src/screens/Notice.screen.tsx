@@ -1,19 +1,24 @@
 import Header from '@/components/Header';
 import Notices from '@/components/Notice';
-import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
+import {HomeStackParamList} from '@/types/Stack';
 import {NoticeMessage} from '@/types/NoticeMessage';
 import {GET} from '@/utils/api/api';
 import {NavigationProp} from '@react-navigation/native';
 import {useQuery} from '@tanstack/react-query';
-import React, {useMemo} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet} from 'react-native';
+import {differenceInDays} from 'date-fns';
+
+type MessageGroupKey = 'today' | 'yesterday' | 'past';
+type MessageGroup = Record<MessageGroupKey, NoticeMessage[]>;
 
 interface NoticeProp {
   navigation: NavigationProp<HomeStackParamList>;
 }
 
 const NoticePage = ({navigation}: NoticeProp) => {
-  const {data: noticesMap} = useQuery({
+  const [messages, setMessages] = useState<MessageGroup>({} as MessageGroup);
+  const {data} = useQuery({
     queryKey: ['notices'],
     queryFn: async () =>
       await GET<{
@@ -21,27 +26,43 @@ const NoticePage = ({navigation}: NoticeProp) => {
       }>('/api/v2/homeless-app/notice').then(response => response.data),
   });
 
-  const notices = useMemo(() => {
-    if (!noticesMap) {
-      return [];
-    }
-    const resultArray: NoticeMessage[][] = [];
-    const keys = Object.keys(noticesMap);
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      resultArray[i] = noticesMap[key];
+  useEffect(() => {
+    if (!data) {
+      return;
     }
 
-    return resultArray;
-  }, [noticesMap]);
+    const getKey = (dateStr: string) => {
+      const diff = differenceInDays(new Date(dateStr), new Date());
+      switch (diff) {
+        case 0:
+          return 'today';
+        case -1:
+          return 'yesterday';
+        default:
+          return 'past';
+      }
+    };
+
+    const keys = Object.keys(data);
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      setMessages(prev => {
+        const newMessages = {...prev};
+        newMessages[getKey(key)] = data[key];
+        return newMessages;
+      });
+    }
+
+    return () => {};
+  }, [data]);
 
   return (
     <>
       <Header onClickBack={() => navigation.navigate('Home')}>알림</Header>
       <ScrollView style={styles.scheduleListContainer}>
-        <Notices title="오늘" messages={notices[0]} />
-        <Notices title="어제" messages={notices[1]} />
-        <Notices title="지난 알림" messages={notices[2]} />
+        <Notices title="오늘" messages={messages.today} />
+        <Notices title="어제" messages={messages.yesterday} />
+        <Notices title="지난 알림" messages={messages.past} />
       </ScrollView>
     </>
   );
