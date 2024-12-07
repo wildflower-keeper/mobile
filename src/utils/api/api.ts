@@ -1,6 +1,5 @@
 import axios from 'axios';
 import authStore from '@/utils/tokenStorage/tokenStorage';
-import {ApiResponse} from '@/types/ApiResponse';
 
 export const weatherAxiosInstance = axios.create({
   baseURL: 'https://api.openweathermap.org',
@@ -15,16 +14,16 @@ const interceptors = {
 
     return {...option, headers};
   },
-  onResponse: async (response: Response) => {
-    const data =
-      response.headers.get('content-type') === 'application/json'
+  onResponse: async <T>(response: Response) => {
+    const data: T | null =
+      response.ok && response.headers.get('content-type') === 'application/json'
         ? await response.json()
-        : response;
+        : null;
 
     return {
       status: response.status,
       statusText: response.statusText,
-      data: response.ok ? data : null,
+      data,
     };
   },
   onError: (message: string, e: Error) => {
@@ -32,17 +31,14 @@ const interceptors = {
   },
 };
 
-async function doFetch<T>(
-  url: string,
-  option?: RequestInit,
-): Promise<ApiResponse<T | null>> {
+async function doFetch<T>(url: string, option?: RequestInit) {
   try {
     const config = await interceptors.onRequest(option);
 
     return await fetch(
       'https://api.wildflower-gardening.com' + url,
       config,
-    ).then(interceptors.onResponse);
+    ).then(interceptors.onResponse<T>);
   } catch (error) {
     const e = error as Error;
     interceptors.onError(`${option?.method} ${url} |`, e);

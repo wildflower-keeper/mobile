@@ -3002,12 +3002,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-firebase/analytics@npm:^20.5.0":
-  version: 20.5.0
-  resolution: "@react-native-firebase/analytics@npm:20.5.0"
+"@react-native-firebase/analytics@npm:^21.6.1":
+  version: 21.6.1
+  resolution: "@react-native-firebase/analytics@npm:21.6.1"
+  dependencies:
+    superstruct: ^2.0.2
   peerDependencies:
-    "@react-native-firebase/app": 20.5.0
-  checksum: af59364f0b02d6f2e15c19dabc414a7bb512f4475b965691d8ac9296639140143ccc3e8eb374e0e1e8ebc5618af6015f33ff3b2ad8ee757bbd7bfb364003f789
+    "@react-native-firebase/app": 21.6.1
+  checksum: e7fce1d80720e47e3ab418f43f1dd1c5b9cf0e58aa62e2e34a2960713f678b101c0ed0acb9fb155a3d2ca503a71d0863b0791914129ecd2ed0839a77bf8a9717
   languageName: node
   linkType: hard
 
@@ -3027,16 +3029,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native-firebase/messaging@npm:^20.5.0":
-  version: 20.5.0
-  resolution: "@react-native-firebase/messaging@npm:20.5.0"
+"@react-native-firebase/messaging@npm:^21.6.1":
+  version: 21.6.1
+  resolution: "@react-native-firebase/messaging@npm:21.6.1"
   peerDependencies:
-    "@react-native-firebase/app": 20.5.0
+    "@react-native-firebase/app": 21.6.1
     expo: ">=47.0.0"
   peerDependenciesMeta:
     expo:
       optional: true
-  checksum: 67235c7c5aaaac4986687760003829d74a88001fb9f1ff35f15e31b3933c8a1f6bc442e388a7f4f95ee5a8855cb1f1fc08946b3983eab77a04b7678f360f853e
+  checksum: a187acb8573807790eef9ae47281a5c241b7234075d14030969f62923fd536dacc43c194cd05d9e6fb2b09400f8fc86f50baf8bdfc6cae5da60322f0ce4a2f2a
   languageName: node
   linkType: hard
 
@@ -10891,6 +10893,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"superstruct@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "superstruct@npm:2.0.2"
+  checksum: a5f75b72cb8b14b86f4f7f750dae8c5ab0e4e1d92414b55e7625bae07bbcafad81c92486e7e32ccacd6ae1f553caff2b92a50ff42ad5093fd35b9cb7f4e5ec86
+  languageName: node
+  linkType: hard
+
 "supports-color@npm:^5.3.0":
   version: 5.5.0
   resolution: "supports-color@npm:5.5.0"
@@ -11574,9 +11583,9 @@ __metadata:
     "@notifee/react-native": ^7.8.2
     "@react-native-community/checkbox": ^0.5.17
     "@react-native-community/geolocation": ^3.2.1
-    "@react-native-firebase/analytics": ^20.5.0
+    "@react-native-firebase/analytics": ^21.6.1
     "@react-native-firebase/app": ^21.6.1
-    "@react-native-firebase/messaging": ^20.5.0
+    "@react-native-firebase/messaging": ^21.6.1
     "@react-native-masked-view/masked-view": ^0.3.1
     "@react-native/babel-preset": 0.74.83
     "@react-native/eslint-config": 0.74.83
