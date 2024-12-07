@@ -8,6 +8,7 @@ import Toast from 'react-native-toast-message';
 import useOvernightRequestStore from '@/stores/useOverNight';
 import CalendarContainer from '@/components/CalendarContainer';
 import ReasonSelectorContainer from '@/components/ReasonSelectorContainer';
+import DismissKeyboardView from '@/components/layout/DismissKeyboardView';
 
 interface OvernightRequestProps {}
 
@@ -45,7 +46,7 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
       ) {
         Toast.show({
           type: 'error',
-          text1: '잘못된 전화번호입니다.',
+          text1: '외출 이유와 연락처를 입력해주세요',
           position: 'bottom',
         });
         return;
@@ -64,7 +65,7 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
     }
   };
   return (
-    <SafeAreaView style={styles.container}>
+    <DismissKeyboardView style={styles.container}>
       <View style={styles.titleContainer}>
         <CustomText size="large" weight="heavy">
           외박 신청기간
@@ -83,13 +84,12 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
         />
         <CustomButton label="계속" size="md" onPress={handleNext} />
       </View>
-    </SafeAreaView>
+    </DismissKeyboardView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'space-between',
     marginTop: 40,
     marginBottom: 60,
@@ -105,8 +105,10 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    flex: 0,
+    flex: 1, 
+    alignItems: 'center',
     flexDirection: 'row',
+    justifyContent: 'center',
     gap: 6,
   },
 });
