@@ -64,7 +64,7 @@ const ReasonSelectorContainer = ({}: ReasonSelectorContainerProps) => {
         )}
         <InputField
           labelName="비상연락망"
-          placeholder="비상시 연락할 전화번호를 입력해주세요."
+          placeholder="전화번호 (010-1234-5678)"
           keyboardType="numeric"
           value={overnightRequestValues.emergencyContact}
           onChangeText={text => handleNumericText(text)}

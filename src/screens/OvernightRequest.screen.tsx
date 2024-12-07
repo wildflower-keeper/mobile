@@ -45,7 +45,7 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
       ) {
         Toast.show({
           type: 'error',
-          text1: '외출 이유와 연락처를 입력해주세요',
+          text1: '잘못된 전화번호입니다.',
           position: 'bottom',
         });
         return;
