@@ -90,6 +90,7 @@ const OvernightRequest = ({navigation}: OvernightRequestProps) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: 'space-between',
     marginTop: 40,
     marginBottom: 60,
@@ -105,7 +106,9 @@ const styles = StyleSheet.create({
   },
 
   buttonContainer: {
-    flex: 1, 
+    width: '100%',  // 버튼이 가로 전체를 차지하도록 설정
+    paddingHorizontal: 20, // 좌우 여백 추가
+    paddingBottom: 20, // 하단 여백 추가
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
