@@ -1,5 +1,7 @@
 import {useEffect, useState} from 'react';
-import messaging from '@react-native-firebase/messaging';
+import messaging, {
+  FirebaseMessagingTypes,
+} from '@react-native-firebase/messaging';
 import {PUT} from '@/utils/api/api';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {HomeStackParamList} from '@/types/Stack';
@@ -34,15 +36,18 @@ function useMessageService() {
       console.log('종료/백그라운드에서 push 수신 시', remoteMessage);
     });
 
-    messaging().onNotificationOpenedApp(() => {
-      navigation.navigate('notice');
-    });
+    const handleOnMessage = (
+      message: FirebaseMessagingTypes.RemoteMessage | null,
+    ) => {
+      const screen = message?.data?.screen;
+      if (screen && typeof screen === 'string') {
+        navigation.navigate(screen);
+      }
+    };
 
-    messaging()
-      .getInitialNotification()
-      .then(() => {
-        navigation.navigate('notice');
-      });
+    messaging().onNotificationOpenedApp(handleOnMessage);
+
+    messaging().getInitialNotification().then(handleOnMessage);
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       if (remoteMessage.notification) {
