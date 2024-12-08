@@ -1,15 +1,15 @@
-import {useEffect, useMemo, useState} from 'react';
+import {useEffect, useMemo} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
+import {HomeStackParamList} from '@/types/Stack';
 import useScan from '@/hooks/queries/useScan';
 import useLocation from '@/hooks/queries/useLocation';
-import {locationStatusType} from '@/hooks/queries/useScan';
 import Toast from 'react-native-toast-message';
 import {useAuthStore} from '@/providers/AuthProvider';
+import {LocationStatusType} from '@/types/Location';
 
 type navigationProps = NavigationProp<HomeStackParamList>;
 
-const MUTATE_STATUS_ARR: locationStatusType[] = ['IN_SHELTER', 'OUT_SHELTER'];
+const MUTATE_STATUS_ARR: LocationStatusType[] = ['IN_SHELTER', 'OUT_SHELTER'];
 const ScanResult = () => {
   const navigation = useNavigation<navigationProps>();
   const {deepLinkData} = useScan();
@@ -39,6 +39,7 @@ const ScanResult = () => {
       });
     }
     navigation.navigate('Home');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deepLinkData, token]);
 
   return null;

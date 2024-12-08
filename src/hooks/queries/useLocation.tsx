@@ -26,6 +26,7 @@ const useLocation = (token: string) => {
       }
       return result;
     },
+    refetchInterval: 5000
   });
 
   const mutate = useMutation({

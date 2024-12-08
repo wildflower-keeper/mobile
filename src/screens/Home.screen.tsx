@@ -1,5 +1,11 @@
-import React, {useMemo} from 'react';
-import {Pressable, SafeAreaView, StyleSheet, View} from 'react-native';
+import React, {useEffect, useMemo} from 'react';
+import {
+  PermissionsAndroid,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import CustomText from '@/components/base/CustomText';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import HomeHeader from '@/components/HomeHeader';
@@ -10,7 +16,7 @@ import {colors} from '@/constants';
 import {useUserStore} from '@/providers/UserProvider';
 import {NavigationProp} from '@react-navigation/native';
 import {useAuthStore} from '@/providers/AuthProvider';
-import {HomeStackParamList} from '@/navigations/HomeStackNavigator';
+import {HomeStackParamList} from '@/types/Stack';
 
 interface HomeProps {
   navigation: NavigationProp<HomeStackParamList>;
@@ -25,6 +31,12 @@ const Home = ({navigation}: HomeProps) => {
   const {user} = useUserStore();
   const {token} = useAuthStore();
   const {data: locationStatusQuery} = useLocation(token);
+
+  useEffect(() => {
+    PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+    );
+  }, []);
 
   const locationStatus = useMemo(() => {
     return locationStatusQuery?.locationStatus;
