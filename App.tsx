@@ -8,7 +8,6 @@ import {AppRegistry} from 'react-native';
 import {Text, TextInput} from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {AuthProvider} from '@/providers/AuthProvider';
-import useMessageService from '@/hooks/useMessageService';
 
 interface TextWithDefaultProps extends Text {
   defaultProps?: {allowFontScaling?: boolean};
@@ -34,8 +33,6 @@ function App(): React.JSX.Element {
       SplashScreen.hide();
     }, 1000);
   }, []);
-
-  useMessageService();
 
   return (
     <QueryClientProvider client={queryClient}>

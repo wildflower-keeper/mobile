@@ -5,7 +5,7 @@ import AntDesignicon from 'react-native-vector-icons/AntDesign';
 import CustomButton from '../base/CustomButton';
 import {colors} from '@/constants';
 import {useMutateDeleteOvernight} from '@/hooks/queries/useMutateCreateOvernight';
-import queryClient from '@/utils/api/queryClient';
+import useOvernightRequestStore from '@/stores/useOverNight';
 
 export type SleepoverType = {
   endDate: string;
@@ -21,17 +21,12 @@ interface SleepoverScheduleContainerProps {
 const SleepoverScheduleContainer = ({
   sleepover,
 }: SleepoverScheduleContainerProps) => {
-  const deleteSchedule = useMutateDeleteOvernight();
-
-  const handleDeleteSchedule = (id: number) => {
-    deleteSchedule.mutate(id, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({queryKey: ['userInfo']});
-        queryClient.invalidateQueries({queryKey: ['sleepovers']});
-      },
-    });
-  };
-
+  const {setDeleteTargetId, setDuration} = useOvernightRequestStore();
+  const onCancelPress = () => {
+    if(!sleepover) return;
+    setDeleteTargetId(sleepover.sleepoverId);
+    setDuration(`${sleepover.startDate}~${sleepover.endDate}`)
+  }
   return (
     <View style={styles.container}>
       {sleepover ? (
@@ -63,7 +58,7 @@ const SleepoverScheduleContainer = ({
             <CustomButton
               label="일정 취소"
               size="xl"
-              onPress={() => handleDeleteSchedule(sleepover.sleepoverId)}
+              onPress={onCancelPress}
             />
           ) : (
             <CustomButton label="현재 진행중" variant="outlined" size="xl" />

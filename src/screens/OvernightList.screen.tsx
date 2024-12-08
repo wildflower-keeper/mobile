@@ -1,3 +1,4 @@
+import FinalDeleteConfirmationModal from '@/components/FinalDeleteConfirmationModal';
 import SleepoverScheduleContainer from '@/components/SleepoverScheduleContainer';
 import CustomText from '@/components/base/CustomText';
 import {colors} from '@/constants';
@@ -32,6 +33,7 @@ const OvernightList = ({}: OvernightListProps) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <FinalDeleteConfirmationModal />
       <View style={styles.titleContainer}>
         <CustomText size="large" weight="heavy">
           {userInfo.shelterName}
@@ -112,6 +114,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 20,
     alignItems: 'flex-start',
+    position: 'relative'
   },
   titleContainer: {
     flex: 0,
