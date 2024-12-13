@@ -6,16 +6,16 @@ import useLocation from '@/hooks/queries/useLocation';
 import {useAuthStore} from '@/providers/AuthProvider';
 import {useUserStore} from '@/providers/UserProvider';
 import {Message, MessageType} from '@/types/NoticeMessage';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 
 type Category = 'all' | MessageType;
-const TABS: {label: string; value: Category}[] = [
-  {label: '전체', value: 'all'},
-  {label: '공지', value: 'notice'},
-  {label: '참여조사', value: 'survey'},
-  {label: '알림', value: 'alerm'},
+const TABS: {label: string; value: Category; priority: number}[] = [
+  {label: '전체', value: 'all', priority: -1},
+  {label: '공지', value: 'notice', priority: 1},
+  {label: '참여조사', value: 'survey', priority: 2},
+  {label: '알림', value: 'alerm', priority: 3},
 ];
 
 const Home = () => {
@@ -80,10 +80,18 @@ const Home = () => {
     ]);
   }, []);
 
-  const filteredMessage =
-    category === 'all'
-      ? messages
-      : messages.filter(message => message.type === category);
+  const filteredMessage = useMemo(() => {
+    if (category !== 'all') {
+      return messages.filter(message => message.type === category);
+    }
+
+    const priorities = TABS.reduce((acc, cur) => {
+      acc[cur.value] = cur.priority;
+      return acc;
+    }, {} as Record<Category, number>);
+
+    return messages.sort((a, b) => priorities[a.type] - priorities[b.type]);
+  }, [category, messages]);
 
   return (
     <View style={styles.mainContainr}>
