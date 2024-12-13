@@ -1,15 +1,15 @@
-import { colors } from '@/constants';
+import {colors} from '@/constants';
 import useOvernightRequestStore from '@/stores/useOverNight';
 import React from 'react';
-import { KeyboardAvoidingView, Pressable, StyleSheet, View } from 'react-native';
+import {KeyboardAvoidingView, Pressable, StyleSheet, View} from 'react-native';
 import InputField from '../InputField';
 import CustomText from '../base/CustomText';
 
-interface ReasonSelectorContainerProps { }
+interface ReasonSelectorContainerProps {}
 const buttonTextList = ['가족', '모임', '일', '운동', '기타'];
 
-const ReasonSelectorContainer = ({ }: ReasonSelectorContainerProps) => {
-  const { overnightRequestValues, setOvernightRequestValues } =
+const ReasonSelectorContainer = ({}: ReasonSelectorContainerProps) => {
+  const {overnightRequestValues, setOvernightRequestValues} =
     useOvernightRequestStore();
 
   const selectReasonHandler = (value: string) => {
@@ -58,7 +58,7 @@ const ReasonSelectorContainer = ({ }: ReasonSelectorContainerProps) => {
           );
         })}
       </View>
-      <View style={{ width: '100%', flex: 0, gap: 20 }}>
+      <View style={{width: '100%', flex: 0, gap: 20}}>
         {overnightRequestValues.reason === '기타' && (
           <InputField labelName="기타" placeholder="사유를 입력해주세요." />
         )}
@@ -75,7 +75,7 @@ const ReasonSelectorContainer = ({ }: ReasonSelectorContainerProps) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, paddingTop: 60, gap: 50 },
+  container: {flex: 1, paddingTop: 60, gap: 50},
   optionContainer: {
     flex: 0,
     flexDirection: 'row',

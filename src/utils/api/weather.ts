@@ -1,4 +1,4 @@
-import {userLocationType} from '@/screens/Home.screen';
+import {userLocationType} from '@/screens/Outing.screen';
 import {weatherAxiosInstance} from './api';
 import {WEATHER_API_KEY} from '@env';
 

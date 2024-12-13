@@ -3,7 +3,7 @@ import React from 'react';
 import {StyleSheet, Text, TextProps} from 'react-native';
 
 type CustomTextProps = {
-  textColor?: 'default' | 'weak' | 'white';
+  textColor?: 'default' | 'weak' | 'white' | 'gray';
   size?: 'temp' | 'xLarge' | 'large' | 'default' | 'small' | 'xSmall';
   isBadge?: boolean;
   weight?: 'default' | 'heavy' | 'thin';
@@ -46,6 +46,9 @@ const styles = StyleSheet.create({
   },
   whiteText: {
     color: colors.WHITE,
+  },
+  grayText: {
+    color: colors.FONT_GRAY,
   },
   defaultWeight: {
     fontWeight: '600',

@@ -5,7 +5,7 @@ import noticeIcon from '@/assets/icon/bell.png';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {PUT} from '@/utils/api/api';
 import {NoticeMessage} from '@/types/NoticeMessage';
-import {formatSimpleDate, formatToString} from '@/utils/date/date';
+import {formatToString} from '@/utils/date/date';
 
 type NoticesProps = {
   notice: NoticeMessage;

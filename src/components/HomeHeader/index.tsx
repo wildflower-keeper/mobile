@@ -1,7 +1,6 @@
 import React from 'react';
 import {Image, Pressable, StyleSheet, View} from 'react-native';
 import CustomText from '../base/CustomText';
-import noticeIcon from '@/assets/icon/bell.png';
 import {NavigationProp} from '@react-navigation/native';
 
 interface HomeHeaderProps {
@@ -30,7 +29,10 @@ const HomeHeader = ({
         <Pressable
           onPress={() => navigation.navigate('notice')}
           style={styles.noticeContainer}>
-          <Image source={noticeIcon} style={styles.noticeIcon} />
+          <Image
+            source={require('@/assets/icon/bell.png')}
+            style={styles.noticeIcon}
+          />
         </Pressable>
       </View>
     </View>

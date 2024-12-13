@@ -23,10 +23,10 @@ const SleepoverScheduleContainer = ({
 }: SleepoverScheduleContainerProps) => {
   const {setDeleteTargetId, setDuration} = useOvernightRequestStore();
   const onCancelPress = () => {
-    if(!sleepover) return;
+    if (!sleepover) return;
     setDeleteTargetId(sleepover.sleepoverId);
-    setDuration(`${sleepover.startDate}~${sleepover.endDate}`)
-  }
+    setDuration(`${sleepover.startDate}~${sleepover.endDate}`);
+  };
   return (
     <View style={styles.container}>
       {sleepover ? (
@@ -55,11 +55,7 @@ const SleepoverScheduleContainer = ({
             </View>
           </View>
           {sleepover.status ? (
-            <CustomButton
-              label="일정 취소"
-              size="xl"
-              onPress={onCancelPress}
-            />
+            <CustomButton label="일정 취소" size="xl" onPress={onCancelPress} />
           ) : (
             <CustomButton label="현재 진행중" variant="outlined" size="xl" />
           )}
