@@ -2,6 +2,9 @@ import CustomText from '@/components/base/CustomText';
 import Tag from '@/components/base/Tag';
 import WarnIcon from '@/components/icon/WarnIcon';
 import PushMessage from '@/components/PushMessage';
+import useLocation from '@/hooks/queries/useLocation';
+import {useAuthStore} from '@/providers/AuthProvider';
+import {useUserStore} from '@/providers/UserProvider';
 import {Message, MessageType} from '@/types/NoticeMessage';
 import React, {useEffect, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
@@ -18,6 +21,12 @@ const TABS: {label: string; value: Category}[] = [
 const Home = () => {
   const [category, setCategory] = useState<Category>('all');
   const [messages, setMessages] = useState<Message[]>([]); // TODO message 받아오는 로직
+
+  const {user} = useUserStore();
+  const {token} = useAuthStore();
+  const {data: location} = useLocation(token);
+  const locationStatus =
+    location?.locationStatus === 'IN_SHELTER' ? '재실 중' : '외출 중';
 
   useEffect(() => {
     setMessages([
@@ -80,11 +89,11 @@ const Home = () => {
     <View style={styles.mainContainr}>
       <View style={styles.header}>
         <View style={styles.horizon}>
-          <Text style={styles.title}>김비전</Text>
-          <Tag type="outStatus" text="재실 중" />
+          <Text style={styles.title}>{user.homelessName}</Text>
+          <Tag type="outStatus" text={locationStatus} />
         </View>
         <View>
-          <CustomText textColor="gray">비전트레이닝센터</CustomText>
+          <CustomText textColor="gray">{user.shelterName}</CustomText>
         </View>
       </View>
       <View style={styles.gap} />
