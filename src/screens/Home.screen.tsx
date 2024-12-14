@@ -18,7 +18,7 @@ const TABS: {label: string; value: Category; priority: number}[] = [
   {label: '전체', value: 'all', priority: -1},
   {label: '공지', value: 'notice', priority: 1},
   {label: '참여조사', value: 'survey', priority: 2},
-  {label: '알림', value: 'alerm', priority: 3},
+  // {label: '알림', value: 'alerm', priority: 3},
 ];
 
 const Home = () => {
