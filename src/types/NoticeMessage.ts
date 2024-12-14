@@ -15,9 +15,10 @@ export const MessageTypeKor: Record<MessageType, string> = {
 };
 
 export type Message = NoticeMessage & {
-  isSurvey?: boolean;
+  isSurvey: boolean;
   imageUrl?: string;
-  type: MessageType;
+  // type: MessageType;
+  isResponded?: boolean;
 };
 
 export type MessageInnerParam = {

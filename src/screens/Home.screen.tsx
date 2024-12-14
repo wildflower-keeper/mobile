@@ -6,12 +6,12 @@ import useLocation from '@/hooks/queries/useLocation';
 import {useAuthStore} from '@/providers/AuthProvider';
 import {useUserStore} from '@/providers/UserProvider';
 import {Message, MessageType} from '@/types/NoticeMessage';
-import {PUT} from '@/utils/api/api';
+import {GET, PUT} from '@/utils/api/api';
 import {useRoute} from '@react-navigation/native';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
-import {useQueryClient} from '@tanstack/react-query';
+import {useQuery, useQueryClient} from '@tanstack/react-query';
 
 type Category = 'all' | MessageType;
 const TABS: {label: string; value: Category; priority: number}[] = [
@@ -23,7 +23,7 @@ const TABS: {label: string; value: Category; priority: number}[] = [
 
 const Home = () => {
   const [category, setCategory] = useState<Category>('all');
-  const [messages, setMessages] = useState<Message[]>([]); // TODO message 받아오는 로직
+  const [messages, setMessages] = useState<Message[]>([]);
 
   const queryClient = useQueryClient();
   const {user} = useUserStore();
@@ -54,61 +54,33 @@ const Home = () => {
     }
   }, [queryClient, route.params]);
 
+  const {data} = useQuery({
+    queryKey: ['notices'],
+    queryFn: async () =>
+      await GET<{[date: string]: Message[]}>('/api/v2/homeless-app/notice')
+        .then(response => response.data)
+        .then(messageMap => {
+          if (!messageMap) {
+            return [];
+          }
+
+          const keys = Object.keys(messageMap);
+          const resultList = [];
+          for (let i = 0; i < keys.length; i++) {
+            resultList.push(...messageMap[keys[i]]);
+          }
+          return resultList;
+        }),
+  });
+
   useEffect(() => {
-    setMessages([
-      {
-        id: 1,
-        title: '상수도 노후관 교체 공사 안내',
-        contents: 'asdf',
-        sendAt: new Date().toUTCString(),
-        read: false,
-        type: 'notice',
-      },
-      {
-        id: 2,
-        title: '2025 서울시 일자리 워크숍 참여 여부 조사',
-        contents: 'asdf',
-        sendAt: new Date().toUTCString(),
-        read: false,
-        type: 'survey',
-        isSurvey: true,
-        imageUrl:
-          'https://fastly.picsum.photos/id/442/200/200.jpg?hmac=S-yNCNr30GK97ulUYoey_Fh2-czIf7YnNgcKp7zrEoE',
-      },
-      {
-        id: 3,
-        title: '센터 복귀 30분 전입니다. 6시 40분까지 센터로 복귀해주세요',
-        contents: 'asdf',
-        sendAt: new Date().toUTCString(),
-        read: false,
-        type: 'alerm',
-      },
-      {
-        id: 4,
-        title: '상수도 노후관 교체 공사 안내2',
-        contents:
-          '상수도 노후관 교체 공사 안내2 상수도 노후관 교체 공사 안내2 상수도 노후관 교체 공사 \n\n 다음줄 \n\n 안내2 상수도 노후관 교체 공사 안내2 상수도 노후관 교체 공사 안내2',
-        sendAt: new Date().toUTCString(),
-        read: false,
-        type: 'notice',
-      },
-      {
-        id: 5,
-        title: '상수도 노후관 교체 공사 안내3',
-        contents:
-          '상수도 노후관 교체 공사 안내2 상수도 노후관 교체 공사 안내2 상수도 노후관 교체 공사 \n\n 다음줄 \n\n 안내2 상수도 노후관 교체 공사 안내2 상수도 노후관 교체 공사 안내2',
-        sendAt: new Date().toUTCString(),
-        read: false,
-        type: 'alerm',
-        imageUrl:
-          'https://fastly.picsum.photos/id/141/200/300.jpg?hmac=d8Mh3TnTbeViVLDauKiTRsNX8KAY5RGDbXDwEuecPko',
-      },
-    ]);
-  }, []);
+    setMessages(data ?? []);
+  }, [data]);
 
   const filteredMessage = useMemo(() => {
+    const getType = (isSurvey: boolean) => (isSurvey ? 'survey' : 'notice');
     if (category !== 'all') {
-      return messages.filter(message => message.type === category);
+      return messages.filter(message => getType(message.isSurvey) === category);
     }
 
     const priorities = TABS.reduce((acc, cur) => {
@@ -116,7 +88,9 @@ const Home = () => {
       return acc;
     }, {} as Record<Category, number>);
 
-    return messages.sort((a, b) => priorities[a.type] - priorities[b.type]);
+    return messages.sort((a, b) => {
+      return priorities[getType(a.isSurvey)] - priorities[getType(b.isSurvey)];
+    });
   }, [category, messages]);
 
   return (

@@ -1,18 +1,29 @@
 import React, {useCallback, useState} from 'react';
 import CustomText from './base/CustomText';
-import {Image, Pressable, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Message, MessageTypeKor} from '@/types/NoticeMessage';
 import {formatToString} from '@/utils/date/date';
 import Tag from './base/Tag';
 import {PUT} from '@/utils/api/api';
+import {SurveyButton} from './SurveyButton';
 
 type NoticesProps = {
   data: Message;
 };
 
 function PushMessage({
-  data: {id, title, contents, sendAt, read, isSurvey, imageUrl, type},
+  data: {
+    id,
+    title,
+    contents,
+    sendAt,
+    read,
+    imageUrl,
+    // type,
+    isSurvey,
+    isResponded,
+  },
 }: NoticesProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isRead, setIsRead] = useState<boolean>(read);
@@ -31,8 +42,15 @@ function PushMessage({
     [],
   );
 
+  const type = isSurvey ? 'survey' : 'notice';
+
   return (
-    <View style={[styles.container, !isRead && styles.unreadContainer]}>
+    <View
+      style={[
+        styles.container,
+        !isRead && styles.unreadContainer,
+        isSurvey && isResponded && styles.blurry,
+      ]}>
       <View style={styles.topHeader}>
         <Tag text={MessageTypeKor[type]} type={type} />
         {!isRead && <View style={styles.unread} />}
@@ -63,20 +81,7 @@ function PushMessage({
           <CustomText size="small">{contents}</CustomText>
         </View>
       )}
-      {isSurvey && (
-        <View style={styles.surveyButtonContainer}>
-          <Pressable style={styles.surveyButton}>
-            <CustomText size="large" weight="heavy">
-              불참하기
-            </CustomText>
-          </Pressable>
-          <Pressable style={styles.surveyButton}>
-            <CustomText size="large" weight="heavy" isBadge>
-              참여하기
-            </CustomText>
-          </Pressable>
-        </View>
-      )}
+      {isSurvey && <SurveyButton noticeId={id} isAnswered={!!isResponded} />}
     </View>
   );
 }
@@ -149,6 +154,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 16,
+  },
+  blurry: {
+    opacity: 0.5,
   },
   surveyButton: {
     flex: 1,
