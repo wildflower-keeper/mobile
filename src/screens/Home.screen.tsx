@@ -6,9 +6,12 @@ import useLocation from '@/hooks/queries/useLocation';
 import {useAuthStore} from '@/providers/AuthProvider';
 import {useUserStore} from '@/providers/UserProvider';
 import {Message, MessageType} from '@/types/NoticeMessage';
+import {PUT} from '@/utils/api/api';
+import {useRoute} from '@react-navigation/native';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
+import {useQueryClient} from '@tanstack/react-query';
 
 type Category = 'all' | MessageType;
 const TABS: {label: string; value: Category; priority: number}[] = [
@@ -22,11 +25,34 @@ const Home = () => {
   const [category, setCategory] = useState<Category>('all');
   const [messages, setMessages] = useState<Message[]>([]); // TODO message 받아오는 로직
 
+  const queryClient = useQueryClient();
   const {user} = useUserStore();
   const {token} = useAuthStore();
   const {data: location} = useLocation(token);
   const locationStatus =
     location?.locationStatus === 'IN_SHELTER' ? '재실 중' : '외출 중';
+
+  const route = useRoute();
+  useEffect(() => {
+    if (!route.params) {
+      return;
+    }
+
+    const {tab: selectTab, noticeId} = route.params as {
+      tab: Category;
+      noticeId: string;
+    };
+
+    if (selectTab) {
+      setCategory(selectTab);
+    }
+
+    if (noticeId) {
+      PUT(`/api/v2/homeless-app/notice-target/${noticeId}/read`).then(() =>
+        queryClient.invalidateQueries({queryKey: ['messages']}),
+      );
+    }
+  }, [queryClient, route.params]);
 
   useEffect(() => {
     setMessages([
@@ -216,10 +242,6 @@ const styles = StyleSheet.create({
     color: '#171719',
     fontWeight: '600',
     lineHeight: 28,
-  },
-  messages: {
-    // padding: 24,
-    // gap: 24,
   },
 });
 

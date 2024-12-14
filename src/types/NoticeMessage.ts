@@ -19,3 +19,8 @@ export type Message = NoticeMessage & {
   imageUrl?: string;
   type: MessageType;
 };
+
+export type MessageInnerParam = {
+  screen: string; // 홈에서 보여줄 탭
+  noticeId: string;
+};
