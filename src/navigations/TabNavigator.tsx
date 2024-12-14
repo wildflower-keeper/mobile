@@ -8,7 +8,7 @@ import {IconProps} from '@/types/Icon';
 import PeopleIcon from '@/components/icon/PeopleIcon';
 import SmileIcon from '@/components/icon/SmileIcon';
 import HomeIcon from '@/components/icon/HomeIcon';
-import BuildingIcon from '@/components/icon/BuildingIcon';
+// import BuildingIcon from '@/components/icon/BuildingIcon';
 import HomeFilledIcon from '@/components/icon/HomeFilledIcon';
 import BuildingFilledIcon from '@/components/icon/BuildingFilledIcon';
 
@@ -55,7 +55,8 @@ const TabNavigator = () => {
         name="외박/외출"
         component={Outing}
         options={{
-          tabBarIcon: renderIcon(BuildingIcon, BuildingFilledIcon),
+          // MEMO builedingIcon svg 요소 깨져서 filled 사용 (이후 교체 가능성 있음)
+          tabBarIcon: renderIcon(BuildingFilledIcon, BuildingFilledIcon),
         }}
       />
       <Tab.Screen
