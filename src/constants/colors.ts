@@ -4,6 +4,7 @@ const colors = {
   BORDER_COLOR: '#EEEEEE',
   FONT_WEAK: '#999999',
   FONT_DEFAULT: '#353535',
+  FONT_GRAY: '#37383C9C',
   WHITE: 'white',
   BRIGHT_PRIMARY: 'rgba(0, 178, 38, 0.8)',
   BORDER_PRIMARY: 'rgba(0, 178, 38, 0.05)',

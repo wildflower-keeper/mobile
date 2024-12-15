@@ -1,8 +1,6 @@
 import React from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import WildFlowerLogo from '@/assets/image/wildflower_logo.png';
-import WildFlowerTitle from '@/assets/image/wildflower_title.png';
 import CustomButton from '@/components/base/CustomButton';
 
 interface AuthHomeProps {}
@@ -11,8 +9,14 @@ const AuthHome = ({navigation}: AuthHomeProps) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image source={WildFlowerLogo} style={styles.logoImage} />
-        <Image source={WildFlowerTitle} style={styles.titleImage} />
+        <Image
+          source={require('@/assets/image/wildflower_logo.png')}
+          style={styles.logoImage}
+        />
+        <Image
+          source={require('@/assets/image/wildflower_title.png')}
+          style={styles.titleImage}
+        />
       </View>
       <View style={styles.buttonContainer}>
         {/* <CustomButton

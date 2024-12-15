@@ -5,6 +5,7 @@ import messaging, {
 import {PUT} from '@/utils/api/api';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {HomeStackParamList} from '@/types/Stack';
+import {MessageInnerParam} from '@/types/NoticeMessage';
 
 function useMessageService() {
   const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
@@ -39,10 +40,16 @@ function useMessageService() {
     const handleOnMessage = (
       message: FirebaseMessagingTypes.RemoteMessage | null,
     ) => {
-      const screen = message?.data?.screen;
-      if (screen && typeof screen === 'string') {
-        navigation.navigate(screen);
+      const data = message?.data;
+      if (!data) {
+        return;
       }
+      const {screen, noticeId} = data as MessageInnerParam;
+
+      navigation.navigate('홈', {
+        noticeId,
+        tab: screen,
+      });
     };
 
     messaging().onNotificationOpenedApp(handleOnMessage);

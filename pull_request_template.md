@@ -12,10 +12,9 @@
 - [ ] 파일 혹은 폴더명 수정
 - [ ] 파일 혹은 폴더 삭제
 
-## - ISSUE 
+## ISSUE
 
 ## Changes📃
-
 
 ## Screenshot📸
 

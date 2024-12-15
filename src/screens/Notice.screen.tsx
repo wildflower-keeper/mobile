@@ -52,8 +52,6 @@ const NoticePage = ({navigation}: NoticeProp) => {
         return newMessages;
       });
     }
-
-    return () => {};
   }, [data]);
 
   return (
