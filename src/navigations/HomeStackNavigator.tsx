@@ -1,4 +1,4 @@
-import Home from '@/screens/Home.screen';
+import TabNavigator from './TabNavigator';
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
 import OvernightRequest from '@/screens/OvernightRequest.screen';
@@ -19,7 +19,7 @@ const HomeStackNavigator = ({}: HomeStackNavigatorProps) => {
   return (
     <UserProvider>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Home" component={TabNavigator} />
         <Stack.Screen name="OvernightRequest" component={OvernightRequest} />
         <Stack.Screen name="FinalConfirmation" component={FinalConfirmation} />
         <Stack.Screen name="OvernightList" component={OvernightList} />
