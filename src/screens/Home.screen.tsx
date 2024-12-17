@@ -23,7 +23,6 @@ const TABS: {label: string; value: Category; priority: number}[] = [
 
 const Home = () => {
   const [category, setCategory] = useState<Category>('all');
-  const [messages, setMessages] = useState<Message[]>([]);
 
   const queryClient = useQueryClient();
   const {user} = useUserStore();
@@ -49,12 +48,12 @@ const Home = () => {
 
     if (noticeId) {
       PUT(`/api/v2/homeless-app/notice-target/${noticeId}/read`).then(() =>
-        queryClient.invalidateQueries({queryKey: ['messages']}),
+        queryClient.invalidateQueries({queryKey: ['notices']}),
       );
     }
   }, [queryClient, route.params]);
 
-  const {data} = useQuery({
+  const {data: messages} = useQuery({
     queryKey: ['notices'],
     queryFn: async () =>
       await GET<{[date: string]: Message[]}>('/api/v2/homeless-app/notice')
@@ -71,13 +70,13 @@ const Home = () => {
           }
           return resultList;
         }),
+    refetchOnMount: true,
   });
 
-  useEffect(() => {
-    setMessages(data ?? []);
-  }, [data]);
-
   const filteredMessage = useMemo(() => {
+    if (!messages) {
+      return [];
+    }
     const getType = (isSurvey: boolean) => (isSurvey ? 'survey' : 'notice');
     if (category !== 'all') {
       return messages.filter(message => getType(message.isSurvey) === category);

@@ -3,7 +3,7 @@ export type NoticeMessage = {
   title: string;
   contents: string;
   sendAt: string;
-  read: boolean;
+  isRead: boolean;
 };
 
 export type MessageType = 'notice' | 'survey' | 'alerm';

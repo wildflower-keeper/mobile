@@ -6,6 +6,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import {PUT} from '@/utils/api/api';
 import {NoticeMessage} from '@/types/NoticeMessage';
 import {formatToString} from '@/utils/date/date';
+import {useQueryClient} from '@tanstack/react-query';
 
 type NoticesProps = {
   notice: NoticeMessage;
@@ -14,19 +15,22 @@ type NoticesProps = {
 function NoticeContainer({
   notice: {id, title, contents, sendAt, read},
 }: NoticesProps) {
+  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isRead, setIsRead] = useState<boolean>(read);
 
   const handleClickMessage = useCallback(
     (noticeId: number, isAlreadyRead: boolean) => () => {
-      console.log(noticeId, isAlreadyRead);
       setIsOpen(prev => !prev);
       if (isAlreadyRead || !noticeId) {
         return;
       }
 
       PUT(`/api/v2/homeless-app/notice-target/${noticeId}/read`)
-        .then(() => setIsRead(true))
+        .then(() => {
+          setIsRead(true)
+          queryClient.invalidateQueries({queryKey: ['notices']});
+        })
         .catch(console.error);
     },
     [],
