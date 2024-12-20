@@ -7,6 +7,7 @@ import {formatToString} from '@/utils/date/date';
 import Tag from './base/Tag';
 import {PUT} from '@/utils/api/api';
 import {SurveyButton} from './SurveyButton';
+import {useQueryClient} from '@tanstack/react-query';
 
 type NoticesProps = {
   data: Message;
@@ -18,13 +19,14 @@ function PushMessage({
     title,
     contents,
     sendAt,
-    read,
+    isRead : read,
     imageUrl,
     // type,
     isSurvey,
     isResponded,
-  },
+  }
 }: NoticesProps) {
+  const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isRead, setIsRead] = useState<boolean>(read);
 
@@ -36,7 +38,10 @@ function PushMessage({
       }
 
       PUT(`/api/v2/homeless-app/notice-target/${noticeId}/read`)
-        .then(() => setIsRead(true))
+        .then(() => {
+          setIsRead(true);
+          queryClient.invalidateQueries({queryKey: ['notices']});
+        })
         .catch(console.error);
     },
     [],
