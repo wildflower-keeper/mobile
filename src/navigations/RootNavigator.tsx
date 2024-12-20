@@ -15,7 +15,6 @@ const linking = {
 
 const RootNavigator = ({}) => {
   const {isLoggedIn} = useAuthStore();
-  console.log('isLoggedIn', isLoggedIn);
   return (
     <NavigationContainer linking={linking}>
       {isLoggedIn ? <HomeStackNavigator /> : <AuthStackNavigator />}

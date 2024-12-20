@@ -6,10 +6,12 @@ import {PUT} from '@/utils/api/api';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {HomeStackParamList} from '@/types/Stack';
 import {MessageInnerParam} from '@/types/NoticeMessage';
+import {useQueryClient} from '@tanstack/react-query';
 
 function useMessageService() {
   const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
   const [deviceId, setDeviceId] = useState<string>('');
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     (async function initialize() {
@@ -58,6 +60,11 @@ function useMessageService() {
 
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       if (remoteMessage.notification) {
+        setTimeout(() => {
+          // FCM의 푸시 발송 callback 실행이 DB insert 시점보다 빨라, setTimeout으로 refetch 시점을 늦춤
+          queryClient.invalidateQueries({queryKey: ['notices']});
+        }, 5000);
+
         // TODO 홈의 알림 닷에 빨간 표시 하게 되는 날이 오지 않을까?
         console.log('포그라운드에서 push 알림 수신 시', remoteMessage);
         return;
@@ -65,7 +72,8 @@ function useMessageService() {
     });
 
     return unsubscribe;
-  }, [navigation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     deviceId,

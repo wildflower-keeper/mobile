@@ -1,19 +1,13 @@
 import React from 'react';
-import {Image, Pressable, StyleSheet, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import CustomText from '../base/CustomText';
-import {NavigationProp} from '@react-navigation/native';
 
 interface HomeHeaderProps {
   shelterName: string;
   homelessName: string;
-  navigation: NavigationProp<any>;
 }
 
-const HomeHeader = ({
-  shelterName,
-  homelessName,
-  navigation,
-}: HomeHeaderProps) => {
+const HomeHeader = ({shelterName, homelessName}: HomeHeaderProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -25,15 +19,6 @@ const HomeHeader = ({
             {shelterName}
           </CustomText>
         </View>
-
-        <Pressable
-          onPress={() => navigation.navigate('notice')}
-          style={styles.noticeContainer}>
-          <Image
-            source={require('@/assets/icon/bell.png')}
-            style={styles.noticeIcon}
-          />
-        </Pressable>
       </View>
     </View>
   );
