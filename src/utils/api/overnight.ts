@@ -1,17 +1,15 @@
 import {GET, POST, DELETE} from './api';
-import authStore from '@/utils/tokenStorage/tokenStorage';
+import { GetOvernightAbleScheduleResponseType } from './type';
 
 const createOvernightSchedule = async ({body}) => {
-  const {data} = await await POST('/api/v1/homeless-app/sleepover', {
+  const {data} = await POST('/api/v1/homeless-app/sleepover', {
     body: JSON.stringify(body)
   });
   return data;
 };
 
 const getOvernightAbleSchedule = async () => {
-  const {data} = await await GET('/api/v1/homeless-app/available-sleepover-dates', {
-    body: JSON.stringify(body)
-  });
+  const {data} = await GET<GetOvernightAbleScheduleResponseType>('/api/v1/homeless-app/available-sleepover-dates');
   return data;
 };
 

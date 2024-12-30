@@ -3,14 +3,17 @@ import CustomText from '@/components/base/CustomText';
 import {colors} from '@/constants';
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import useOvernightRequestStore from '@/stores/useOverNight';
 import CalendarContainer from '@/components/CalendarContainer';
 import ReasonSelectorContainer from '@/components/ReasonSelectorContainer';
 import DismissKeyboardView from '@/components/layout/DismissKeyboardView';
+import { HomeStackParamList } from '@/types/Stack';
+import { NavigationProp } from '@react-navigation/native';
 
-interface OvernightRequestProps {}
+interface OvernightRequestProps {
+  navigation: NavigationProp<HomeStackParamList>;
+}
 
 const OvernightRequest = ({navigation}: OvernightRequestProps) => {
   const [isNext, setIsNext] = useState<boolean>(false);

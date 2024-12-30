@@ -1,8 +1,8 @@
 import {userLocationType} from '@/screens/Outing.screen';
 import {weatherAxiosInstance} from './api';
-import {WEATHER_API_KEY} from '@env';
 
 const getWeather = async (userLocation: userLocationType) => {
+  const WEATHER_API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
   try {
     const {latitude, longitude} = userLocation;
     const {data} = await weatherAxiosInstance({

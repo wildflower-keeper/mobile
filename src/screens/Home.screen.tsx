@@ -7,11 +7,12 @@ import {useAuthStore} from '@/providers/AuthProvider';
 import {useUserStore} from '@/providers/UserProvider';
 import {Message, MessageType} from '@/types/NoticeMessage';
 import {GET, PUT} from '@/utils/api/api';
-import {useRoute} from '@react-navigation/native';
+import {NavigationProp, useRoute} from '@react-navigation/native';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useQuery, useQueryClient} from '@tanstack/react-query';
+import { HomeStackParamList } from '@/types/Stack';
 
 type Category = 'all' | MessageType;
 const TABS: {label: string; value: Category; priority: number}[] = [
@@ -21,7 +22,11 @@ const TABS: {label: string; value: Category; priority: number}[] = [
   // {label: '알림', value: 'alerm', priority: 3},
 ];
 
-const Home = () => {
+interface HomeProp {
+  navigation: NavigationProp<HomeStackParamList>;
+}
+
+const Home = ({navigation}: HomeProp) => {
   const [category, setCategory] = useState<Category>('all');
 
   const queryClient = useQueryClient();
