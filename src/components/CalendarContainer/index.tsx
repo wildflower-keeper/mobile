@@ -6,7 +6,7 @@ import {colors} from '@/constants';
 import useGetOvernightAbleSchedule from '@/hooks/queries/useGetOvernightAbleSchedule';
 import useOvernightRequestStore from '@/stores/useOverNight';
 import {getDatesBetween, getNextDay} from '@/utils/date/date';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Calendar, DateData, LocaleConfig} from 'react-native-calendars';
 
@@ -27,8 +27,7 @@ const CalendarContainer = () => {
   const {overnightRequestValues, setOvernightRequestValues} =
     useOvernightRequestStore();
   const [selectDate, setSelectDate] = useState<selectOvernightType>({});
-  const [ableDate, isSuccess] = useGetOvernightAbleSchedule();
-  console.log(ableDate);
+  const [ableDate] = useGetOvernightAbleSchedule();
   /**
    * 외박 신청 된 날짜를 체크하여 적용할 state
    * 추후 사용 될 가능성이 있다고 판단하여 아직 남겨두었습니다.
