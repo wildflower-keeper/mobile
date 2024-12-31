@@ -2,13 +2,14 @@ import {
   calendarLocationConfig,
   calenderThemeConfig,
 } from '@/config/calendarConfig';
-import {colors} from '@/constants';
+import { colors } from '@/constants';
 import useGetOvernightAbleSchedule from '@/hooks/queries/useGetOvernightAbleSchedule';
+import useSleepovers, { OvernightListResponseType } from '@/hooks/queries/useSleepovers';
 import useOvernightRequestStore from '@/stores/useOverNight';
-import {getDatesBetween, getNextDay} from '@/utils/date/date';
-import React, {useState} from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Calendar, DateData, LocaleConfig} from 'react-native-calendars';
+import { getDatesBetween, getNextDay } from '@/utils/date/date';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Calendar, DateData, LocaleConfig } from 'react-native-calendars';
 
 type calenderOptionType = {
   startingDay?: boolean;
@@ -24,16 +25,49 @@ LocaleConfig.locales.kr = calendarLocationConfig;
 LocaleConfig.defaultLocale = 'kr';
 
 const CalendarContainer = () => {
-  const {overnightRequestValues, setOvernightRequestValues} =
+  const { overnightRequestValues, setOvernightRequestValues } =
     useOvernightRequestStore();
   const [selectDate, setSelectDate] = useState<selectOvernightType>({});
   const [ableDate] = useGetOvernightAbleSchedule();
-  /**
-   * 외박 신청 된 날짜를 체크하여 적용할 state
-   * 추후 사용 될 가능성이 있다고 판단하여 아직 남겨두었습니다.
-   */
-  // const [markedDate, setMarkedDate] = useState<selectOvernightType>({});
+  const { data: sleepovers } = useSleepovers();
+  useEffect(() => {
+    const parseDate = (dateString: string, year: number) => {
+      const [monthName, day] = dateString.split(' ');
+      const month = getMonthNumber(monthName);
+      const dayNumber = parseInt(day.replace('일', ''), 10);
 
+      return new Date(year, month - 1, dayNumber);
+    };
+
+    const getMonthNumber = (monthName: string): number => {
+      return +monthName.split('월')[0] || 1;
+    };
+
+    const generateDisabledDates = (data: OvernightListResponseType[] | undefined) => {
+      const disabledDates: any = {};
+
+      if(!data) return {};
+      data.forEach(item => {
+        const startDate = parseDate(item.startDate);
+        const endDate = parseDate(item.endDate);
+
+        let currentDate = new Date(startDate);
+        while (currentDate <= endDate) {
+          const dateString = currentDate.toISOString().split('T')[0];
+          disabledDates[dateString] = { disabled: true, textColor: "gray" };
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+      });
+
+      return disabledDates;
+    };
+
+    const disabledDates = generateDisabledDates(sleepovers);
+    setSelectDate((prev) => ({
+      ...prev, ...disabledDates
+    }));
+  }, [sleepovers]);
+  console.log("셀렉데이트", selectDate)
   const selectOvernight = (day: DateData) => {
     /**
      * @param {DateData} day

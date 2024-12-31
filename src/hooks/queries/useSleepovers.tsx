@@ -5,7 +5,7 @@ import {formatUpdateTime} from '@/utils/date/date';
 import {differenceInDays} from 'date-fns';
 import {useAuthStore} from '@/providers/AuthProvider';
 
-interface OvernightListResponseType {
+export interface OvernightListResponseType {
   startDate: string;
   endDate: string;
   reason: string;
@@ -50,3 +50,10 @@ const useSleepovers = () => {
 };
 
 export default useSleepovers;
+
+
+// [{"cancelable": true, "dayDiff": 13, "endDate": "1월 16일 목요일", "reason": "가족", "sleepoverId": 256, "startDate": "1월 13일 월요일"}]
+
+
+// [{"cancelable": true, "dayDiff": 13, "endYear": 2024, "endDate": "1월 16일 목요일", 
+// "reason": "가족", "sleepoverId": 256, "startDate": "1월 13일 월요일", "startYear: 2024"}]
