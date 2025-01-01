@@ -4,6 +4,7 @@ import CustomText from '@/components/base/CustomText';
 import {colors} from '@/constants';
 import useSleepovers from '@/hooks/queries/useSleepovers';
 import {useUserStore} from '@/providers/UserProvider';
+import { mapSleepoverData } from '@/utils/data/data';
 import {formatSimpleDate} from '@/utils/date/date';
 import React, {useMemo, useState} from 'react';
 import {Modal, Pressable, StyleSheet, View} from 'react-native';
@@ -19,7 +20,8 @@ const OvernightList = ({}: OvernightListProps) => {
   const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   const sleepovers = useMemo(() => {
-    return data?.map(({startDate, endDate, cancelable, sleepoverId}) => ({
+    const sleepOverData = mapSleepoverData(data || []);
+    return sleepOverData?.map(({startDate, endDate, cancelable, sleepoverId}) => ({
       startDate,
       endDate,
       sleepoverId,

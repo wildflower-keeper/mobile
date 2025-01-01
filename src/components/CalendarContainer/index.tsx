@@ -4,23 +4,15 @@ import {
 } from '@/config/calendarConfig';
 import { colors } from '@/constants';
 import useGetOvernightAbleSchedule from '@/hooks/queries/useGetOvernightAbleSchedule';
-import useSleepovers, { OvernightListResponseType } from '@/hooks/queries/useSleepovers';
+import useSleepovers from '@/hooks/queries/useSleepovers';
 import useOvernightRequestStore from '@/stores/useOverNight';
+import { generateDisabledDate } from '@/utils/data/data';
 import { getDatesBetween, getNextDay } from '@/utils/date/date';
+import { calenderOptionType, disableOptionType, selectOvernightType } from '@/utils/type/type';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Calendar, DateData, LocaleConfig } from 'react-native-calendars';
 
-type calenderOptionType = {
-  startingDay?: boolean;
-  endingDay?: boolean;
-  color: string;
-  textColor: string;
-};
-
-type selectOvernightType = {
-  [day: string]: calenderOptionType;
-};
 LocaleConfig.locales.kr = calendarLocationConfig;
 LocaleConfig.defaultLocale = 'kr';
 
@@ -28,47 +20,21 @@ const CalendarContainer = () => {
   const { overnightRequestValues, setOvernightRequestValues } =
     useOvernightRequestStore();
   const [selectDate, setSelectDate] = useState<selectOvernightType>({});
+  const [diabledDates, setDisabledDates] = useState<disableOptionType>({});
   const [ableDate] = useGetOvernightAbleSchedule();
   const { data: sleepovers } = useSleepovers();
+
   useEffect(() => {
-    const parseDate = (dateString: string, year: number) => {
-      const [monthName, day] = dateString.split(' ');
-      const month = getMonthNumber(monthName);
-      const dayNumber = parseInt(day.replace('일', ''), 10);
-
-      return new Date(year, month - 1, dayNumber);
+    const setDisableDate = () => {
+      sleepovers?.map((data) => {
+        generateDisabledDate(data.startDate, data.endDate, setDisabledDates);
+      })
     };
-
-    const getMonthNumber = (monthName: string): number => {
-      return +monthName.split('월')[0] || 1;
-    };
-
-    const generateDisabledDates = (data: OvernightListResponseType[] | undefined) => {
-      const disabledDates: any = {};
-
-      if(!data) return {};
-      data.forEach(item => {
-        const startDate = parseDate(item.startDate);
-        const endDate = parseDate(item.endDate);
-
-        let currentDate = new Date(startDate);
-        while (currentDate <= endDate) {
-          const dateString = currentDate.toISOString().split('T')[0];
-          disabledDates[dateString] = { disabled: true, textColor: "gray" };
-          currentDate.setDate(currentDate.getDate() + 1);
-        }
-      });
-
-      return disabledDates;
-    };
-
-    const disabledDates = generateDisabledDates(sleepovers);
-    setSelectDate((prev) => ({
-      ...prev, ...disabledDates
-    }));
+    setDisableDate();
   }, [sleepovers]);
-  console.log("셀렉데이트", selectDate)
+
   const selectOvernight = (day: DateData) => {
+    if(diabledDates[day.dateString]) return;
     /**
      * @param {DateData} day
      * 외박 일정을 선택하는 함수.
@@ -140,7 +106,7 @@ const CalendarContainer = () => {
         markingType={'period'}
         monthFormat={'yyyy년 M월'}
         onDayPress={(day: DateData) => selectOvernight(day)}
-        markedDates={selectDate}
+        markedDates={{...diabledDates, ...selectDate}}
         theme={calenderThemeConfig}
         minDate={ableDate?.[0]}
         maxDate={ableDate?.[ableDate.length - 1]}

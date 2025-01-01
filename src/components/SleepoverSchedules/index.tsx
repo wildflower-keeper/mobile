@@ -3,11 +3,15 @@ import {StyleSheet, View, ScrollView, Image} from 'react-native';
 import CustomText from '@/components/base/CustomText';
 import useSleepovers from '@/hooks/queries/useSleepovers';
 import {colors} from '@/constants';
+import { differenceInDays } from 'date-fns';
+import { formatUpdateTime } from '@/utils/date/date';
+import { mapSleepoverData } from '@/utils/data/data';
 
 interface SleepoverSchedulesProps {}
 
 const SleepoverSchedules = ({}: SleepoverSchedulesProps) => {
   const {data: sleepovers} = useSleepovers();
+  const sleepoverSchedules = mapSleepoverData(sleepovers || []);
 
   if (!sleepovers?.length) {
     return (
@@ -31,7 +35,7 @@ const SleepoverSchedules = ({}: SleepoverSchedulesProps) => {
       horizontal={true}
       showsHorizontalScrollIndicator={false}
       style={styles.scheduleListContainer}>
-      {sleepovers?.map(sleepover => (
+      {sleepoverSchedules?.map(sleepover => (
         <View style={styles.scheduleContainer} key={sleepover.sleepoverId}>
           <CustomText
             style={{fontSize: 18, color: colors.PRIMARY, textAlign: 'right'}}>
