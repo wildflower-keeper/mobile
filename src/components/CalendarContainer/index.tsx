@@ -27,8 +27,7 @@ const CalendarContainer = () => {
   const {overnightRequestValues, setOvernightRequestValues} =
     useOvernightRequestStore();
   const [selectDate, setSelectDate] = useState<selectOvernightType>({});
-  const [ableDate, isSuccess] = useGetOvernightAbleSchedule();
-
+  const [ableDate] = useGetOvernightAbleSchedule();
   /**
    * 외박 신청 된 날짜를 체크하여 적용할 state
    * 추후 사용 될 가능성이 있다고 판단하여 아직 남겨두었습니다.
@@ -109,8 +108,8 @@ const CalendarContainer = () => {
         onDayPress={(day: DateData) => selectOvernight(day)}
         markedDates={selectDate}
         theme={calenderThemeConfig}
-        minDate={isSuccess ? ableDate[0] : ''}
-        maxDate={isSuccess ? ableDate[ableDate.length - 1] : ''}
+        minDate={ableDate?.[0]}
+        maxDate={ableDate?.[ableDate.length - 1]}
       />
     </View>
   );

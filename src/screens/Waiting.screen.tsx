@@ -22,7 +22,7 @@ const Waiting = () => {
   const hideModal = () => {
     setVisible(false);
 
-    navigation.navigate('홈');
+    navigation.navigate('Home');
   };
 
   return (

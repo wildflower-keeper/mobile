@@ -31,7 +31,7 @@ const interceptors = {
   },
 };
 
-async function doFetch<T>(url: string, option?: RequestInit) {
+async function doFetch<T>(url: string, option?: RequestInit): Promise<{ status: number; statusText: string; data: T | null}> {
   try {
     const config = await interceptors.onRequest(option);
 

@@ -4,6 +4,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import CustomText from './base/CustomText';
 import {colors} from '@/constants';
 import {GET} from '@/utils/api/api';
+import { ShelterListType } from '@/utils/api/type';
 
 type SelectFieldProps = {
   isRequired?: boolean;
@@ -27,12 +28,14 @@ const SelectField = ({
   useEffect(() => {
     const getShelters = async () => {
       try {
-        const {data: result} = await GET('/api/v1/shared/shelters');
-        setItems(
-          result.map(shelter => {
-            return {label: shelter.shelterName, value: shelter.shelterId};
-          }),
-        );
+        const {data: result} = await GET<ShelterListType[]>('/api/v1/shared/shelters');
+        if(result) {
+          setItems(
+            result.map(shelter => {
+              return {label: shelter.shelterName, value: shelter.shelterId};
+            }),
+          );  
+        }
       } catch (error) {
         console.log(error);
       }
@@ -65,7 +68,6 @@ const SelectField = ({
         setOpen={setOpen}
         setValue={setValue}
         setItems={setItems}
-        allowFontScaling={false}
         placeholder="센터를 선택해주세요"
         placeholderStyle={styles.placeholder}
         dropDownContainerStyle={[
@@ -74,7 +76,6 @@ const SelectField = ({
         ]}
         textStyle={styles.dropdownText}
         style={styles.borderClose}
-        tickIconContainerStyle={styles.tick}
         listMode="SCROLLVIEW"
       />
     </View>

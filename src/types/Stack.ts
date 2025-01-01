@@ -1,6 +1,6 @@
 import {ParamListBase} from '@react-navigation/native';
 
-export interface HomeStackParamList extends ParamListBase {
+export type HomeStackParamList = {
   Home: undefined;
   Outing: undefined;
   OvernightRequest: undefined;
@@ -8,4 +8,10 @@ export interface HomeStackParamList extends ParamListBase {
   OvernightList: undefined;
   scanresult: undefined;
   notice: undefined;
+}
+
+export type  AuthParamList = {
+  AuthHome: undefined; 
+  AuthSignup: undefined;
+  AuthLogin: undefined;
 }

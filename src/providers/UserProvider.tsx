@@ -8,28 +8,12 @@ import React, {
 } from 'react';
 
 import {getUserInfo} from '@/utils/api/auth';
-import {useAuthStore} from './AuthProvider';
-
-type SleepoverType = {
-  endDate: string;
-  sleepoverId: number;
-  startDate: string;
-  status: boolean;
-};
-
-export type userInfoType = {
-  id: number;
-  shelterId: number;
-  homelessName: string;
-  shelterName: string;
-  shelterPhone: string;
-  upcomingSleepover: SleepoverType;
-};
+import { userInfoType } from '@/stores/useUserInfo';
 
 interface AuthContextType {
   user: userInfoType;
   initializeUser: () => Promise<void>;
-  fetchUserInfo: () => Promise<userInfoType>;
+  fetchUserInfo: () => Promise<userInfoType | null>;
 }
 
 const userContext = createContext<AuthContextType | undefined>(undefined);
@@ -51,7 +35,9 @@ export const UserProvider = ({children}: {children: ReactNode}) => {
 
   const initializeUser = async () => {
     const user = await fetchUserInfo();
-    setUser(user);
+    if(user) {
+      setUser(user);
+    }
   };
 
   const fetchUserInfo = async () => {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {Modal, Pressable, StyleSheet, View} from 'react-native';
 import CustomText from './base/CustomText';
 import {formatSimpleDate} from '@/utils/date/date';

@@ -13,11 +13,11 @@ type NoticesProps = {
 };
 
 function NoticeContainer({
-  notice: {id, title, contents, sendAt, read},
+  notice: {id, title, contents, sendAt, isRead},
 }: NoticesProps) {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isRead, setIsRead] = useState<boolean>(read);
+  const [isReadNotice, setIsRead] = useState<boolean>(isRead);
 
   const handleClickMessage = useCallback(
     (noticeId: number, isAlreadyRead: boolean) => () => {
@@ -37,10 +37,10 @@ function NoticeContainer({
   );
 
   return (
-    <View style={[styles.container, !isRead && styles.unreadContainer]}>
+    <View style={[styles.container, !isReadNotice && styles.unreadContainer]}>
       <Image source={noticeIcon} style={styles.icon} />
       <View style={styles.content}>
-        <TouchableOpacity onPress={handleClickMessage(id, isRead)}>
+        <TouchableOpacity onPress={handleClickMessage(id, isReadNotice)}>
           <CustomText>{title}</CustomText>
           <CustomText style={styles.date}>
             {formatToString('yyyy.MM.DD', new Date(sendAt))}
@@ -52,7 +52,7 @@ function NoticeContainer({
           </View>
         )}
       </View>
-      {!isRead && <View style={styles.unread} />}
+      {!isReadNotice && <View style={styles.unread} />}
     </View>
   );
 }
