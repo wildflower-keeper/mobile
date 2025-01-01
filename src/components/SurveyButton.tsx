@@ -3,15 +3,16 @@ import {Pressable, StyleSheet, View} from 'react-native';
 import CustomText from './base/CustomText';
 import {PUT} from '@/utils/api/api';
 import {useQueryClient} from '@tanstack/react-query';
-import SurveyConfirmationModal from './SurveyConfirmationModal';
+import SurveyConfirmationModal, { SurveyPopupType } from './SurveyConfirmationModal';
 
 type SurveyButtonProps = {
   noticeId: number;
   isAnswered: boolean;
 };
+
 export function SurveyButton({noticeId, isAnswered: is}: SurveyButtonProps) {
   const [isAlreadyAnswered, setIsAlreadyAnswered] = useState<boolean>(is);
-  const [openConfirmType, setOpenConfirmType] = useState(0);
+  const [openConfirmType, setOpenConfirmType] = useState<SurveyPopupType>(null);
   const queryClient = useQueryClient();
 
   if (isAlreadyAnswered) {
@@ -31,18 +32,18 @@ export function SurveyButton({noticeId, isAnswered: is}: SurveyButtonProps) {
       setIsAlreadyAnswered(true);
       queryClient.invalidateQueries({queryKey: ['notices']});
     });
-    setOpenConfirmType(0);
+    setOpenConfirmType(null);
   };
 
   return (
     <View style={styles.surveyButtonContainer}>
       <SurveyConfirmationModal openConfirmType={openConfirmType} setOpenConfirmType={setOpenConfirmType} handleClickSurvey={handleClickSurvey} />
-      <Pressable style={styles.surveyButton} onPress={() => setOpenConfirmType(1)}>
+      <Pressable style={styles.surveyButton} onPress={() => setOpenConfirmType('불참')}>
         <CustomText size="large" weight="heavy">
           불참하기
         </CustomText>
       </Pressable>
-      <Pressable style={styles.surveyButton} onPress={() => setOpenConfirmType(2)}>
+      <Pressable style={styles.surveyButton} onPress={() => setOpenConfirmType('참여')}>
         <CustomText size="large" weight="heavy" isBadge>
           참여하기
         </CustomText>
