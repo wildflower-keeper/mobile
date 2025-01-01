@@ -3,13 +3,16 @@ import {Pressable, StyleSheet, View} from 'react-native';
 import CustomText from './base/CustomText';
 import {PUT} from '@/utils/api/api';
 import {useQueryClient} from '@tanstack/react-query';
+import SurveyConfirmationModal, { SurveyPopupType } from './SurveyConfirmationModal';
 
 type SurveyButtonProps = {
   noticeId: number;
   isAnswered: boolean;
 };
+
 export function SurveyButton({noticeId, isAnswered: is}: SurveyButtonProps) {
   const [isAlreadyAnswered, setIsAlreadyAnswered] = useState<boolean>(is);
+  const [openConfirmType, setOpenConfirmType] = useState<SurveyPopupType>(null);
   const queryClient = useQueryClient();
 
   if (isAlreadyAnswered) {
@@ -22,27 +25,25 @@ export function SurveyButton({noticeId, isAnswered: is}: SurveyButtonProps) {
     );
   }
 
-  const handleClickSurvey = (ok: boolean) => () => {
-    if (isAlreadyAnswered) {
-      return;
-    }
-
+  const handleClickSurvey = (ok: boolean) => {
     PUT(`/api/v2/homeless-app/notice/${noticeId}/participation`, {
       body: JSON.stringify({isParticipating: ok}),
     }).then(() => {
       setIsAlreadyAnswered(true);
       queryClient.invalidateQueries({queryKey: ['notices']});
     });
+    setOpenConfirmType(null);
   };
 
   return (
     <View style={styles.surveyButtonContainer}>
-      <Pressable style={styles.surveyButton} onPress={handleClickSurvey(false)}>
+      <SurveyConfirmationModal openConfirmType={openConfirmType} setOpenConfirmType={setOpenConfirmType} handleClickSurvey={handleClickSurvey} />
+      <Pressable style={styles.surveyButton} onPress={() => setOpenConfirmType('불참')}>
         <CustomText size="large" weight="heavy">
           불참하기
         </CustomText>
       </Pressable>
-      <Pressable style={styles.surveyButton} onPress={handleClickSurvey(true)}>
+      <Pressable style={styles.surveyButton} onPress={() => setOpenConfirmType('참여')}>
         <CustomText size="large" weight="heavy" isBadge>
           참여하기
         </CustomText>
