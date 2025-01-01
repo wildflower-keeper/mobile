@@ -20,3 +20,11 @@ export type userInfoType = {
   shelterPhone: string;
   upcomingSleepover: SleepoverType;
 };
+
+export interface OvernightListResponseType {
+  startDate: string;
+  endDate: string;
+  reason: string;
+  sleepoverId: number;
+  cancelable: boolean;
+}
