@@ -31,11 +31,13 @@ function PushMessage({
   const [isRead, setIsRead] = useState<boolean>(read);
 
   const handleClickMessage = useCallback(
-    (noticeId: number, isAlreadyRead: boolean) => () => {
+    (noticeId: number, isAlreadyRead: boolean) => async () => {
       setIsOpen(prev => !prev);
       if (isAlreadyRead || !noticeId) {
         return;
       }
+
+      await new Promise(resolve => setTimeout(resolve, 3000)); // 즉시 읽음 처리 방지
 
       PUT(`/api/v2/homeless-app/notice-target/${noticeId}/read`)
         .then(() => {
