@@ -1,6 +1,6 @@
 import {ParamListBase} from '@react-navigation/native';
 
-export type HomeStackParamList = {
+export interface HomeStackParamList {
   Home: undefined;
   Outing: undefined;
   OvernightRequest: undefined;
@@ -10,7 +10,14 @@ export type HomeStackParamList = {
   notice: undefined;
 }
 
-export type  AuthParamList = {
+export interface BottomTapParamList {
+  "홈": undefined;
+  "외박/외출": undefined;
+  "커뮤니티": undefined;
+  "마이": undefined;
+}
+
+export interface  AuthParamList {
   AuthHome: undefined; 
   AuthSignup: undefined;
   AuthLogin: undefined;
