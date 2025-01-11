@@ -1,6 +1,6 @@
 import CustomModal from '@/components/base/CustomModal';
 import CustomText from '@/components/base/CustomText';
-import {BottomTapParamList, HomeStackParamList} from '@/types/Stack';
+import {HomeStackParamList} from '@/types/Stack';
 import {
   NavigationProp,
   useIsFocused,
@@ -11,7 +11,7 @@ import {StyleSheet, View} from 'react-native';
 
 const Waiting = () => {
   const isFocused = useIsFocused();
-  const navigation = useNavigation<NavigationProp<BottomTapParamList>>();
+  const navigation = useNavigation<NavigationProp<HomeStackParamList>>();
   const [visible, setVisible] = useState<boolean>(true);
 
   useEffect(() => {
@@ -21,7 +21,8 @@ const Waiting = () => {
 
   const hideModal = () => {
     setVisible(false);
-    navigation.navigate('홈');
+
+    navigation.navigate('Home');
   };
 
   return (
