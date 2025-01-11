@@ -50,7 +50,10 @@ function PushMessage({
   );
 
   const type = isSurvey ? 'survey' : 'notice';
-
+  const isValidUrl = (url: string) => {
+    const urlPattern = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i;
+    return urlPattern.test(url);
+  };
   return (
     <View
       style={[
@@ -73,20 +76,20 @@ function PushMessage({
             </CustomText>
           </TouchableOpacity>
         </View>
-        {true && (
+        {imageUrl && isValidUrl(imageUrl) && (
           <>
             <TouchableOpacity
               onPress={() => setIsOpenImage(true)}
               style={styles.imageContainer}>
               <Image
-                source={{ uri: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDExMjlfMjY3%2FMDAxNzMyODQzMTQ5MzYw.7hty7-xvkOrM296p4WIHtBZAWF57sBnZUHcbF0ytugQg.KIpFzHYfPA_yPdHA1fZmvddjjH6fSzLZpRta_SG8MV8g.PNG%2Fimage.png&type=a340" }}
+                source={{ uri: imageUrl }}
                 style={styles.image}
                 resizeMode="cover"
               />
             </TouchableOpacity>
             <Modal visible={isOpenImage} >
               <ImageViewer
-                imageUrls={[{ url: "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDExMjlfMjY3%2FMDAxNzMyODQzMTQ5MzYw.7hty7-xvkOrM296p4WIHtBZAWF57sBnZUHcbF0ytugQg.KIpFzHYfPA_yPdHA1fZmvddjjH6fSzLZpRta_SG8MV8g.PNG%2Fimage.png&type=a340" }]}
+                imageUrls={[{ url: imageUrl }]}
                 enableSwipeDown={true}
                 onSwipeDown={closeImage}
                 onCancel={closeImage}
