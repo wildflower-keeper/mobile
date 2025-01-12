@@ -3,31 +3,36 @@ import Tag from '@/components/base/Tag';
 import WarnIcon from '@/components/icon/WarnIcon';
 import PushMessage from '@/components/PushMessage';
 import useLocation from '@/hooks/queries/useLocation';
-import {useAuthStore} from '@/providers/AuthProvider';
-import {useUserStore} from '@/providers/UserProvider';
-import {Message, MessageType} from '@/types/NoticeMessage';
-import {GET, PUT} from '@/utils/api/api';
-import {useRoute} from '@react-navigation/native';
-import React, {useEffect, useMemo, useState} from 'react';
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import {ScrollView} from 'react-native-gesture-handler';
-import {useQuery, useQueryClient} from '@tanstack/react-query';
+import { useAuthStore } from '@/providers/AuthProvider';
+import { useUserStore } from '@/providers/UserProvider';
+import { Message, MessageType } from '@/types/NoticeMessage';
+import { GET, PUT } from '@/utils/api/api';
+import { NavigationProp, useRoute } from '@react-navigation/native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { HomeStackParamList } from '@/types/Stack';
 
 type Category = 'all' | MessageType;
-const TABS: {label: string; value: Category; priority: number}[] = [
-  {label: '전체', value: 'all', priority: -1},
-  {label: '공지', value: 'notice', priority: 1},
-  {label: '참여조사', value: 'survey', priority: 2},
-  // {label: '알림', value: 'alerm', priority: 3},
+const TABS: { label: string; value: Category; }[] = [
+  { label: '전체', value: 'all' },
+  { label: '공지', value: 'notice' },
+  { label: '참여조사', value: 'survey' },
+  // {label: '알림', value: 'alerm'},
 ];
 
-const Home = () => {
+interface HomeProp {
+  navigation: NavigationProp<HomeStackParamList>;
+}
+
+const Home = ({ navigation }: HomeProp) => {
   const [category, setCategory] = useState<Category>('all');
 
   const queryClient = useQueryClient();
-  const {user} = useUserStore();
-  const {token} = useAuthStore();
-  const {data: location} = useLocation(token);
+  const { user } = useUserStore();
+  const { token } = useAuthStore();
+  const { data: location } = useLocation(token);
   const locationStatus =
     location?.locationStatus === 'IN_SHELTER' ? '재실 중' : '외출 중';
 
@@ -37,7 +42,7 @@ const Home = () => {
       return;
     }
 
-    const {tab: selectTab, noticeId} = route.params as {
+    const { tab: selectTab, noticeId } = route.params as {
       tab: Category;
       noticeId: string;
     };
@@ -48,15 +53,15 @@ const Home = () => {
 
     if (noticeId) {
       PUT(`/api/v2/homeless-app/notice-target/${noticeId}/read`).then(() =>
-        queryClient.invalidateQueries({queryKey: ['notices']}),
+        queryClient.invalidateQueries({ queryKey: ['notices'] }),
       );
     }
   }, [queryClient, route.params]);
 
-  const {data: messages} = useQuery({
+  const { data: messages } = useQuery({
     queryKey: ['notices'],
     queryFn: async () =>
-      await GET<{[date: string]: Message[]}>('/api/v2/homeless-app/notice')
+      await GET<{ [date: string]: Message[] }>('/api/v2/homeless-app/notice')
         .then(response => response.data)
         .then(messageMap => {
           if (!messageMap) {
@@ -72,23 +77,27 @@ const Home = () => {
         }),
     refetchOnMount: true,
   });
-
   const filteredMessage = useMemo(() => {
     if (!messages) {
       return [];
     }
     const getType = (isSurvey: boolean) => (isSurvey ? 'survey' : 'notice');
-    if (category !== 'all') {
-      return messages.filter(message => getType(message.isSurvey) === category);
+
+    const getPriority = (message: Message) => {
+      if (message.isSurvey === true && message.isResponded === false) return 1;
+      if (message.isSurvey === false && message.isRead === false) return 2;
+      if (message.isSurvey === true && message.isResponded === true) return 3;
+      if (message.isSurvey === false && message.isRead === true) return 4;
+      return 0;
     }
 
-    const priorities = TABS.reduce((acc, cur) => {
-      acc[cur.value] = cur.priority;
-      return acc;
-    }, {} as Record<Category, number>);
+    if (category !== 'all') {
+      const filterMessages = messages.filter(message => getType(message.isSurvey) === category);
+      return filterMessages.sort((a, b) => getPriority(a) - getPriority(b));
+    }
 
     return messages.sort((a, b) => {
-      return priorities[getType(a.isSurvey)] - priorities[getType(b.isSurvey)];
+      return getPriority(a) - getPriority(b);
     });
   }, [category, messages]);
 

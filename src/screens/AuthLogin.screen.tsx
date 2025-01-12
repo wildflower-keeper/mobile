@@ -3,11 +3,17 @@ import SelectField from '@/components/SelectField';
 import CustomButton from '@/components/base/CustomButton';
 import CustomText from '@/components/base/CustomText';
 import {colors} from '@/constants';
+import { AuthParamList } from '@/types/Stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
-interface AuthLoginProps {}
+type AuthLoginNavigationProps = StackNavigationProp<AuthParamList, 'AuthLogin'>
+
+interface AuthLoginProps {
+  navigation: AuthLoginNavigationProps;
+}
 
 const AuthLogin = ({navigation}: AuthLoginProps) => {
   return (

@@ -2,8 +2,14 @@ import React from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import CustomButton from '@/components/base/CustomButton';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { AuthParamList } from '@/types/Stack';
 
-interface AuthHomeProps {}
+type AuthHomeNavigationProp = StackNavigationProp<AuthParamList, 'AuthHome'>;
+
+interface AuthHomeProps {
+  navigation: AuthHomeNavigationProp;
+}
 
 const AuthHome = ({navigation}: AuthHomeProps) => {
   return (

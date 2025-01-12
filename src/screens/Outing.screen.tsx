@@ -47,7 +47,6 @@ const Outing = ({navigation}: HomeProps) => {
       <HomeHeader
         shelterName={user.shelterName}
         homelessName={user.homelessName}
-        navigation={navigation}
       />
 
       <View style={styles.bodyContainer}>

@@ -38,7 +38,7 @@ const ScanResult = () => {
         props: {icon: toast.icon},
       });
     }
-    navigation.navigate('Home', {screen: '외박/외출'});
+    // navigation.navigate('Home', {screen: '외박/외출'});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deepLinkData, token]);
 
